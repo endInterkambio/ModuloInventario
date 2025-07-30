@@ -13,6 +13,11 @@ interface BookStore {
   books: Book[];                    // All books in the system
   filteredBooks: Book[];            // Books after applying filters
   currentPage: number;              // Current pagination page
+  itemsPerPage: number;             // Number of items per page
+  totalPages: number;               // Total number of pages
+
+  // Selectors
+  getPaginatedBooks: () => Book[];  // Get books for current page
 
   // Filter state
   searchTerm: string;               // Search term for book titles
@@ -37,6 +42,7 @@ interface BookStore {
   setSelectedStock: (value: SingleValue<StringOption>) => void;  // Set stock filter
   setSelectedShelf: (value: SingleValue<NumberOption>) => void;  // Set shelf filter
   setSelectedFloor: (value: SingleValue<NumberOption>) => void;  // Set floor filter
+  setItemsPerPage: (items: number) => void;  // Set items per page
   setCurrentPage: (page: number) => void;   // Set current page
 
   // Core functionality
@@ -47,8 +53,16 @@ interface BookStore {
 export const useBookStore = create<BookStore>((set, get) => ({
   books: booksData,           // Initialize with all books from data source
   filteredBooks: booksData,   // Initially show all books
-  currentPage: 1,            // Start on first page
-  setCurrentPage: (page) => set({ currentPage: page }),
+  currentPage: 1,             // Start on first page
+  itemsPerPage: 12,           // Default items per page
+  totalPages: Math.ceil(booksData.length / 12), // Calculate total pages
+
+  // Selectors
+  getPaginatedBooks: () => {
+    const { filteredBooks, currentPage, itemsPerPage } = get();
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredBooks.slice(start, start + itemsPerPage);
+  },
 
   // Filter state
   searchTerm: "",               // Search term for book titles
@@ -72,7 +86,7 @@ export const useBookStore = create<BookStore>((set, get) => ({
   resetSelection: () => set({ selectedBooks: [] }),
   resetCurrentPageSelection: () => {
     const { filteredBooks, currentPage, selectedBooks } = get();
-    const ITEMS_PER_PAGE = 12;
+    const ITEMS_PER_PAGE = get().itemsPerPage;
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     const end = start + ITEMS_PER_PAGE;
 
@@ -86,7 +100,7 @@ export const useBookStore = create<BookStore>((set, get) => ({
   selectAllBooks: () => set({ selectedBooks: get().filteredBooks }),
   selectCurrentPageBooks: () => {
     const { filteredBooks, currentPage, selectedBooks } = get();
-    const ITEMS_PER_PAGE = 12;
+    const ITEMS_PER_PAGE = get().itemsPerPage;
 
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     const end = start + ITEMS_PER_PAGE;
@@ -128,17 +142,28 @@ export const useBookStore = create<BookStore>((set, get) => ({
     set({ selectedFloor: value });
     get().applyFilters();
   },
+  setItemsPerPage: (items) => {
+    const { filteredBooks } = get();
+    set({
+      itemsPerPage: items,
+      currentPage: 1, // Reset to first page when changing items per page
+      totalPages: Math.ceil(filteredBooks.length / items)
+    });
+  },
+  setCurrentPage: (page) => {
+    set({ currentPage: page });
+  },
 
   // Core functionality
   applyFilters: () => {
     const {
       books,
+      searchTerm,
       sortOrder,
       selectedPrice,
       selectedStock,
       selectedShelf,
       selectedFloor,
-      searchTerm,
     } = get();
 
     const filtered = filterBooks({
@@ -151,6 +176,11 @@ export const useBookStore = create<BookStore>((set, get) => ({
       searchTerm,
     });
 
-    set({ filteredBooks: filtered, currentPage: 1 });
+    // Update filtered books and reset to first page
+    set({
+      filteredBooks: filtered,
+      currentPage: 1,
+      totalPages: Math.ceil(filtered.length / get().itemsPerPage) || 1
+    });
   },
 }));
