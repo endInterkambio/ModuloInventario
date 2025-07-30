@@ -2,7 +2,8 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import { Root } from '../Root';
 import { AuthLayout, DashboardLayout } from '../layouts';
-import { Dashboard, InventoryPage, LoginPage, PurchasePage, SellingPage } from '../pages';
+import { Dashboard, LoginPage, PurchasePage, SellingPage } from '../pages';
+import InventoryPage from '@/pages/inventory/InventoryPage';
 
 
 export const router = createBrowserRouter( [

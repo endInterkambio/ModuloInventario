@@ -8,16 +8,42 @@ import { SideMenuItem } from './SideMenuItem';
 interface MenuItem {
   title: string;
   subTitle: string;
-  href: string;
+  href?: string;
   Icon: IconType;
+  children?: MenuItem[];
 }
 
+
 const menuItems: MenuItem[] = [
-  { title: 'Dashboard', subTitle: 'Visualizar data', href: '/dashboard', Icon: IoSpeedometerOutline },
-  { title: 'Inventario', subTitle: 'Módulo de inventario', href: '/dashboard/inventory', Icon: IoPawOutline },
-  { title: 'Compras', subTitle: 'Módulo de compras', href: '/dashboard/purchase', Icon: IoPawOutline },
-  { title: 'Ventas', subTitle: 'Módulo de ventas', href: '/dashboard/selling', Icon: IoPawOutline },
+  {
+    title: 'Dashboard',
+    subTitle: 'Visualizar data',
+    href: '/dashboard',
+    Icon: IoSpeedometerOutline,
+  },
+  {
+    title: 'Inventario',
+    subTitle: 'Módulo de inventario',
+    Icon: IoPawOutline,
+    children: [
+      { title: 'Artículos', subTitle: 'Catálogo', href: '/dashboard/inventory', Icon: IoPawOutline },
+      { title: 'Ajuste de inventario', subTitle: 'Mantenimiento', href: '/dashboard/inventory/inventoryAdjust', Icon: IoPawOutline },
+    ],
+  },
+  {
+    title: 'Compras',
+    subTitle: 'Módulo de compras',
+    href: '/dashboard/purchase',
+    Icon: IoPawOutline,
+  },
+  {
+    title: 'Ventas',
+    subTitle: 'Módulo de ventas',
+    href: '/dashboard/selling',
+    Icon: IoPawOutline,
+  },
 ];
+
 
 export const SideMenu = () => {
 

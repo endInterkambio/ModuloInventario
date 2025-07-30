@@ -1,29 +1,67 @@
-
-import type { IconType } from 'react-icons';
+import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import type { IconType } from 'react-icons';
+import { IoChevronDownOutline, IoChevronForwardOutline } from 'react-icons/io5';
 
 interface Props {
-  href: string;
+  href?: string;
   Icon: IconType;
   title: string;
-  subTitle: string
+  subTitle: string;
+  children?: Props[];
 }
 
+export const SideMenuItem = ({ href, Icon, title, subTitle, children }: Props) => {
+  const [open, setOpen] = useState(false);
 
-export const SideMenuItem = ({ href, Icon, title, subTitle }: Props) => {
-  return (
-    <NavLink
-      key={ href }
-      to={ href }
-      end
-    >
-      <div>
-        <Icon />
+  const isParent = children && children.length > 0;
+
+  if (isParent) {
+    return (
+      <div className="mb-4">
+        <button
+          onClick={() => setOpen(!open)}
+          className="w-full flex items-center justify-between text-left text-slate-300 hover:text-white"
+        >
+          <div className="flex items-center space-x-3">
+            <Icon className="text-lg" />
+            <div>
+              <div className="text-lg font-bold text-white">{title}</div>
+              <div className="text-sm text-white/50 hidden md:block">{subTitle}</div>
+            </div>
+          </div>
+          <div>{open ? <IoChevronDownOutline /> : <IoChevronForwardOutline />}</div>
+        </button>
+
+        {open && (
+          <div className="ml-8 mt-2 space-y-2">
+            {children.map((child) => (
+              <NavLink
+                key={child.href}
+                to={child.href!}
+                className="block text-white/70 hover:text-white"
+              >
+                <div className="flex flex-col">
+                  <span className="text-base">{child.title}</span>
+                  <span className="text-sm text-white/50 hidden md:block">{child.subTitle}</span>
+                </div>
+              </NavLink>
+            ))}
+          </div>
+        )}
       </div>
-      <div className="flex flex-col">
-        <span className="text-lg font-bold leading-5 text-white">{ title }</span>
-        <span className="text-sm text-white/50 hidden md:block">{ subTitle }</span>
+    );
+  }
+
+  return (
+    <NavLink to={href!} end className="mb-4 block text-white/70 hover:text-white">
+      <div className="flex items-center space-x-3">
+        <Icon className="text-lg" />
+        <div className="flex flex-col">
+          <span className="text-lg font-bold text-white">{title}</span>
+          <span className="text-sm text-white/50 hidden md:block">{subTitle}</span>
+        </div>
       </div>
     </NavLink>
   );
-}
+};
