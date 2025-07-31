@@ -1,0 +1,31 @@
+export interface BookDTO {
+  id: number;
+  sku: string;
+  title: string;
+  isbn: string;
+  author: string;
+  publisher: string;
+  stockOnHand: number;
+  book_condition: string;
+  description: string;
+  category: string;
+  subjects: string;
+  format: string;
+  language: string;
+  imageUrl: string;
+  websiteUrl: string;
+  warehouseId: number | null;
+  tag: string;
+  productSaleType: string;
+  bookcase: number;
+  bookcaseFloor: number;
+  coverPrice: number;
+  purchasePrice: number;
+  sellingPrice: number;
+  fairPrice: number;
+  filter: string;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: number;
+  updatedBy?: number | null;
+}

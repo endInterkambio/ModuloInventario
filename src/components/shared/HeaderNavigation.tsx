@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { toast } from "react-hot-toast";
+import { useUploadBooks } from "@/hooks/useBooks";
+
 import {
   ChevronDown,
   List,
@@ -15,6 +18,23 @@ const HeaderNavigation: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
+
+  const mutation = useUploadBooks();
+
+const handleImport = (file: File) => {
+  toast.promise(
+    mutation.mutateAsync(file),
+    {
+      loading: "Subiendo archivo...",
+      success: "Archivo importado correctamente",
+      error: (err) =>
+        typeof err.response?.data === "string"
+          ? err.response.data
+          : "Error al importar el archivo",
+    }
+  );
+};
+
 
   return (
     <div className="flex items-center justify-between bg-white border-b border-gray-200 px-6 py-3">
@@ -143,9 +163,25 @@ const HeaderNavigation: React.FC = () => {
                   {activeSubmenu === "importar" && (
                     <div className="absolute right-full top-0 ml-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-20">
                       <div className="py-1">
-                        <button className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">
-                          <span>Importar</span>
-                        </button>
+                        {/* Label como botón + input oculto */}
+                        <label
+                          htmlFor="import-file"
+                          className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer"
+                        >
+                          <span>Importar archivo</span>
+                          <input
+                            type="file"
+                            id="import-file"
+                            accept=".csv,.xlsx"
+                            className="hidden"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                handleImport(file);
+                              }
+                            }}
+                          />
+                        </label>
                       </div>
                     </div>
                   )}
