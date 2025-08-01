@@ -1,7 +1,7 @@
 export interface BookDTO {
   id: number;
-  title: string;
   sku: string;
+  title: string;
   isbn: string;
   author: string;
   publisher: string;
@@ -14,16 +14,16 @@ export interface BookDTO {
   language: string;
   imageUrl: string;
   websiteUrl: string;
-  warehouseId: number | null;
-  tag: string;
-  productSaleType: string;
-  bookcase: number;
-  bookcaseFloor: number;
   coverPrice: number;
   purchasePrice: number;
   sellingPrice: number;
   fairPrice: number;
+  tag: string;
   filter: string;
+  productSaleType: string;
+  bookcase: number;
+  bookcaseFloor: number;
+  warehouseId: number | null;
   createdAt: string;
   updatedAt: string;
   createdBy: number;
