@@ -27,7 +27,7 @@ const menuItems: MenuItem[] = [
     Icon: IoPawOutline,
     children: [
       { title: 'Artículos', subTitle: 'Catálogo', href: '/dashboard/inventory', Icon: IoPawOutline },
-      { title: 'Ajuste de inventario', subTitle: 'Mantenimiento', href: '/dashboard/inventory/inventoryAdjust', Icon: IoPawOutline },
+      { title: 'Ajuste de inventario', subTitle: 'Mantenimiento', href: '/dashboard/inventoryAdjust', Icon: IoPawOutline },
     ],
   },
   {

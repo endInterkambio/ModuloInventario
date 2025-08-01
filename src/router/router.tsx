@@ -4,6 +4,7 @@ import { Root } from '../Root';
 import { AuthLayout, DashboardLayout } from '../layouts';
 import { Dashboard, LoginPage, PurchasePage, SellingPage } from '../pages';
 import InventoryPage from '@/pages/inventory/InventoryPage';
+import { InventoryAdjust } from '@/pages/inventory/InventoryAdjust';
 
 
 export const router = createBrowserRouter( [
@@ -23,6 +24,10 @@ export const router = createBrowserRouter( [
           {
             path: 'inventory',
             element: <InventoryPage />
+          },
+          {
+            path: 'inventoryAdjust',
+            element: <InventoryAdjust />
           },
           {
             path: 'purchase',
