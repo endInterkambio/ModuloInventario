@@ -23,19 +23,18 @@ export function filterBooks({
   // 🔍 Búsqueda por título o autor
   if (searchTerm && searchTerm.trim() !== "") {
     const lowerSearch = searchTerm.toLowerCase();
-    const isNumeric = /^\d+$/.test(searchTerm); 
+    const isNumeric = /^\d+$/.test(searchTerm);
 
-    filtered = filtered.filter(
-      (book) => {
-        const matchesText =
+    filtered = filtered.filter((book) => {
+      const matchesText =
         book.title?.toLowerCase().includes(lowerSearch) ||
         book.author?.toLowerCase().includes(lowerSearch);
 
-        const matchesNumber = isNumeric && (book.isbn?.toString().includes(searchTerm))
+      const matchesNumber =
+        isNumeric && book.isbn?.toString().includes(searchTerm);
 
-        return matchesText || matchesNumber;
-      }
-    );
+      return matchesText || matchesNumber;
+    });
   }
 
   // Filtro por precio
@@ -81,6 +80,28 @@ export function filterBooks({
   } else if (sortOrder === "Z-A") {
     filtered.sort((a, b) => (b.title || "").localeCompare(a.title || ""));
   }
+
+  // Orden por Stock
+  if (sortOrder === "STOCK_ASC") {
+    filtered.sort((a, b) => (a.stock ?? 0) - (b.stock ?? 0));
+  } else if (sortOrder === "STOCK_DESC") {
+    filtered.sort((a, b) => (b.stock ?? 0) - (a.stock ?? 0));
+  }
+
+  // Orden por SKU
+if (sortOrder === "SKU_ASC") {
+  filtered.sort((a, b) => (a.sku || "").localeCompare(b.sku || ""));
+} else if (sortOrder === "SKU_DESC") {
+  filtered.sort((a, b) => (b.sku || "").localeCompare(a.sku || ""));
+}
+
+// Orden por ISBN
+if (sortOrder === "ISBN_ASC") {
+  filtered.sort((a, b) => (a.isbn || "").localeCompare(b.isbn || ""));
+} else if (sortOrder === "ISBN_DESC") {
+  filtered.sort((a, b) => (b.isbn || "").localeCompare(a.isbn || ""));
+}
+
 
   return filtered;
 }
