@@ -1,12 +1,12 @@
 export interface BookDTO {
   id: number;
-  sku: string;
   title: string;
+  sku: string;
   isbn: string;
   author: string;
   publisher: string;
-  stockOnHand: number;
-  book_condition: string;
+  stock: number;
+  bookCondition: string;
   description: string;
   category: string;
   subjects: string;
