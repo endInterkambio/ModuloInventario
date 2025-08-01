@@ -1,5 +1,5 @@
 import type { SingleValue } from "react-select";
-import type { Book } from "@/data/bookData";
+import { BookDTO } from "@/types/BookDTO";
 
 export function filterBooks({
   data,
@@ -10,14 +10,14 @@ export function filterBooks({
   selectedFloor,
   searchTerm,
 }: {
-  data: Book[];
+  data: BookDTO[];
   sortOrder: string;
   selectedPrice: SingleValue<{ value: string; label: string }>;
   selectedStock: SingleValue<{ value: string; label: string }>;
   selectedShelf: SingleValue<{ value: number; label: string }>;
   selectedFloor: SingleValue<{ value: number; label: string }>;
   searchTerm?: string;
-}): Book[] {
+}): BookDTO[] {
   let filtered = [...data];
 
   // 🔍 Búsqueda por título o autor
@@ -28,10 +28,10 @@ export function filterBooks({
     filtered = filtered.filter(
       (book) => {
         const matchesText =
-        book.ItemName?.toLowerCase().includes(lowerSearch) ||
-        book.Author?.toLowerCase().includes(lowerSearch);
+        book.title?.toLowerCase().includes(lowerSearch) ||
+        book.author?.toLowerCase().includes(lowerSearch);
 
-        const matchesNumber = isNumeric && (book.ISBN?.toString().includes(searchTerm))
+        const matchesNumber = isNumeric && (book.isbn?.toString().includes(searchTerm))
 
         return matchesText || matchesNumber;
       }
@@ -44,7 +44,7 @@ export function filterBooks({
       ? [parseInt(selectedPrice.value), Infinity]
       : selectedPrice.value.split("-").map(Number);
     filtered = filtered.filter(
-      (book) => book.SellingPrice >= min && book.SellingPrice <= max
+      (book) => book.sellingPrice >= min && book.sellingPrice <= max
     );
   }
 
@@ -52,34 +52,34 @@ export function filterBooks({
   if (selectedStock) {
     const value = selectedStock.value;
     if (value === "0") {
-      filtered = filtered.filter((book) => book.StockOnHand === 0);
+      filtered = filtered.filter((book) => book.stock === 0);
     } else {
       const [min, max] = selectedStock.value.includes("+")
         ? [parseInt(selectedStock.value), Infinity]
         : selectedStock.value.split("-").map(Number);
       filtered = filtered.filter(
-        (book) => book.StockOnHand >= min && book.StockOnHand <= max
+        (book) => book.stock >= min && book.stock <= max
       );
     }
   }
 
   // Filtro por estante
   if (selectedShelf) {
-    filtered = filtered.filter((book) => book.Bookcase === selectedShelf.value);
+    filtered = filtered.filter((book) => book.bookcase === selectedShelf.value);
   }
 
   // Filtro por piso
   if (selectedFloor) {
     filtered = filtered.filter(
-      (book) => book.BookcaseFloor === selectedFloor.value
+      (book) => book.bookcaseFloor === selectedFloor.value
     );
   }
 
   // Orden alfabético
   if (sortOrder === "A-Z") {
-    filtered.sort((a, b) => (a.ItemName || "").localeCompare(b.ItemName || ""));
+    filtered.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
   } else if (sortOrder === "Z-A") {
-    filtered.sort((a, b) => (b.ItemName || "").localeCompare(a.ItemName || ""));
+    filtered.sort((a, b) => (b.title || "").localeCompare(a.title || ""));
   }
 
   return filtered;
