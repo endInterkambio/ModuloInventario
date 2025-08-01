@@ -2,7 +2,7 @@ import BookCard from "@/components/shared/cards/BookCard";
 import PaginationBar from "@/components/shared/pagination/PaginationBar";
 import { useBooks } from "@/hooks/useBooks";
 import { useBookStore } from "@/stores/useBookStore";
-import HeaderNavigation from "@components/shared/HeaderNavigation";
+import HeaderNavigation from "@components/HeaderNavigation/HeaderNavigation";
 import { useEffect } from "react";
 
 const InventoryPage = () => {
