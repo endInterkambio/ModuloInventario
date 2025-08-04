@@ -20,22 +20,46 @@ export function filterBooks({
 }): BookDTO[] {
   let filtered = [...data];
 
-  // 🔍 Búsqueda por título o autor
-  if (searchTerm && searchTerm.trim() !== "") {
-    const lowerSearch = searchTerm.toLowerCase();
-    const isNumeric = /^\d+$/.test(searchTerm);
-
-    filtered = filtered.filter((book) => {
-      const matchesText =
-        book.title?.toLowerCase().includes(lowerSearch) ||
-        book.author?.toLowerCase().includes(lowerSearch);
-
-      const matchesNumber =
-        isNumeric && book.isbn?.toString().includes(searchTerm);
-
-      return matchesText || matchesNumber;
-    });
+  function normalize(text: string): string {
+    return text
+      .toLowerCase()
+      .replace(/[\W_]+/g, " ") // reemplaza cualquier símbolo raro (&, |, -, etc.) con espacio
+      .replace(/\s+/g, " ") // colapsa múltiples espacios
+      .trim();
   }
+
+  function matchesMultiValueField(
+    field: string | undefined,
+    search: string
+  ): boolean {
+    if (!field) return false;
+    return normalize(field).includes(normalize(search));
+  }
+
+  // 🔍 Filtro de búsqueda
+  if (searchTerm && searchTerm.trim() !== "") {
+  const normalizedSearch = normalize(searchTerm);
+  const isNumeric = /^\d+$/.test(searchTerm);
+
+  filtered = filtered.filter((book) => {
+    const matchesText =
+      normalize(book.title ?? "").includes(normalizedSearch) ||
+      normalize(book.sku ?? "").includes(normalizedSearch) ||
+      normalize(book.author ?? "").includes(normalizedSearch) ||
+      normalize(book.publisher ?? "").includes(normalizedSearch) ||
+      normalize(book.format ?? "").includes(normalizedSearch) ||
+      normalize(book.category ?? "").includes(normalizedSearch) ||
+      normalize(book.subjects ?? "").includes(normalizedSearch) ||
+      matchesMultiValueField(book.filter, searchTerm) ||
+      matchesMultiValueField(book.tag, searchTerm);
+
+    const matchesNumber =
+      isNumeric && book.isbn?.toString().includes(searchTerm);
+
+    return matchesText || matchesNumber;
+  });
+}
+
 
   // Filtro por precio
   if (selectedPrice) {
@@ -89,19 +113,18 @@ export function filterBooks({
   }
 
   // Orden por SKU
-if (sortOrder === "SKU_ASC") {
-  filtered.sort((a, b) => (a.sku || "").localeCompare(b.sku || ""));
-} else if (sortOrder === "SKU_DESC") {
-  filtered.sort((a, b) => (b.sku || "").localeCompare(a.sku || ""));
-}
+  if (sortOrder === "SKU_ASC") {
+    filtered.sort((a, b) => (a.sku || "").localeCompare(b.sku || ""));
+  } else if (sortOrder === "SKU_DESC") {
+    filtered.sort((a, b) => (b.sku || "").localeCompare(a.sku || ""));
+  }
 
-// Orden por ISBN
-if (sortOrder === "ISBN_ASC") {
-  filtered.sort((a, b) => (a.isbn || "").localeCompare(b.isbn || ""));
-} else if (sortOrder === "ISBN_DESC") {
-  filtered.sort((a, b) => (b.isbn || "").localeCompare(a.isbn || ""));
-}
-
+  // Orden por ISBN
+  if (sortOrder === "ISBN_ASC") {
+    filtered.sort((a, b) => (a.isbn || "").localeCompare(b.isbn || ""));
+  } else if (sortOrder === "ISBN_DESC") {
+    filtered.sort((a, b) => (b.isbn || "").localeCompare(a.isbn || ""));
+  }
 
   return filtered;
 }

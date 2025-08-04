@@ -16,6 +16,7 @@ import SortMenu from "./SortMenu";
 import ExportMenu from "./ExportMenu";
 import SubmenuItem from "./SubmenuItem";
 import ViewToggle from "./ViewToggle";
+import { SearchBar } from "@components/SearchBar/SearchBar";
 
 const HeaderNavigation: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -48,7 +49,12 @@ const HeaderNavigation: React.FC = () => {
         {isDropdownOpen && (
           <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
             <div className="py-1">
-              {['Todos los artículos', 'Artículos recientes', 'Mis artículos', 'Borradores'].map((item) => (
+              {[
+                "Todos los artículos",
+                "Artículos recientes",
+                "Mis artículos",
+                "Borradores",
+              ].map((item) => (
                 <a
                   key={item}
                   href="#"
@@ -61,6 +67,8 @@ const HeaderNavigation: React.FC = () => {
           </div>
         )}
       </div>
+
+      <SearchBar />
 
       <div className="flex items-center gap-3">
         <ViewToggle />
@@ -98,7 +106,9 @@ const HeaderNavigation: React.FC = () => {
                     isActive={activeSubmenu === "importar"}
                     onHover={() => setActiveSubmenu("importar")}
                   />
-                  {activeSubmenu === "importar" && <ImportMenu handleImport={handleImport} />}
+                  {activeSubmenu === "importar" && (
+                    <ImportMenu handleImport={handleImport} />
+                  )}
                 </div>
 
                 <div className="relative">

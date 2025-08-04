@@ -22,3 +22,8 @@ hr {
 input:not(.swal2-input)[type=text],input:not(.swal2-input)[type=password], input:not(.swal2-input)[type=email], input:not(.swal2-input)[type=number], input:not(.swal2-input)[type=date], input:not(.swal2-input)[type=time]  {
   @apply w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500;
 }
+
+input[type="search"]::-webkit-search-cancel-button {
+  display: none;
+}
+
