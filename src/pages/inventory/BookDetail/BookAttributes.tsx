@@ -10,7 +10,7 @@ const BookAttributes = ({ book }: Props) => (
     <InfoRow label="Condición" value={book.bookCondition ?? "Sin condición"} />
     <InfoRow label="Estante" value={book.bookcase ?? "Sin estante"} />
     <InfoRow label="Piso" value={book.bookcaseFloor ?? "Sin piso"} />
-    <InfoRow label="Almacén" value={book.warehouseId ?? "Sin almacén"} />
+    <InfoRow label="Almacén" value={book.warehouse?.name ?? "Sin almacén"} />
     <InfoRow
       label="URL"
       value={

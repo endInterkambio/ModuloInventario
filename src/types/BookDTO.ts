@@ -1,3 +1,5 @@
+import { SimpleIdNameDTO } from "./SimpleIdNameDTO";
+
 export interface BookDTO {
   id: number;
   sku: string;
@@ -23,9 +25,9 @@ export interface BookDTO {
   productSaleType: string;
   bookcase: number;
   bookcaseFloor: number;
-  warehouseId: number | null;
+  warehouse: SimpleIdNameDTO | null;
   createdAt: string;
   updatedAt: string;
-  createdBy: number | null;
-  updatedBy?: number | null;
+  createdBy: SimpleIdNameDTO | null;
+  updatedBy?: SimpleIdNameDTO | null;
 }
