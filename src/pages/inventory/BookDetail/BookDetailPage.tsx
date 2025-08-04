@@ -44,7 +44,7 @@ const BookDetailPage = () => {
       case "transactions":
         return <BookTransactions book={book} />;
       case "history":
-        return <BookHistory />;
+        return <BookHistory book={book} />;
     }
   };
 

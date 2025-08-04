@@ -15,9 +15,9 @@ const BookGeneralInfo = ({ book }: Props) => (
     <InfoRow label="Autor" value={book.author ?? "N/A"} icon={<User className="w-4 h-4" />} />
     <InfoRow label="Editorial" value={book.publisher ?? "N/A"} icon={<FileText className="w-4 h-4" />} />
     <InfoRow label="Categoría" value={book.category ?? "N/A"} icon={<Tag className="w-4 h-4" />} />
+    <InfoRow label="Tema" value={book.subjects ?? "N/A"} icon={<Tag className="w-4 h-4" />} />
     <InfoRow label="Formato" value={book.format ?? "N/A"} icon={<FileText className="w-4 h-4" />} />
     <InfoRow label="Idioma" value={book.language ?? "N/A"} icon={<FileText className="w-4 h-4" />} />
-    <InfoRow label="Descripción" value={book.description ?? "N/A"} icon={<FileText className="w-4 h-4" />} />
     <InfoRow label="Precio de venta" value={`S/. ${book.sellingPrice.toFixed(2)}`} icon={<PiggyBank className="w-4 h-4" />} />
   </div>
 );

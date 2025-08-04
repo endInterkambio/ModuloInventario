@@ -26,6 +26,6 @@ export interface BookDTO {
   warehouseId: number | null;
   createdAt: string;
   updatedAt: string;
-  createdBy: number;
+  createdBy: number | null;
   updatedBy?: number | null;
 }
