@@ -1,13 +1,23 @@
 import { BookDTO } from "@/types/BookDTO";
-import placeholder from '@assets/no-image.jpg'
+import placeholder from "@assets/no-image.jpg";
+import { useNavigate } from "react-router-dom";
 
 type BookCardProps = {
   book: BookDTO;
 };
 
 const BookCard = ({ book }: BookCardProps) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/dashboard/inventory/${book.sku}`);
+  };
+
   return (
-    <div className="bg-white shadow rounded-2xl p-4 flex flex-col items-center text-center">
+    <div
+      onClick={handleClick}
+      className="bg-white shadow rounded-2xl p-4 flex flex-col items-center text-center"
+    >
       <img
         src={book.imageUrl || placeholder}
         alt={book.title}
