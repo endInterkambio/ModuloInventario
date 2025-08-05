@@ -6,8 +6,8 @@ import PaginationBar from "@/components/shared/pagination/PaginationBar";
 import HeaderNavigation from "@components/HeaderNavigation/HeaderNavigation";
 
 const InventoryPage = () => {
-  const { currentPage, books: storeBooks, setBooks, sortOrder, itemsPerPage } = useBookStore();
-  const { data, isLoading, isError } = useBooks(currentPage - 1, itemsPerPage, sortOrder);
+  const { currentPage, books: storeBooks, setBooks, sortOrder, itemsPerPage, searchTerm } = useBookStore();
+  const { data, isLoading, isError } = useBooks(currentPage - 1, itemsPerPage, sortOrder, searchTerm);
 
   // Sincroniza libros solo si cambia realmente la página o contenido
   useEffect(() => {
@@ -20,7 +20,7 @@ const InventoryPage = () => {
     if (!isSame) {
       setBooks(data);
     }
-  }, [data, setBooks]);
+  }, [data, setBooks, searchTerm]);
 
   const paginatedBooks = storeBooks ?? [];
 

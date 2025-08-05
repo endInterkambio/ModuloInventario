@@ -10,6 +10,10 @@ interface BookStore {
   totalPages: number; // Total de páginas
   totalElements: number;
 
+  // Searching
+  searchTerm: string,
+  setSearchTerm: (term: string) => void;
+
    // Ordenamiento
   sortOrder: string;
   setSortOrder: (order: string) => void;
@@ -34,8 +38,10 @@ export const useBookStore = create<BookStore>((set, get) => ({
   itemsPerPage: 12,
   totalPages: 1,
   totalElements: 0,
-  sortOrder: "stock,desc",
+  searchTerm: "",
+  sortOrder: "stock,desc", // Sorting by stock for default
   setSortOrder: (order) => set({ sortOrder: order, currentPage: 1 }),
+  setSearchTerm: (term) => set({ searchTerm: term, currentPage: 1 }),
 
   selectedBooks: [],
   toggleBook: (book) => {

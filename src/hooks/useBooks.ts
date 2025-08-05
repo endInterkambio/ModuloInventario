@@ -4,18 +4,19 @@ import axiosInstance from "@/api/axiosInstance";
 
 import { useQuery } from "@tanstack/react-query";
 
-export function useBooks(page: number, size: number, sort?: string) {
+export function useBooks(page: number, size: number, sort?: string, search?: string) {
+
   return useQuery({
-    queryKey: ["books", page, size, sort],
+    queryKey: ["books", page, size, sort, search],
     queryFn: async () => {
       const res = await axiosInstance.get("/books", {
         params: {
           page,
           size,
           sort,
+          search: search || undefined,
         },
       });
-      console.log(res);
       return res.data;
     },
     placeholderData: (prev) => prev,
