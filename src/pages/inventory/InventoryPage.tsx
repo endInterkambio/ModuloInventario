@@ -1,37 +1,42 @@
-import BookCard from "@/components/shared/cards/BookCard";
-import PaginationBar from "@/components/shared/pagination/PaginationBar";
+import { useEffect } from "react";
 import { useBooks } from "@/hooks/useBooks";
 import { useBookStore } from "@/stores/useBookStore";
+import BookCard from "@/components/shared/cards/BookCard";
+import PaginationBar from "@/components/shared/pagination/PaginationBar";
 import HeaderNavigation from "@components/HeaderNavigation/HeaderNavigation";
-import { useEffect } from "react";
 
 const InventoryPage = () => {
-  const { data: books, isLoading, isError } = useBooks();
-  const { setBooks, getPaginatedBooks } = useBookStore();
+  const { currentPage, books: storeBooks, setBooks, sortOrder, itemsPerPage } = useBookStore();
+  const { data, isLoading, isError } = useBooks(currentPage - 1, itemsPerPage, sortOrder);
 
-  // Inyectar libros del backend a la store cuando se carguen
+  // Sincroniza libros solo si cambia realmente la página o contenido
   useEffect(() => {
-    if (books) {
-      setBooks(books);
-    }
-  }, [books, setBooks])
+    if (!data) return;
 
-  const paginatedBooks = getPaginatedBooks();
+    const currentStoreBooks = useBookStore.getState().books;
+    const isSame =
+      JSON.stringify(currentStoreBooks) === JSON.stringify(data.content);
+
+    if (!isSame) {
+      setBooks(data);
+    }
+  }, [data, setBooks]);
+
+  const paginatedBooks = storeBooks ?? [];
 
   if (isLoading) return <div className="p-8">Cargando libros...</div>;
-  if (isError) return <div className="p-8 text-red-600">Error al cargar libros.</div>;
+  if (isError)
+    return <div className="p-8 text-red-600">Error al cargar libros.</div>;
 
   return (
     <>
       <HeaderNavigation />
       <div className="flex flex-col min-h-screen">
         <div className="flex-grow p-6">
-          
-          {/* Lista de libros paginados */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
             {paginatedBooks.length > 0 ? (
               paginatedBooks.map((book) => (
-                <BookCard key={book.sku} book={book}></BookCard>
+                <BookCard key={book.sku} book={book} />
               ))
             ) : (
               <div className="col-span-full text-center py-10 text-gray-500">
@@ -41,7 +46,6 @@ const InventoryPage = () => {
           </div>
         </div>
 
-        {/* Barra de paginación en la parte inferior */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="w-full overflow-x-auto">
             <div className="min-w-max sm:min-w-0">

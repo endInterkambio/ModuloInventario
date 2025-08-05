@@ -1,13 +1,26 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchBooks, uploadBooks } from "@/api/modules/books";
-import { BookDTO } from "@/types/BookDTO";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { uploadBooks } from "@/api/modules/books";
+import axiosInstance from "@/api/axiosInstance";
 
-export const useBooks = () => {
-  return useQuery<BookDTO[]>({
-    queryKey: ["books"],
-    queryFn: fetchBooks,
+import { useQuery } from "@tanstack/react-query";
+
+export function useBooks(page: number, size: number, sort?: string) {
+  return useQuery({
+    queryKey: ["books", page, size, sort],
+    queryFn: async () => {
+      const res = await axiosInstance.get("/books", {
+        params: {
+          page,
+          size,
+          sort,
+        },
+      });
+      console.log(res);
+      return res.data;
+    },
+    placeholderData: (prev) => prev,
   });
-};
+}
 
 export const useUploadBooks = () => {
   const queryClient = useQueryClient();

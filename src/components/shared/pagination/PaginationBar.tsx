@@ -4,23 +4,26 @@ const PaginationBar = () => {
   const {
     currentPage,
     totalPages,
-    filteredBooks,
+    totalElements,
     itemsPerPage,
     setCurrentPage,
     setItemsPerPage,
   } = useBookStore();
 
-  const totalItems = filteredBooks.length;
-  const start = (currentPage - 1) * itemsPerPage + 1;
-  const end = Math.min(start + itemsPerPage - 1, totalItems);
+  const start = totalElements === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+  const end = Math.min(start + itemsPerPage - 1, totalElements);
 
   return (
     <div className="flex items-center justify-between mt-6 px-2 text-sm text-gray-700">
       <span>
-        Recuento total: <button className="text-blue-600 underline">Ver</button>
+        Recuento total:{" "}
+        <span className="text-blue-600 underline cursor-pointer">
+          {totalElements}
+        </span>
       </span>
 
       <div className="flex items-center gap-2">
+        {/* Selector de cantidad por página */}
         <select
           value={itemsPerPage}
           onChange={(e) => setItemsPerPage(Number(e.target.value))}
@@ -33,10 +36,12 @@ const PaginationBar = () => {
           ))}
         </select>
 
+        {/* Rango de ítems visibles */}
         <div className="whitespace-nowrap">
           {start} - {end}
         </div>
 
+        {/* Botón anterior */}
         <button
           onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1}
@@ -45,6 +50,7 @@ const PaginationBar = () => {
           ‹
         </button>
 
+        {/* Botón siguiente */}
         <button
           onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage === totalPages}

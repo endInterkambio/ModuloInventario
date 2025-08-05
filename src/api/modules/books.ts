@@ -1,9 +1,10 @@
 import axiosInstance from '@/api/axiosInstance'
 import { endpoints } from "../endpoints";
 import { BookDTO } from "@/types/BookDTO";
+import { Page } from '@/types/Pagination';
 
-export const fetchBooks = async (): Promise<BookDTO[]> => {
-  const response = await axiosInstance.get(endpoints.books);
+export const fetchBooks = async (): Promise<Page<BookDTO>> => {
+  const response = await axiosInstance.get<Page<BookDTO>>(endpoints.books);
   return response.data;
 };
 
