@@ -7,32 +7,34 @@ const SortMenu: React.FC = () => {
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
 
   const sortOptions = [
-    { label: "Nombre", value: "title", hasSubmenu: true },
-    { label: "SKU (Código de artículo)", value: "sku", hasSubmenu: true },
-    //{ label: "ISBN (Código de libro)", value: "isbn", hasSubmenu: true },
-    { label: "Stock", value: "stock", hasSubmenu: true },
+    { label: "Nombre", field: "title", hasSubmenu: true },
+    { label: "SKU (Código de artículo)", field: "sku", hasSubmenu: true },
+    //{ label: "ISBN (Código de libro)", field: "isbn", hasSubmenu: true },
+    { label: "Stock", field: "stock", hasSubmenu: true },
   ];
 
-  const handleClick = (value: string) => {
-    setSortOrder(value);
+  const handleClick = (field: string, direction: "asc" | "desc") => {
+    setSortOrder(`${field},${direction}`);
   };
+
+  const isActive = (field: string, direction: "asc" | "desc") => currentSort === `${field},${direction}`;
 
   return (
     <div className="absolute right-full top-0 ml-1 w-56 bg-white border border-gray-200 rounded-md shadow-lg z-20">
       <div className="py-1 relative">
-        {sortOptions.map(({ label, value, hasSubmenu }) => (
+        {sortOptions.map(({ label, field, hasSubmenu }) => (
           <div
-            key={value}
+            key={field}
             className="relative"
             onMouseEnter={() =>
-              hasSubmenu ? setActiveSubmenu(value) : setActiveSubmenu(null)
+              hasSubmenu ? setActiveSubmenu(field) : setActiveSubmenu(null)
             }
             onMouseLeave={() => hasSubmenu && setActiveSubmenu(null)}
           >
             <button
-              onClick={() => !hasSubmenu && handleClick(value)}
+              onClick={() => !hasSubmenu && handleClick(field, "asc")}
               className={`flex items-center justify-between w-full px-4 py-2 text-sm ${
-                currentSort === value
+                currentSort === field
                   ? "text-white bg-blue-500"
                   : "text-gray-700 hover:bg-blue-50"
               }`}
@@ -42,12 +44,12 @@ const SortMenu: React.FC = () => {
             </button>
 
             {/* Submenu by name */}
-            {hasSubmenu && activeSubmenu === value && value === "title" && (
+            {hasSubmenu && activeSubmenu === field && field === "title" && (
               <div className="absolute right-full top-0 ml-1 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-30">
                 <button
-                  onClick={() => handleClick("A-Z")}
+                  onClick={() => handleClick(field, "asc")}
                   className={`block w-full text-left px-4 py-2 text-sm ${
-                    currentSort === "A-Z"
+                    isActive(field, "asc")
                       ? "text-white bg-blue-500"
                       : "text-gray-700 hover:bg-gray-100"
                   }`}
@@ -55,9 +57,9 @@ const SortMenu: React.FC = () => {
                   A-Z
                 </button>
                 <button
-                  onClick={() => handleClick("Z-A")}
+                  onClick={() => handleClick(field, "desc")}
                   className={`block w-full text-left px-4 py-2 text-sm ${
-                    currentSort === "Z-A"
+                   isActive(field, "desc")
                       ? "text-white bg-blue-500"
                       : "text-gray-700 hover:bg-gray-100"
                   }`}
@@ -67,12 +69,12 @@ const SortMenu: React.FC = () => {
               </div>
             )}
             {/* Sort by SKU */}
-            {hasSubmenu && activeSubmenu === value && value === "sku" && (
+            {hasSubmenu && activeSubmenu === field && field === "sku" && (
               <div className="absolute right-full top-0 ml-1 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-30">
                 <button
-                  onClick={() => handleClick("SKU_ASC")}
+                  onClick={() => handleClick(field, "asc")}
                   className={`block w-full text-left px-4 py-2 text-sm ${
-                    currentSort === "SKU_ASC"
+                    isActive(field, "asc")
                       ? "text-white bg-blue-500"
                       : "text-gray-700 hover:bg-gray-100"
                   }`}
@@ -80,9 +82,9 @@ const SortMenu: React.FC = () => {
                   SKU A-Z
                 </button>
                 <button
-                  onClick={() => handleClick("SKU_DESC")}
+                  onClick={() => handleClick(field, "desc")}
                   className={`block w-full text-left px-4 py-2 text-sm ${
-                    currentSort === "SKU_DESC"
+                    isActive(field, "desc")
                       ? "text-white bg-blue-500"
                       : "text-gray-700 hover:bg-gray-100"
                   }`}
@@ -92,12 +94,12 @@ const SortMenu: React.FC = () => {
               </div>
             )}
             {/* Sort by ISBN */}
-            {hasSubmenu && activeSubmenu === value && value === "isbn" && (
+            {hasSubmenu && activeSubmenu === field && field === "isbn" && (
               <div className="absolute right-full top-0 ml-1 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-30">
                 <button
-                  onClick={() => handleClick("ISBN_ASC")}
+                  onClick={() => handleClick(field, "asc")}
                   className={`block w-full text-left px-4 py-2 text-sm ${
-                    currentSort === "SKU_ASC"
+                    isActive(field, "asc")
                       ? "text-white bg-blue-500"
                       : "text-gray-700 hover:bg-gray-100"
                   }`}
@@ -105,9 +107,9 @@ const SortMenu: React.FC = () => {
                   ISBN A-Z
                 </button>
                 <button
-                  onClick={() => handleClick("ISBN_DESC")}
+                  onClick={() => handleClick(field, "desc")}
                   className={`block w-full text-left px-4 py-2 text-sm ${
-                    currentSort === "SKU_DESC"
+                    isActive(field, "desc")
                       ? "text-white bg-blue-500"
                       : "text-gray-700 hover:bg-gray-100"
                   }`}
@@ -117,12 +119,12 @@ const SortMenu: React.FC = () => {
               </div>
             )}
             {/* Sort by Stock */}
-            {hasSubmenu && activeSubmenu === value && value === "stock" && (
+            {hasSubmenu && activeSubmenu === field && field === "stock" && (
               <div className="absolute right-full top-0 ml-1 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-30">
                 <button
-                  onClick={() => handleClick("STOCK_ASC")}
+                  onClick={() => handleClick(field, "asc")}
                   className={`block w-full text-left px-4 py-2 text-sm ${
-                    currentSort === "STOCK_ASC"
+                    isActive(field, "asc")
                       ? "text-white bg-blue-500"
                       : "text-gray-700 hover:bg-gray-100"
                   }`}
@@ -130,9 +132,9 @@ const SortMenu: React.FC = () => {
                   Menor stock
                 </button>
                 <button
-                  onClick={() => handleClick("STOCK_DESC")}
+                  onClick={() => handleClick(field, "desc")}
                   className={`block w-full text-left px-4 py-2 text-sm ${
-                    currentSort === "STOCK_DESC"
+                    isActive(field, "desc")
                       ? "text-white bg-blue-500"
                       : "text-gray-700 hover:bg-gray-100"
                   }`}
