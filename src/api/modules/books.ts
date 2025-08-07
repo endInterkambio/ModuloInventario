@@ -16,3 +16,12 @@ export const uploadBooks = async (file: File): Promise<string> => {
   return response.data;
 };
 
+// Update book by ID (Partial update)
+export const updateBook = async (
+  id: number,
+  data: Partial<BookDTO>
+): Promise<BookDTO> => {
+  const response = await axiosInstance.patch(`${endpoints.books}/${id}`, data);
+  return response.data;
+}
+
