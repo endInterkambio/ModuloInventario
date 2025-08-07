@@ -2,7 +2,7 @@ export type TabId = "general" | "attributes" | "transactions" | "history";
 
 export interface InfoRowProps {
   label: string;
-  value: string | React.ReactElement | number;
+  value: string | number | undefined;
   icon?: React.ReactNode;
   editable?: boolean;
   isEditing?: boolean;

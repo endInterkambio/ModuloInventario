@@ -3,33 +3,48 @@ import { updateBook } from "@/api/modules/books";
 import { BookDTO } from "@/types/BookDTO";
 import { InfoRow } from "./InfoRow";
 import {
-  Package, Tag, BookOpen, FileText, User, PiggyBank,
+  Package, Tag, BookOpen, FileText, User,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect } from "react";
+import { useBookStore } from "@/stores/useBookStore";
 
 interface Props {
   book: BookDTO;
 }
 
 const BookGeneralInfo = ({ book }: Props) => {
-  const [editableBook, setEditableBook] = useState(book);
+  const {
+    editedBook,
+    setEditedBook,
+    updateBookLocally,
+  } = useBookStore();
+
+  console.log("editedBook", editedBook);
+
+  useEffect(() => {
+    setEditedBook(book);
+  }, [book, setEditedBook]);
 
   // TODO: Reemplazar esto con validación real de usuario admin
   const isAdmin = true;
 
-  const handleFieldUpdate = (field: keyof BookDTO, value: string) => {
+  const handleFieldUpdate = (field: keyof BookDTO, value: string | number) => {
     // Actualización local inmediata
-    setEditableBook((prev) => ({ ...prev, [field]: value }));
+    setEditedBook({ [field]: value });
     
-    // Enviar datos al backend
+    // Enviar cambios al backend
+    const patch = { [field]: value };
+
     toast.promise(
-    updateBook(book.id, { [field]: value }),
-    {
-      loading: "Guardando...",
-      success: "Cambios guardados",
-      error: "Error al guardar cambios",
-    }
-  );
+      updateBook(book.id, patch).then((updatedBookFromServer) => {
+        updateBookLocally(updatedBookFromServer); // Sync global book list si hace falta
+      }),
+      {
+        loading: "Guardando...",
+        success: "Cambios guardados",
+        error: "Error al guardar cambios",
+      }
+    );
   };
 
   return (
@@ -37,76 +52,74 @@ const BookGeneralInfo = ({ book }: Props) => {
       <InfoRow label="Tipo de artículo" value="Artículo de inventario" icon={<Package className="w-4 h-4" />} />
       <InfoRow
         label="SKU/Código de artículo"
-        value={editableBook.sku}
+        value={book.sku}
         icon={<Tag className="w-4 h-4" />}
-        editable={isAdmin}
-        onSave={(val) => handleFieldUpdate("sku", val)}
       />
       <InfoRow
         label="Título"
-        value={editableBook.title}
+        value={editedBook.title}
         icon={<BookOpen className="w-4 h-4" />}
         editable={isAdmin}
         onSave={(val) => handleFieldUpdate("title", val)}
       />
       <InfoRow
         label="ISBN"
-        value={editableBook.isbn ?? "N/A"}
+        value={editedBook.isbn ?? "N/A"}
         icon={<FileText className="w-4 h-4" />}
         editable={isAdmin}
         onSave={(val) => handleFieldUpdate("isbn", val)}
       />
       <InfoRow
         label="Autor"
-        value={editableBook.author ?? "N/A"}
+        value={editedBook.author ?? "N/A"}
         icon={<User className="w-4 h-4" />}
         editable={isAdmin}
         onSave={(val) => handleFieldUpdate("author", val)}
       />
       <InfoRow
         label="Editorial"
-        value={editableBook.publisher ?? "N/A"}
+        value={editedBook.publisher ?? "N/A"}
         icon={<FileText className="w-4 h-4" />}
         editable={isAdmin}
         onSave={(val) => handleFieldUpdate("publisher", val)}
       />
       <InfoRow
         label="Categoría"
-        value={editableBook.category ?? "N/A"}
+        value={editedBook.category ?? "N/A"}
         icon={<Tag className="w-4 h-4" />}
         editable={isAdmin}
         onSave={(val) => handleFieldUpdate("category", val)}
       />
       <InfoRow
         label="Tema"
-        value={editableBook.subjects ?? "N/A"}
+        value={editedBook.subjects ?? "N/A"}
         icon={<Tag className="w-4 h-4" />}
         editable={isAdmin}
         onSave={(val) => handleFieldUpdate("subjects", val)}
       />
       <InfoRow
         label="Formato"
-        value={editableBook.format ?? "N/A"}
+        value={editedBook.format ?? "N/A"}
         icon={<FileText className="w-4 h-4" />}
         editable={isAdmin}
         onSave={(val) => handleFieldUpdate("format", val)}
       />
       <InfoRow
         label="Idioma"
-        value={editableBook.language ?? "N/A"}
+        value={editedBook.language ?? "N/A"}
         icon={<FileText className="w-4 h-4" />}
         editable={isAdmin}
         onSave={(val) => handleFieldUpdate("language", val)}
       />
       <InfoRow
         label="Precio de venta"
-        value={`S/. ${editableBook.sellingPrice.toFixed(2)}`}
-        icon={<PiggyBank className="w-4 h-4" />}
+        value={`${editedBook.sellingPrice?.toFixed(2) ?? 0.00}`}
+        icon={<span className="text-sm font-medium text-gray-500">S/.</span>}
         editable={isAdmin}
         onSave={(val) => {
           const price = parseFloat(val.replace(",", "."));
           if (!isNaN(price)) {
-            handleFieldUpdate("sellingPrice", price.toFixed(2));
+            handleFieldUpdate("sellingPrice", price)
           }
         }}
       />
