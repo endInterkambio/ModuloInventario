@@ -11,10 +11,10 @@ interface BookStore {
   totalElements: number;
 
   // Searching
-  searchTerm: string,
+  searchTerm: string;
   setSearchTerm: (term: string) => void;
 
-   // Ordenamiento
+  // Ordenamiento
   sortOrder: string;
   setSortOrder: (order: string) => void;
 
@@ -26,14 +26,20 @@ interface BookStore {
   resetSelection: () => void;
   resetCurrentPageSelection: () => void;
 
+  // Edited Books
+  editedBook: Partial<BookDTO>;
+
   // Setters
   setItemsPerPage: (items: number) => void;
   setCurrentPage: (page: number) => void;
   setBooks: (booksPage: Page<BookDTO>) => void;
+  setEditedBook: (updates: Partial<BookDTO>) => void;
+  updateBookLocally: (updatedBook: BookDTO) => void;
 }
 
 export const useBookStore = create<BookStore>((set, get) => ({
   books: [],
+  editedBook: {},
   currentPage: 1,
   itemsPerPage: 12,
   totalPages: 1,
@@ -90,5 +96,20 @@ export const useBookStore = create<BookStore>((set, get) => ({
       totalPages,
       totalElements,
     });
+  },
+  setEditedBook: (updates) =>
+    set((state) => ({
+      editedBook: {
+        ...state.editedBook,
+        ...updates,
+      },
+    })),
+  updateBookLocally: (updatedBook: BookDTO) => {
+    set((state) => ({
+      books: state.books.map((book) =>
+        book.id === updatedBook.id ? updatedBook : book
+      ),
+      editedBook: {},
+    }));
   },
 }));

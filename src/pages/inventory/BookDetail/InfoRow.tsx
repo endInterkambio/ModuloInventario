@@ -1,15 +1,94 @@
+import { Pencil, Check } from "lucide-react";
+import { useState } from "react";
+// import { toast } from "react-hot-toast";
 import { InfoRowProps } from "@/types/ui/BookDetailUi";
 
-export const InfoRow = ({ label, value, icon }: InfoRowProps) => (
-  <div className="flex items-center justify-between py-2 border-b border-gray-100">
-    <div className="flex items-center gap-2 text-sm font-medium text-gray-600">
-      {icon}
-      {label}
+export const InfoRow = ({
+  label,
+  value,
+  icon,
+  editable = false,
+  onSave,
+}: InfoRowProps) => {
+  const stringValue = String(value ?? "");
+  const [isEditing, setIsEditing] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [editedValue, setEditedValue] = useState(stringValue);
+
+  const hasChanged = editedValue !== stringValue;
+
+  const handleSave = () => {
+    if (!hasChanged) {
+      setIsEditing(false);
+      return;
+    }
+
+    if (onSave) {
+      onSave(editedValue);
+    }
+
+    setIsEditing(false);
+    // toast.success("Cambios guardados");
+  };
+
+  return (
+    <div
+      className="flex items-center justify-between py-2 border-b border-gray-100 group"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div className="flex items-center gap-2 text-sm font-medium text-gray-600">
+        {icon}
+        {label}
+      </div>
+
+      <div className="flex items-center gap-2 max-w-xs text-right text-sm text-gray-800">
+        {isEditing ? (
+          <>
+            <input
+              type="text"
+              className="border-b border-gray-300 focus:outline-none focus:border-blue-500 bg-transparent text-right"
+              value={editedValue}
+              onChange={(e) => setEditedValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSave();
+                if (e.key === "Escape") {
+                  setIsEditing(false);
+                  setEditedValue(stringValue);
+                }
+              }}
+              autoFocus
+            />
+            {hasChanged && (
+              <button
+                onClick={handleSave}
+                className="text-green-600 hover:text-green-700"
+                title="Guardar"
+              >
+                <Check className="w-4 h-4" />
+              </button>
+            )}
+          </>
+        ) : (
+          <>
+            <span>
+              {stringValue.length > 50 ? `${stringValue.substring(0, 50)}...` : stringValue}
+            </span>
+            {editable && hovered && (
+              <button
+                onClick={() => {
+                  setIsEditing(true);
+                  setEditedValue(stringValue);
+                }}
+                className="text-gray-400 hover:text-blue-500"
+                title="Editar"
+              >
+                <Pencil className="w-4 h-4" />
+              </button>
+            )}
+          </>
+        )}
+      </div>
     </div>
-    <div className="text-sm text-gray-800 max-w-xs text-right">
-      {typeof value === "string" && value.length > 50
-        ? `${value.substring(0, 50)}...`
-        : value}
-    </div>
-  </div>
-);
+  );
+};

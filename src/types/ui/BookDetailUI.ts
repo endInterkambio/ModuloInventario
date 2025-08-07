@@ -2,8 +2,12 @@ export type TabId = "general" | "attributes" | "transactions" | "history";
 
 export interface InfoRowProps {
   label: string;
-  value: React.ReactNode;
+  value: string | React.ReactElement | number;
   icon?: React.ReactNode;
+  editable?: boolean;
+  isEditing?: boolean;
+  onEdit?: () => void;
+  onSave?: (newValue: string) => void;
 }
 
 export interface StatCardProps {
