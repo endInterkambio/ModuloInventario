@@ -4,8 +4,8 @@ import { Root } from "../Root";
 import { AuthLayout, DashboardLayout } from "../layouts";
 import { Dashboard, LoginPage, PurchasePage, SellingPage } from "../pages";
 import InventoryPage from "@/pages/inventory/InventoryPage";
-import { InventoryAdjust } from "@/pages/inventory/InventoryAdjust";
 import BookDetailPage from "@/pages/inventory/BookDetail/BookDetailPage";
+import InventoryManagementPage from "@/pages/inventory/InventoryAdjustment/InventoryManagementPage";
 
 export const router = createBrowserRouter([
   {
@@ -31,7 +31,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "inventoryAdjust",
-            element: <InventoryAdjust />,
+            element: <InventoryManagementPage />,
           },
           {
             path: "purchase",
