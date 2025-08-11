@@ -1,5 +1,5 @@
+import { TabId } from "@/types/ui/BookDetailUI";
 import { TabButton } from "./TabButton";
-import type { TabId } from "@/types/ui/BookDetailUi";
 
 type Props = {
   activeTab: TabId;

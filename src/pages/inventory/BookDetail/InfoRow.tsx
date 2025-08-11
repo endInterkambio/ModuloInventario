@@ -1,7 +1,7 @@
 import { Pencil, Check } from "lucide-react";
 import { useState } from "react";
 // import { toast } from "react-hot-toast";
-import { InfoRowProps } from "@/types/ui/BookDetailUi";
+import { InfoRowProps } from "@/types/ui/BookDetailUI";
 
 export const InfoRow = ({
   label,

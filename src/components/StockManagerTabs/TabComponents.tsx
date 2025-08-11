@@ -1,50 +1,41 @@
-// components/ui/Tabs.tsx
 import { ReactNode } from 'react';
 
 export function Tabs({
   children,
-  className = '',
 }: {
+  activeTab: string;
+  onTabChange: (tab: string) => void;
   children: ReactNode;
-  className?: string;
 }) {
-  return <div className={`w-full ${className}`}>{children}</div>;
+  return <div>{children}</div>;
 }
 
 export function TabList({ children }: { children: ReactNode }) {
-  return (
-    <div className="flex gap-4 border-b border-gray-200 px-4 pt-4">
-      {children}
-    </div>
-  );
+  return <div className="flex gap-2 border-b mb-4">{children}</div>;
 }
 
 export function TabTrigger({
+  label,
   value,
-  activeValue,
-  onChange,
-  children,
+  activeTab,
+  onTabChange,
 }: {
+  label: string;
   value: string;
-  activeValue: string;
-  onChange: (value: string) => void;
-  children: ReactNode;
+  activeTab: string;
+  onTabChange: (tab: string) => void;
 }) {
-  const isActive = value === activeValue;
-
+  const isActive = value === activeTab;
   return (
     <button
-      onClick={() => onChange(value)}
-      className={`relative inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${
+      onClick={() => onTabChange(value)}
+      className={`px-4 py-2 text-sm border-b-2 transition-colors ${
         isActive
-          ? 'text-blue-600 bg-white border border-b-white border-gray-300'
-          : 'text-gray-500 hover:text-blue-600 border-transparent'
+          ? 'border-blue-500 text-blue-600 font-semibold'
+          : 'border-transparent text-gray-500 hover:text-blue-500'
       }`}
     >
-      {children}
-      {isActive && (
-        <span className="absolute bottom-[-1px] left-0 w-full h-[2px] bg-blue-600" />
-      )}
+      {label}
     </button>
   );
 }

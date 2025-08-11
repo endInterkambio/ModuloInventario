@@ -45,7 +45,7 @@ export const useBookStore = create<BookStore>((set, get) => ({
   totalPages: 1,
   totalElements: 0,
   searchTerm: "",
-  sortOrder: "stock,desc", // Sorting by stock for default
+  sortOrder: "title,desc", // Sorting by stock for default
   setSortOrder: (order) => set({ sortOrder: order, currentPage: 1 }),
   setSearchTerm: (term) => set({ searchTerm: term, currentPage: 1 }),
 

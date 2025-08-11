@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { updateBook } from "@/api/modules/books";
+// import { updateBook } from "@/api/modules/books";
 import { InfoRow } from "./InfoRow";
 import { BookDTO } from "@/types/BookDTO";
 import { useBookStore } from "@/stores/useBookStore";
@@ -10,7 +10,7 @@ interface Props {
 }
 
 const BookAttributes = ({ book }: Props) => {
-  const { editedBook, setEditedBook, updateBookLocally } = useBookStore();
+  const { editedBook, setEditedBook } = useBookStore();
 
   useEffect(() => {
     setEditedBook(book);
@@ -19,7 +19,7 @@ const BookAttributes = ({ book }: Props) => {
   // Simulación: puedes reemplazar esto con lógica real de permisos
   const isAdmin = true;
 
-  const handleFieldUpdate = async (
+  /*const handleFieldUpdate = async (
     field: keyof BookDTO,
     value: string | number
   ) => {
@@ -49,72 +49,72 @@ const BookAttributes = ({ book }: Props) => {
         error: "Error al guardar cambios",
       }
     );
-  };
+  };*/
 
   return (
     <div className="space-y-1">
-      <InfoRow
-        label="Condición"
-        value={editedBook.bookCondition ?? "Sin condición"}
-        editable={isAdmin}
-        onSave={(val) => handleFieldUpdate("bookCondition", val)}
-      />
-      <InfoRow
-        label="Estante"
-        value={editedBook.bookcase ?? 0}
-        editable={isAdmin}
-        onSave={(val) => handleFieldUpdate("bookcase", val)}
-      />
-      <InfoRow
-        label="Piso"
-        value={editedBook.bookcaseFloor ?? 0}
-        editable={isAdmin}
-        onSave={(val) => {
-          const num = parseInt(val);
-          if (isNaN(num) || num < 0 || num > 99) {
-            toast.error("El piso debe ser un número entre 0 y 99");
-            return;
-          }
-          handleFieldUpdate("bookcaseFloor", num);
-        }}
-      />
-
-      <InfoRow
-        label="Almacén"
-        value={editedBook.warehouse?.name ?? "Sin almacén"}
-        // Si vas a permitir edición de almacén como texto:
-        editable={false} // o true si lo permites
-      />
-      <InfoRow
-        label="URL"
-        value={editedBook.websiteUrl ?? "URL no disponible"}
-        editable={isAdmin}
-        onSave={(val) => handleFieldUpdate("websiteUrl", val)}
-      />
-      <InfoRow
-        label="URL de la imagen"
-        value={editedBook.imageUrl ?? "Sin imagen asignada"}
-        editable={isAdmin}
-        onSave={(val) => handleFieldUpdate("imageUrl", val)}
-      />
-      <InfoRow
-        label="Etiqueta"
-        value={editedBook.tag ?? "Sin etiqueta"}
-        editable={isAdmin}
-        onSave={(val) => handleFieldUpdate("tag", val)}
-      />
-      <InfoRow
-        label="Filtro"
-        value={editedBook.filter ?? "Sin filtro"}
-        editable={isAdmin}
-        onSave={(val) => handleFieldUpdate("filter", val)}
-      />
-      <InfoRow
-        label="Tipo de producto"
-        value={editedBook.productSaleType ?? "N/A"}
-        editable={isAdmin}
-        onSave={(val) => handleFieldUpdate("productSaleType", val)}
-      />
+      {Array.isArray(editedBook.locations) &&
+      editedBook.locations.length > 0 ? (
+        editedBook.locations.map((location) => (
+          <div key={location.id}>
+            <InfoRow
+              label="Condición"
+              value={location.bookCondition ?? "Sin condición"}
+              editable={isAdmin}
+            />
+            <InfoRow
+              label="Estante"
+              value={location.bookcase ?? 0}
+              editable={isAdmin}
+            />
+            <InfoRow
+              label="Piso"
+              value={location.bookcaseFloor ?? 0}
+              editable={isAdmin}
+              onSave={(val) => {
+                const num = parseInt(val);
+                if (isNaN(num) || num < 0 || num > 99) {
+                  toast.error("El piso debe ser un número entre 0 y 99");
+                  return;
+                }
+                //handleFieldUpdate("bookcaseFloor", num);
+              }}
+            />
+            <InfoRow
+              label="Almacén"
+              value={location.warehouse?.name ?? "Sin almacén"}
+              editable={false}
+            />
+            <InfoRow
+              label="URL"
+              value={editedBook.websiteUrl ?? "URL no disponible"}
+              editable={isAdmin}
+            />
+            <InfoRow
+              label="URL de la imagen"
+              value={editedBook.imageUrl ?? "Sin imagen asignada"}
+              editable={isAdmin}
+            />
+            <InfoRow
+              label="Etiqueta"
+              value={editedBook.tag ?? "Sin etiqueta"}
+              editable={isAdmin}
+            />
+            <InfoRow
+              label="Filtro"
+              value={editedBook.filter ?? "Sin filtro"}
+              editable={isAdmin}
+            />
+            <InfoRow
+              label="Tipo de producto"
+              value={editedBook.productSaleType ?? "N/A"}
+              editable={isAdmin}
+            />
+          </div>
+        ))
+      ) : (
+        <p>No hay ubicaciones registradas</p>
+      )}
     </div>
   );
 };

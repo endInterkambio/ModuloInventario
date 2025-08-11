@@ -7,7 +7,7 @@ import BookGeneralInfo from "./BookGeneralInfo";
 import BookAttributes from "./BookAttributes";
 import BookTransactions from "./BookTransactions";
 import BookHistory from "./BookHistory";
-import type { TabId } from "@/types/ui/BookDetailUi";
+import type { TabId } from "@/types/ui/BookDetailUI";
 import BookSidebar from "./BookSideBar";
 
 const BookDetailPage = () => {
@@ -22,8 +22,8 @@ const BookDetailPage = () => {
 
   const statsData = {
     physicalExistences: {
-      total: book.stock ?? 0,
-      available: book.stock ?? 0,
+      total: book.totalStock ?? 0,
+      available: book.totalStock ?? 0,
       reserved: 0,
       loaned: 0,
     },
