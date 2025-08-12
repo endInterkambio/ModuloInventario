@@ -11,7 +11,7 @@ const BookTabs = ({ activeTab, setActiveTab }: Props) => (
     <div className="border-b border-gray-200">
       <nav className="flex">
         <TabButton id="general" label="Información general" isActive={activeTab === "general"} onClick={() => setActiveTab("general")} />
-        <TabButton id="attributes" label="Atributos" isActive={activeTab === "attributes"} onClick={() => setActiveTab("attributes")} />
+        <TabButton id="locations" label="Ubicaciones" isActive={activeTab === "locations"} onClick={() => setActiveTab("locations")} />
         <TabButton id="transactions" label="Transacciones" isActive={activeTab === "transactions"} onClick={() => setActiveTab("transactions")} />
         <TabButton id="history" label="Historial" isActive={activeTab === "history"} onClick={() => setActiveTab("history")} />
       </nav>

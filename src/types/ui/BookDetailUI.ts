@@ -1,4 +1,4 @@
-export type TabId = "general" | "attributes" | "transactions" | "history";
+export type TabId = "general" | "locations" | "transactions" | "history";
 
 export interface InfoRowProps {
   label: string;

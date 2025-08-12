@@ -6,8 +6,9 @@ export interface BookStockLocationDTO {
   warehouse: SimpleIdNameDTO;
   bookcase: number;
   bookcaseFloor: number;
-  quantity: number;
+  stock: number;
   bookCondition: string;
+  locationType: string;
 }
 
 export interface BookDTO {

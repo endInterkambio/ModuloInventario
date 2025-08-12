@@ -39,7 +39,7 @@ const BookDetailPage = () => {
     switch (activeTab) {
       case "general":
         return <BookGeneralInfo book={book} />;
-      case "attributes":
+      case "locations":
         return <BookAttributes book={book} />;
       case "transactions":
         return <BookTransactions book={book} />;

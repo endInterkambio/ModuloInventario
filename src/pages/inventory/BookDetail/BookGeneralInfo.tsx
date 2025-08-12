@@ -2,9 +2,7 @@ import { toast } from "react-hot-toast";
 import { updateBook } from "@/api/modules/books";
 import { BookDTO } from "@/types/BookDTO";
 import { InfoRow } from "./InfoRow";
-import {
-  Package, Tag, BookOpen, FileText, User,
-} from "lucide-react";
+import { Package, Tag, BookOpen, FileText, User } from "lucide-react";
 import { useEffect } from "react";
 import { useBookStore } from "@/stores/useBookStore";
 
@@ -13,11 +11,7 @@ interface Props {
 }
 
 const BookGeneralInfo = ({ book }: Props) => {
-  const {
-    editedBook,
-    setEditedBook,
-    updateBookLocally,
-  } = useBookStore();
+  const { editedBook, setEditedBook, updateBookLocally } = useBookStore();
 
   console.log("editedBook", editedBook);
 
@@ -31,7 +25,7 @@ const BookGeneralInfo = ({ book }: Props) => {
   const handleFieldUpdate = (field: keyof BookDTO, value: string | number) => {
     // Actualización local inmediata
     setEditedBook({ [field]: value });
-    
+
     // Enviar cambios al backend
     const patch = { [field]: value };
 
@@ -49,7 +43,11 @@ const BookGeneralInfo = ({ book }: Props) => {
 
   return (
     <div className="space-y-1">
-      <InfoRow label="Tipo de artículo" value="Artículo de inventario" icon={<Package className="w-4 h-4" />} />
+      <InfoRow
+        label="Tipo de artículo"
+        value="Artículo de inventario"
+        icon={<Package className="w-4 h-4" />}
+      />
       <InfoRow
         label="SKU/Código de artículo"
         value={book.sku}
@@ -112,14 +110,44 @@ const BookGeneralInfo = ({ book }: Props) => {
         onSave={(val) => handleFieldUpdate("language", val)}
       />
       <InfoRow
+        label="URL"
+        value={editedBook.websiteUrl ?? "URL no disponible"}
+        editable={isAdmin}
+        onSave={(val) => handleFieldUpdate("websiteUrl", val)}
+      />
+      <InfoRow
+        label="URL de la imagen"
+        value={editedBook.imageUrl ?? "Sin imagen asignada"}
+        editable={isAdmin}
+        onSave={(val) => handleFieldUpdate("imageUrl", val)}
+      />
+      <InfoRow
+        label="Etiqueta"
+        value={editedBook.tag ?? "Sin etiqueta"}
+        editable={isAdmin}
+        onSave={(val) => handleFieldUpdate("tag", val)}
+      />
+      <InfoRow
+        label="Filtro"
+        value={editedBook.filter ?? "Sin filtro"}
+        editable={isAdmin}
+        onSave={(val) => handleFieldUpdate("filter", val)}
+      />
+      <InfoRow
+        label="Tipo de producto"
+        value={editedBook.productSaleType ?? "N/A"}
+        editable={isAdmin}
+        onSave={(val) => handleFieldUpdate("productSaleType", val)}
+      />
+      <InfoRow
         label="Precio de venta"
-        value={`${editedBook.sellingPrice?.toFixed(2) ?? 0.00}`}
+        value={`${editedBook.sellingPrice?.toFixed(2) ?? 0.0}`}
         icon={<span className="text-sm font-medium text-gray-500">S/.</span>}
         editable={isAdmin}
         onSave={(val) => {
           const price = parseFloat(val.replace(",", "."));
           if (!isNaN(price)) {
-            handleFieldUpdate("sellingPrice", price)
+            handleFieldUpdate("sellingPrice", price);
           }
         }}
       />
