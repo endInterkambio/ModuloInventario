@@ -9,6 +9,7 @@ export interface BookStockLocationDTO {
   stock: number;
   bookCondition: string;
   locationType: string;
+  lastUpdatedAt: string;
 }
 
 export interface BookDTO {

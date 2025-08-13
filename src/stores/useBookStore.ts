@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { BookDTO } from "@/types/BookDTO";
+import { BookDTO, BookStockLocationDTO } from "@/types/BookDTO";
 import { Page } from "@/types/Pagination";
 
 interface BookStore {
@@ -35,6 +35,11 @@ interface BookStore {
   setBooks: (booksPage: Page<BookDTO>) => void;
   setEditedBook: (updates: Partial<BookDTO>) => void;
   updateBookLocally: (updatedBook: BookDTO) => void;
+  updateBookLocationLocally: (
+    bookId: number,
+    locationId: number,
+    updates: Partial<Omit<BookStockLocationDTO, "stock">>
+  ) => void;
 }
 
 export const useBookStore = create<BookStore>((set, get) => ({
@@ -45,7 +50,7 @@ export const useBookStore = create<BookStore>((set, get) => ({
   totalPages: 1,
   totalElements: 0,
   searchTerm: "",
-  sortOrder: "title,desc", // Sorting by stock for default
+  sortOrder: "", // Sorting by title for default
   setSortOrder: (order) => set({ sortOrder: order, currentPage: 1 }),
   setSearchTerm: (term) => set({ searchTerm: term, currentPage: 1 }),
 
@@ -110,6 +115,22 @@ export const useBookStore = create<BookStore>((set, get) => ({
         book.id === updatedBook.id ? updatedBook : book
       ),
       editedBook: {},
+    }));
+  },
+
+  updateBookLocationLocally: (bookId, locationId, updates) => {
+    set((state) => ({
+      books: state.books.map((book) =>
+        book.id === bookId
+          ? {
+              ...book,
+              locations:
+                book.locations?.map((loc) =>
+                  loc.id === locationId ? { ...loc, ...updates } : loc
+                ) || [],
+            }
+          : book
+      ),
     }));
   },
 }));

@@ -4,7 +4,7 @@ import { useState } from "react";
 import BookHeader from "./BookHeader";
 import BookTabs from "./BookTabs";
 import BookGeneralInfo from "./BookGeneralInfo";
-import BookAttributes from "./BookAttributes";
+import BookAttributes from "./BookLocations";
 import BookTransactions from "./BookTransactions";
 import BookHistory from "./BookHistory";
 import type { TabId } from "@/types/ui/BookDetailUI";

@@ -1,72 +1,42 @@
 // components/LocationManagementTab.tsx
-import { Pencil } from 'lucide-react';
-import { useState } from 'react';
-import toast from 'react-hot-toast';
+import { useEffect } from "react";
+import { useBooks } from "@/hooks/useBooks";
+import { useBookStore } from "@/stores/useBookStore";
 
-interface BookLocation {
-  id: number;
-  title: string;
-  isbn: string;
-  author: string;
-  location: {
-    warehouse: string;
-    floor: string;
-    shelf: string;
-  };
+interface Props {
+  searchTerm: string; // 🔹 Se recibe desde el padre
 }
 
-const mockLocations: BookLocation[] = [
-  {
-    id: 1,
-    title: 'PJ Masks Save the Library!',
-    isbn: '9781481488334',
-    author: 'Style Guide',
-    location: { warehouse: 'Almacén Principal', floor: 'Piso 1', shelf: 'Est. A1' },
-  },
-  {
-    id: 2,
-    title: 'The Great Adventure',
-    isbn: '9781234567890',
-    author: 'Jane Doe',
-    location: { warehouse: 'Almacén Secundario', floor: 'Piso 2', shelf: 'Est. B2' },
-  },
-  {
-    id: 3,
-    title: 'Learning to Code',
-    isbn: '9780987654321',
-    author: 'John Smith',
-    location: { warehouse: 'Almacén Principal', floor: 'Piso 1', shelf: 'Est. C3' },
-  },
-];
+export function LocationManagementTab({ searchTerm }: Props) {
+  const { currentPage, books: storeBooks, setBooks, sortOrder, itemsPerPage } =
+    useBookStore();
 
-export function LocationManagementTab() {
-  const [books, setBooks] = useState<BookLocation[]>(mockLocations);
+  // Obtener datos filtrados desde el backend usando searchTerm
+  const { data, isLoading, isError } = useBooks(
+    currentPage - 1,
+    itemsPerPage,
+    sortOrder,
+    searchTerm
+  );
 
-  const handleEditLocation = (id: number) => {
-    const book = books.find(b => b.id === id);
-    if (!book) return;
+  // Sincronizar store solo si cambian los resultados
+  useEffect(() => {
+    if (!data) return;
 
-    const warehouse = prompt('Nuevo almacén:', book.location.warehouse);
-    const floor = prompt('Nuevo piso:', book.location.floor);
-    const shelf = prompt('Nuevo estante:', book.location.shelf);
+    const currentStoreBooks = useBookStore.getState().books;
+    const isSame =
+      JSON.stringify(currentStoreBooks) === JSON.stringify(data.content);
 
-    if (!warehouse || !floor || !shelf) {
-      toast.error('Ubicación inválida');
-      return;
+    if (!isSame) {
+      setBooks(data);
     }
+  }, [data, setBooks]);
 
-    setBooks(prev =>
-      prev.map(b =>
-        b.id === id
-          ? {
-              ...b,
-              location: { warehouse, floor, shelf },
-            }
-          : b
-      )
-    );
-    toast.success('Ubicación actualizada');
-  };
+  const paginatedBooks = storeBooks ?? [];
+  const totalLocations = paginatedBooks.reduce(
+    (acc, book) => acc + (book.locations?.length || 0),
+    0
+  );
 
   return (
     <div className="bg-white border rounded-lg shadow-sm p-4">
@@ -75,51 +45,66 @@ export function LocationManagementTab() {
         Esta funcionalidad permite gestionar la ubicación específica de cada libro dentro de los almacenes.
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-sm">
-          <thead className="text-gray-500 uppercase border-b">
-            <tr className="text-left">
-              <th className="py-2">Libro</th>
-              <th className="py-2">Almacén</th>
-              <th className="py-2">Piso</th>
-              <th className="py-2">Estante</th>
-              <th className="py-2">Acciones</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y">
-            {books.map(book => (
-              <tr key={book.id} className="align-top">
-                <td className="py-4 pr-4">
-                  <div className="flex gap-4">
-                    <div className="w-12 h-16 bg-gray-200 rounded" />
-                    <div>
-                      <div className="font-medium text-gray-800">{book.title}</div>
-                      <div className="text-xs text-gray-500">ISBN: {book.isbn}</div>
-                      <div className="text-xs text-gray-400">{book.author}</div>
-                    </div>
-                  </div>
-                </td>
-                <td className="py-4 text-gray-700">{book.location.warehouse}</td>
-                <td className="py-4 text-gray-700">{book.location.floor}</td>
-                <td className="py-4 text-gray-700">{book.location.shelf}</td>
-                <td className="py-4">
-                  <button
-                    onClick={() => handleEditLocation(book.id)}
-                    className="flex items-center text-blue-600 text-sm hover:underline"
-                  >
-                    <Pencil className="w-4 h-4 mr-1" />
-                    Editar
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {/* Estados vacíos o error */}
+      {isLoading ? (
+        <div className="text-center text-gray-500 py-10">Cargando...</div>
+      ) : isError ? (
+        <div className="text-center text-red-500 py-10">Error al cargar datos</div>
+      ) : searchTerm.trim() === "" ? (
+        <div className="text-center text-gray-500 py-10">
+          Ingrese el libro a editar en la barra de búsqueda para mostrar resultados
+        </div>
+      ) : totalLocations === 0 ? (
+        <div className="text-center text-gray-500 py-10">
+          No se encontraron resultados para "<strong>{searchTerm}</strong>".
+        </div>
+      ) : (
+        <>
+          {/* Tabla */}
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead className="text-gray-500 uppercase border-b">
+                <tr className="text-left">
+                  <th className="py-2">Libro</th>
+                  <th className="py-2">Almacén</th>
+                  <th className="py-2">Ubicación específica</th>
+                  <th className="py-2">Estante</th>
+                  <th className="py-2">Piso</th>
+                  <th className="py-2">Condición</th>
+                  <th className="py-2">Última actualización</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y">
+                {paginatedBooks.map((book) =>
+                  book.locations?.map((loc) => (
+                    <tr key={`${book.id}-${loc.id}`} className="align-top">
+                      <td className="py-4 pr-4">
+                        <div className="flex gap-4">
+                          <div className="w-12 h-16 bg-gray-200 rounded" />
+                          <div>
+                            <div className="w-80 font-medium text-gray-800 truncate">{book.title}</div>
+                            <div className="text-xs text-gray-500">ISBN: {book.isbn}</div>
+                            <div className="text-xs text-gray-400">{book.author}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-4 text-gray-700">{loc.warehouse?.name ?? "-"}</td>
+                      <td className="py-4 text-gray-700">{loc.locationType ?? "-"}</td>
+                      <td className="py-4 text-gray-700">{loc.bookcase ?? "-"}</td>
+                      <td className="py-4 text-gray-700">{loc.bookcaseFloor ?? "-"}</td>
+                      <td className="py-4 text-gray-700">{loc.bookCondition ?? "-"}</td>
+                      <td className="py-4 text-gray-700">{new Date(loc.lastUpdatedAt).toLocaleString() ?? "-"}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
 
-      <div className="mt-4 text-sm text-gray-500">
-        {books.length} libros encontrados
-      </div>
+          {/* Total */}
+          <div className="mt-4 text-sm text-gray-500">{totalLocations} ubicaciones encontradas</div>
+        </>
+      )}
     </div>
   );
 }

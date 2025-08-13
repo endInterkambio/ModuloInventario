@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { WarehouseManagementTab } from './WarehouseManagementTab';
 import { LocationManagementTab } from './LocationManagmentTab';
 import StockAdjustmentTab from './StockAdjustmentTab';
+import { SearchBar } from '@components/SearchBar/SearchBar';
 
 const tabs = [
   { id: 'stock', label: 'Ajuste de Stock' },
@@ -13,9 +14,17 @@ const tabs = [
 export default function InventoryManagementPage() {
   const [activeTab, setActiveTab] = useState('stock');
 
+  // 🔹 Estado centralizado de búsqueda
+  const [searchTerm, setSearchTerm] = useState('');
+
   return (
     <div className="p-6 bg-white rounded-lg shadow-sm">
       <h1 className="text-2xl font-bold mb-4">Gestión de Inventario</h1>
+
+      {/* Barra de búsqueda centralizada */}
+      <div className="mb-4">
+        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      </div>
 
       {/* Pestañas */}
       <div className="flex border-b mb-6 space-x-4">
@@ -36,9 +45,9 @@ export default function InventoryManagementPage() {
 
       {/* Contenido del Tab */}
       <div>
-        {activeTab === 'stock' && <StockAdjustmentTab />}
-        {activeTab === 'locations' && <LocationManagementTab />}
-        {activeTab === 'warehouses' && <WarehouseManagementTab />}
+        {activeTab === 'stock' && <StockAdjustmentTab searchTerm={searchTerm} />}
+        {activeTab === 'locations' && <LocationManagementTab searchTerm={searchTerm} />}
+        {activeTab === 'warehouses' && <WarehouseManagementTab searchTerm={searchTerm} />}
       </div>
     </div>
   );
