@@ -40,6 +40,7 @@ interface BookStore {
     locationId: number,
     updates: Partial<Omit<BookStockLocationDTO, "stock">>
   ) => void;
+  removeBookLocally: (id: number) => void;
 }
 
 export const useBookStore = create<BookStore>((set, get) => ({
@@ -116,6 +117,20 @@ export const useBookStore = create<BookStore>((set, get) => ({
       ),
       editedBook: {},
     }));
+  },
+
+  removeBookLocally: (id: number) => {
+    const { books, totalElements, totalPages, currentPage } = get();
+
+    const newContent = books.filter((b) => b.id !== id);
+
+    // Actualizamos directamente el estado con set()
+    set({
+      books: newContent,
+      totalElements: totalElements - 1,
+      totalPages, // opcional, si no cambia
+      currentPage, // opcional, si no cambia
+    });
   },
 
   updateBookLocationLocally: (bookId, locationId, updates) => {
