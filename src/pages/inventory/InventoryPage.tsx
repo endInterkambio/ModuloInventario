@@ -6,21 +6,31 @@ import PaginationBar from "@/components/shared/pagination/PaginationBar";
 import HeaderNavigation from "@components/HeaderNavigation/HeaderNavigation";
 
 const InventoryPage = () => {
-  const { currentPage, books: storeBooks, setBooks, sortOrder, itemsPerPage, searchTerm } = useBookStore();
-  const { data, isLoading, isError } = useBooks(currentPage - 1, itemsPerPage, sortOrder, searchTerm);
+  const {
+    currentPage,
+    books: storeBooks,
+    setBooks,
+    sortOrder,
+    itemsPerPage,
+    searchTerm,
+    minStock = 1,
+    maxStock,
+  } = useBookStore();
+  const { data, isLoading, isError } = useBooks(
+    currentPage - 1,
+    itemsPerPage,
+    sortOrder,
+    searchTerm,
+    minStock,
+    maxStock
+  );
 
   // Sincroniza libros solo si cambia realmente la página o contenido
   useEffect(() => {
-    if (!data) return;
-
-    const currentStoreBooks = useBookStore.getState().books;
-    const isSame =
-      JSON.stringify(currentStoreBooks) === JSON.stringify(data.content);
-
-    if (!isSame) {
+    if (data) {
       setBooks(data);
     }
-  }, [data, setBooks, searchTerm]);
+  }, [data, setBooks, minStock]);
 
   const paginatedBooks = storeBooks ?? [];
 

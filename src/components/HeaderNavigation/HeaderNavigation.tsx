@@ -8,6 +8,7 @@ import {
   ArrowUpDown,
   Download,
   Upload,
+  FilterIcon,
 } from "lucide-react";
 
 import { useUploadBooks } from "@/hooks/useBooks";
@@ -17,6 +18,7 @@ import ExportMenu from "./ExportMenu";
 import SubmenuItem from "./SubmenuItem";
 import ViewToggle from "./ViewToggle";
 import { SearchBar } from "@components/SearchBar/SearchBar";
+import FilterMenu from "./FilterMenu";
 
 const HeaderNavigation: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -43,13 +45,14 @@ const HeaderNavigation: React.FC = () => {
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           className="flex items-center gap-2 text-gray-700 hover:text-gray-900 font-medium"
         >
-          <span>Todos los artículos</span>
+          <span>Artículos con existencias</span>
           <ChevronDown className="w-4 h-4" />
         </button>
         {isDropdownOpen && (
           <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
             <div className="py-1">
               {[
+                "Artículos con existencias",
                 "Todos los artículos",
                 "Artículos recientes",
                 "Mis artículos",
@@ -97,6 +100,15 @@ const HeaderNavigation: React.FC = () => {
                     onHover={() => setActiveSubmenu("ordenar")}
                   />
                   {activeSubmenu === "ordenar" && <SortMenu />}
+                </div>
+                <div className="relative">
+                  <SubmenuItem
+                    icon={<FilterIcon className="w-4 h-4 text-blue-500" />}
+                    label="Filtrar por stock"
+                    isActive={activeSubmenu === "filtrar"}
+                    onHover={() => setActiveSubmenu("filtrar")}
+                  />
+                  {activeSubmenu === "filtrar" && <FilterMenu />}
                 </div>
 
                 <div className="relative">

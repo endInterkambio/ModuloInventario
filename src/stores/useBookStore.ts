@@ -16,7 +16,11 @@ interface BookStore {
 
   // Ordenamiento
   sortOrder: string;
+  minStock?: number;
+  maxStock?: number;
   setSortOrder: (order: string) => void;
+  setMinStock: (value: number | undefined) => void;
+  setMaxStock: (value: number | undefined) => void;
 
   // Book selection state
   selectedBooks: BookDTO[];
@@ -52,6 +56,8 @@ export const useBookStore = create<BookStore>((set, get) => ({
   totalElements: 0,
   searchTerm: "",
   sortOrder: "", // Sorting by title for default
+  setMinStock: (value) => set({ minStock: value }),
+  setMaxStock: (value) => set({ maxStock: value }),
   setSortOrder: (order) => set({ sortOrder: order, currentPage: 1 }),
   setSearchTerm: (term) => set({ searchTerm: term, currentPage: 1 }),
 

@@ -10,7 +10,7 @@ const SortMenu: React.FC = () => {
     { label: "Nombre", field: "title", hasSubmenu: true },
     { label: "SKU (Código de artículo)", field: "sku", hasSubmenu: true },
     //{ label: "ISBN (Código de libro)", field: "isbn", hasSubmenu: true },
-    { label: "Stock", field: "stock", hasSubmenu: true },
+    //{ label: "Stock", field: "stock", hasSubmenu: true },
   ];
 
   const handleClick = (field: string, direction: "asc" | "desc") => {
@@ -119,7 +119,7 @@ const SortMenu: React.FC = () => {
               </div>
             )}
             {/* Sort by Stock */}
-            {hasSubmenu && activeSubmenu === field && field === "stock" && (
+            {/* {hasSubmenu && activeSubmenu === field && field === "stock" && (
               <div className="absolute right-full top-0 ml-1 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-30">
                 <button
                   onClick={() => handleClick(field, "asc")}
@@ -142,7 +142,7 @@ const SortMenu: React.FC = () => {
                   Mayor stock
                 </button>
               </div>
-            )}
+            )} */}
           </div>
         ))}
       </div>
