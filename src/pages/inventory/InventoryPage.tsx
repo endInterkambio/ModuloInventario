@@ -13,7 +13,7 @@ const InventoryPage = () => {
     sortOrder,
     itemsPerPage,
     searchTerm,
-    minStock = 1,
+    minStock,
     maxStock,
   } = useBookStore();
   const { data, isLoading, isError } = useBooks(
