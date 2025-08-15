@@ -26,13 +26,7 @@ export function LocationManagementTab({ searchTerm }: Props) {
     "FAIR_STORAGE",
   ] as const;
 
-  const conditionTypeOptions = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "X",
-  ] as const;
+  const conditionTypeOptions = ["A", "B", "C", "D", "X"] as const;
 
   const [loadingLocationIds, setLoadingLocationIds] = useState<number[]>([]);
 
@@ -131,6 +125,7 @@ export function LocationManagementTab({ searchTerm }: Props) {
                   <th className="py-2">Libro</th>
                   <th className="py-2">Almacén</th>
                   <th className="py-2">Ubicación específica</th>
+                  <th className="py-2">Stock</th>
                   <th className="py-2">Estante</th>
                   <th className="py-2">Piso</th>
                   <th className="py-2">Condición</th>
@@ -191,7 +186,13 @@ export function LocationManagementTab({ searchTerm }: Props) {
                           </span>
                         )}
                       </td>
-
+                      <td className="py-4 text-sm text-gray-700">
+                        <InfoRow
+                          className="py-4 w-16"
+                          label=""
+                          value={loc.stock}
+                        />
+                      </td>
                       <td className="text-center text-sm text-gray-700">
                         <InfoRow
                           className="py-4 w-16"
