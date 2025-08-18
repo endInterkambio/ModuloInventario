@@ -1,14 +1,12 @@
-// components/LocationManagementTab.tsx
 import { useEffect, useState } from "react";
 import { useBooks } from "@/hooks/useBooks";
 import { useBookStore } from "@/stores/useBookStore";
-import toast from "react-hot-toast";
-import { updateLocationPartial } from "@/api/modules/bookLocations";
-import { BookStockLocationDTO } from "@/types/BookDTO";
 import { InfoRow } from "../BookDetail/InfoRow";
+import { TransferModal } from "./TransferModal";
+import { BookDTO } from "@/types/BookDTO";
 
 interface Props {
-  searchTerm: string; // 🔹 Se recibe desde el padre
+  searchTerm: string;
 }
 
 export function LocationManagementTab({ searchTerm }: Props) {
@@ -20,66 +18,24 @@ export function LocationManagementTab({ searchTerm }: Props) {
     itemsPerPage,
   } = useBookStore();
 
-  const locationTypeOptions = [
-    "SHOWROOM",
-    "MAIN_STORAGE",
-    "FAIR_STORAGE",
-  ] as const;
+  const [transferData, setTransferData] = useState<{
+    book: BookDTO;
+    fromLocationId: number;
+  } | null>(null);
 
-  const conditionTypeOptions = ["A", "B", "C", "D", "X"] as const;
-
-  const [loadingLocationIds, setLoadingLocationIds] = useState<number[]>([]);
-
-  const handleFieldChange = async (
-    locId: number,
-    field: keyof BookStockLocationDTO, // Tipo exacto de campos que puede tener loc
-    value: string | number | null
-  ) => {
-    setLoadingLocationIds((prev) => [...prev, locId]);
-    try {
-      await updateLocationPartial(locId, { [field]: value });
-
-      // Actualizar en store
-      useBookStore.setState((state) => {
-        const updatedBooks = state.books.map((book) => ({
-          ...book,
-          locations: book.locations?.map((loc) =>
-            loc.id === locId
-              ? {
-                  ...loc,
-                  [field]: value,
-                  lastUpdatedAt: new Date().toISOString(),
-                }
-              : loc
-          ),
-        }));
-        return { ...state, books: updatedBooks };
-      });
-
-      toast.success("Ubicación actualizada");
-    } catch (error) {
-      console.error(error);
-      toast.error("Error al actualizar ubicación");
-    } finally {
-      setLoadingLocationIds((prev) => prev.filter((id) => id !== locId));
-    }
-  };
-
-  // Obtener datos filtrados desde el backend usando searchTerm
+  // 🔹 Hook para obtener libros desde backend
   const {
     data,
     isLoading: booksLoading,
     isError,
   } = useBooks(currentPage - 1, itemsPerPage, sortOrder, searchTerm);
 
-  // Sincronizar store solo si cambian los resultados
   useEffect(() => {
     if (!data) return;
 
     const currentStoreBooks = useBookStore.getState().books;
     const isSame =
       JSON.stringify(currentStoreBooks) === JSON.stringify(data.content);
-
     if (!isSame) {
       setBooks(data);
     }
@@ -91,6 +47,18 @@ export function LocationManagementTab({ searchTerm }: Props) {
     0
   );
 
+  // 🔹 Función para abrir modal de transferencia
+  const openTransferModal = (bookSku: string, fromLocationId: number) => {
+  const book = storeBooks.find((b) => b.sku === bookSku);
+  if (!book) return;
+  setTransferData({ book, fromLocationId });
+};
+
+  // 🔹 Función para cerrar modal
+  const closeTransferModal = () => {
+    setTransferData(null);
+  };
+
   return (
     <div className="bg-white border rounded-lg shadow-sm p-4">
       <h2 className="text-lg font-semibold mb-4">Gestión de Ubicaciones</h2>
@@ -99,7 +67,6 @@ export function LocationManagementTab({ searchTerm }: Props) {
         libro dentro de los almacenes.
       </div>
 
-      {/* Estados vacíos o error */}
       {booksLoading ? (
         <div className="text-center text-gray-500 py-10">Cargando...</div>
       ) : isError ? (
@@ -117,7 +84,6 @@ export function LocationManagementTab({ searchTerm }: Props) {
         </div>
       ) : (
         <>
-          {/* Tabla */}
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead className="text-gray-500 uppercase border-b">
@@ -130,6 +96,7 @@ export function LocationManagementTab({ searchTerm }: Props) {
                   <th className="py-2">Piso</th>
                   <th className="py-2">Condición</th>
                   <th className="py-2">Última actualización</th>
+                  <th className="py-2">Acciones</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
@@ -156,35 +123,18 @@ export function LocationManagementTab({ searchTerm }: Props) {
                         </div>
                       </td>
                       <td className="py-4 text-gray-700">
-                        {loc.warehouse?.name ?? "-"}
+                        <InfoRow
+                          className="py-4 w-16"
+                          label=""
+                          value={loc.warehouse.name || "-"}
+                        />
                       </td>
-                      {/* Select editable con isLoading por fila */}
-                      <td className="py-3 text-sm text-gray-700">
-                        <select
-                          value={loc.locationType ?? ""}
-                          onChange={(e) =>
-                            handleFieldChange(
-                              loc.id,
-                              "locationType",
-                              e.target.value
-                            )
-                          }
-                          className="border px-2 py-1 rounded text-sm text-center"
-                        >
-                          <option value="" disabled>
-                            Selecciona una opción
-                          </option>
-                          {locationTypeOptions.map((opt) => (
-                            <option key={opt} value={opt}>
-                              {opt}
-                            </option>
-                          ))}
-                        </select>
-                        {loadingLocationIds.includes(loc.id) && (
-                          <span className="absolute right-2 top-1 text-xs text-gray-400 animate-pulse">
-                            Guardando...
-                          </span>
-                        )}
+                      <td className="py-4 text-sm text-gray-700">
+                        <InfoRow
+                          className="py-4 w-16"
+                          label=""
+                          value={loc.locationType}
+                        />
                       </td>
                       <td className="py-4 text-sm text-gray-700">
                         <InfoRow
@@ -193,58 +143,48 @@ export function LocationManagementTab({ searchTerm }: Props) {
                           value={loc.stock}
                         />
                       </td>
-                      <td className="text-center text-sm text-gray-700">
+                      <td className="py-4 text-sm text-gray-700">
                         <InfoRow
                           className="py-4 w-16"
                           label=""
                           value={loc.bookcase}
                           editable
-                          onSave={(val) =>
-                            handleFieldChange(loc.id, "bookcase", val)
-                          }
                         />
                       </td>
-
-                      <td className="text-center text-sm text-gray-700">
+                      <td className="py-4 text-sm text-gray-700">
                         <InfoRow
                           className="py-4 w-16"
                           label=""
                           value={loc.bookcaseFloor}
                           editable
-                          onSave={(val) =>
-                            handleFieldChange(loc.id, "bookcaseFloor", val)
+                        />
+                      </td>
+                      <td className="py-4 text-sm text-gray-700">
+                        <InfoRow
+                          className="py-4 w-16"
+                          label=""
+                          value={loc.bookCondition || "-"}
+                          editable
+                        />
+                      </td>
+                      <td className="py-4 text-sm text-gray-700">
+                        <InfoRow
+                          className="py-4"
+                          label=""
+                          value={
+                            loc.lastUpdatedAt
+                              ? new Date(loc.lastUpdatedAt).toLocaleString()
+                              : "-"
                           }
                         />
                       </td>
-                      <td className="py-3 text-sm text-gray-700">
-                        <select
-                          value={loc.bookCondition ?? ""}
-                          onChange={(e) =>
-                            handleFieldChange(
-                              loc.id,
-                              "bookCondition",
-                              e.target.value
-                            )
-                          }
-                          className="border px-2 py-1 rounded text-sm text-center w-20"
+                      <td className="flex items-center justify-center h-20">
+                        <button
+                          className="px-4 py-1 bg-blue-500 text-white rounded text-sm"
+                          onClick={() => openTransferModal(book.sku, loc.id)}
                         >
-                          <option value="" disabled>
-                            Selecciona una opción
-                          </option>
-                          {conditionTypeOptions.map((opt) => (
-                            <option key={opt} value={opt}>
-                              {opt}
-                            </option>
-                          ))}
-                        </select>
-                        {loadingLocationIds.includes(loc.id) && (
-                          <span className="absolute right-2 top-1 text-xs text-gray-400 animate-pulse">
-                            Guardando...
-                          </span>
-                        )}
-                      </td>
-                      <td className="py-4 text-gray-700">
-                        {new Date(loc.lastUpdatedAt).toLocaleString() ?? "-"}
+                          Transferir
+                        </button>
                       </td>
                     </tr>
                   ))
@@ -253,11 +193,20 @@ export function LocationManagementTab({ searchTerm }: Props) {
             </table>
           </div>
 
-          {/* Total */}
           <div className="mt-4 text-sm text-gray-500">
             {totalLocations} ubicaciones encontradas
           </div>
         </>
+      )}
+
+      {/* 🔹 Modal de transferencia */}
+      {transferData && (
+        <TransferModal
+          isOpen={!!transferData}
+          onClose={closeTransferModal}
+          fromLocationId={transferData.fromLocationId}
+          book={transferData.book} 
+        />
       )}
     </div>
   );
