@@ -148,7 +148,6 @@ export function LocationManagementTab({ searchTerm }: Props) {
                           className="py-4 w-16"
                           label=""
                           value={loc.bookcase}
-                          editable
                         />
                       </td>
                       <td className="py-4 text-sm text-gray-700">
@@ -156,7 +155,6 @@ export function LocationManagementTab({ searchTerm }: Props) {
                           className="py-4 w-16"
                           label=""
                           value={loc.bookcaseFloor}
-                          editable
                         />
                       </td>
                       <td className="py-4 text-sm text-gray-700">
@@ -164,7 +162,6 @@ export function LocationManagementTab({ searchTerm }: Props) {
                           className="py-4 w-16"
                           label=""
                           value={loc.bookCondition || "-"}
-                          editable
                         />
                       </td>
                       <td className="py-4 text-sm text-gray-700">
