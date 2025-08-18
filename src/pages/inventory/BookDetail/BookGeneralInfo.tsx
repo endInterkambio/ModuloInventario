@@ -41,8 +41,10 @@ const BookGeneralInfo = ({ book }: Props) => {
     );
   };
 
-  const className = "flex items-center justify-between py-2 border-b border-gray-100 group";
-  const inputClassName = "border-b border-gray-300 focus:outline-none focus:border-blue-500 bg-transparent text-right text-sm px-2 py-1"
+  const className =
+    "flex items-center justify-between py-2 border-b border-gray-100 group";
+  const inputClassName =
+    "border-b border-gray-300 focus:outline-none focus:border-blue-500 bg-transparent text-right text-sm px-2 py-1";
 
   return (
     <div className="space-y-1">

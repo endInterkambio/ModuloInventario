@@ -31,6 +31,8 @@ const BookAttributes = ({ book }: Props) => {
   }, [book, setEditedBook]);
 
   const groupedLocations = groupLocations(editedBook.locations ?? []);
+  const className =
+    "flex items-center justify-between py-2 border-b border-gray-100 group";
 
   return (
     <div className="space-y-4">
@@ -55,12 +57,25 @@ const BookAttributes = ({ book }: Props) => {
                   className="mb-3 last:mb-0 border-b border-gray-300 pb-2"
                 >
                   <InfoRow
+                    className={className}
                     label="Condición"
                     value={location.bookCondition ?? "Sin condición"}
                   />
-                  <InfoRow label="Estante" value={location.bookcase ?? 0} />
-                  <InfoRow label="Piso" value={location.bookcaseFloor ?? 0} />
-                  <InfoRow label="Stock" value={location.stock ?? 0} />
+                  <InfoRow
+                    className={className}
+                    label="Estante"
+                    value={location.bookcase ?? 0}
+                  />
+                  <InfoRow
+                    className={className}
+                    label="Piso"
+                    value={location.bookcaseFloor ?? 0}
+                  />
+                  <InfoRow
+                    className={className}
+                    label="Stock"
+                    value={location.stock ?? 0}
+                  />
                 </div>
               ))}
             </div>

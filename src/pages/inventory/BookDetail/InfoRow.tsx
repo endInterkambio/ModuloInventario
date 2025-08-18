@@ -74,7 +74,7 @@ export const InfoRow = ({
         ) : (
           <>
             <span>
-              {stringValue.length > 50 ? `${stringValue.substring(0, 50)}...` : stringValue}
+              {stringValue.length > 30 ? `${stringValue.substring(0, 30)}...` : stringValue}
             </span>
             {editable && hovered && (
               <button
