@@ -196,7 +196,9 @@ export default function InventoryAdjustmentTab({ searchTerm }: Props) {
                     </td>
 
                     {/* Último stock */}
-                    <td className="py-4 text-gray-700">-</td>
+                    <td className="py-4 text-gray-700">
+                      {location.lastStock ?? "-"}
+                    </td>
                     {/* Stock actual */}
                     <td className="py-4">
                       <span

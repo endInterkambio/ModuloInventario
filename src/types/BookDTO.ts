@@ -7,6 +7,7 @@ export interface BookStockLocationDTO {
   bookcase: number;
   bookcaseFloor: number;
   stock: number;
+  lastStock: number;
   bookCondition: string;
   locationType: string;
   lastUpdatedAt: string;
