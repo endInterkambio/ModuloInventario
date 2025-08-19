@@ -6,6 +6,7 @@ import { useCreateBookLocation } from "@/hooks/useCreateBookLocation";
 import { useBookStore } from "@/stores/useBookStore";
 import { useWarehouses } from "@/hooks/useWarehouses";
 import { BookStockLocationDTO } from "@/types/BookStockLocationDTO";
+import Select from "react-select";
 
 interface Props {
   isOpen: boolean;
@@ -36,6 +37,10 @@ export function TransferModal({
   );
 
   const userId = 10; // ⚡ tomar del auth store real
+  const BOOKCASE_MIN = 1;
+  const BOOKCASE_MAX = 20;
+  const FLOOR_MIN = 1;
+  const FLOOR_MAX = 5;
 
   const { createTransaction, isMutating } = useCreateInventoryTransaction();
   const { createLocation, isCreatingLocation } = useCreateBookLocation();
@@ -109,6 +114,25 @@ export function TransferModal({
         return;
       }
 
+      if (
+        !newLocation.bookcase ||
+        newLocation.bookcase < BOOKCASE_MIN ||
+        newLocation.bookcase > BOOKCASE_MAX
+      ) {
+        toast.error(
+          `El estante debe estar entre ${BOOKCASE_MIN} y ${BOOKCASE_MAX}`
+        );
+        return;
+      }
+      if (
+        !newLocation.bookcaseFloor ||
+        newLocation.bookcaseFloor < FLOOR_MIN ||
+        newLocation.bookcaseFloor > FLOOR_MAX
+      ) {
+        toast.error(`El piso debe estar entre ${FLOOR_MIN} y ${FLOOR_MAX}`);
+        return;
+      }
+
       // 2️⃣ Preparamos la nueva ubicación
       const locationToCreate: Partial<BookStockLocationDTO> = {
         ...newLocation,
@@ -158,29 +182,46 @@ export function TransferModal({
 
   if (!isOpen) return null;
 
+  // Opciones para react-select
+  const locationOptions =
+    book.locations
+      ?.filter((loc) => loc.id !== fromLocationId)
+      .map((loc) => ({
+        value: loc.id,
+        label: `${loc.warehouse?.name} - ${loc.locationType} - E. ${loc.bookcase} - P. ${loc.bookcaseFloor} - Stock(${loc.stock}) - Cond. ${loc.bookCondition}`,
+      })) || [];
+
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white p-4 rounded-lg w-96 shadow">
+      <div className="bg-white p-4 rounded-lg w-full max-w-lg shadow">
         <h2 className="text-lg font-semibold mb-4">Transferir libro</h2>
 
         <label className="block mb-2 text-sm">Ubicación destino</label>
-        <select
-          className="border w-full p-2 mb-2 rounded"
-          value={toLocationId ?? ""}
-          onChange={(e) => setToLocationId(Number(e.target.value))}
-        >
-          <option value="" disabled>
-            Selecciona ubicación
-          </option>
-          {book.locations
-            ?.filter((loc) => loc.id !== fromLocationId)
-            .map((loc) => (
-              <option key={loc.id} value={loc.id}>
-                {loc.warehouse?.name} - {loc.locationType} - Estante{" "}
-                {loc.bookcase} - Piso {loc.bookcaseFloor}
-              </option>
-            ))}
-        </select>
+        <Select
+          options={locationOptions}
+          value={
+            locationOptions.find((opt) => opt.value === toLocationId) || null
+          }
+          onChange={(selected) =>
+            setToLocationId(selected ? selected.value : null)
+          }
+          placeholder="Selecciona ubicación"
+          isClearable
+          className="mb-2"
+          styles={{
+            control: (base) => ({
+              ...base,
+              minHeight: "48px",
+              borderRadius: "0.375rem",
+              borderColor: "#d1d5db",
+              boxShadow: "none",
+            }),
+            menu: (base) => ({
+              ...base,
+              zIndex: 9999,
+            }),
+          }}
+        />
 
         <button
           type="button"
@@ -218,6 +259,8 @@ export function TransferModal({
             <label className="block text-sm mb-1">Estante</label>
             <input
               type="number"
+              min={BOOKCASE_MIN}
+              max={BOOKCASE_MAX}
               value={newLocation.bookcase || ""}
               onChange={(e) =>
                 setNewLocation((prev) => ({
@@ -231,6 +274,8 @@ export function TransferModal({
             <label className="block text-sm mb-1">Piso</label>
             <input
               type="number"
+              min={FLOOR_MIN}
+              max={FLOOR_MAX}
               value={newLocation.bookcaseFloor || ""}
               onChange={(e) =>
                 setNewLocation((prev) => ({

@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { createBookStockLocation } from "@/api/modules/bookLocations";
-import { BookStockLocationDTO } from "@/types/BookDTO";
+import { BookStockLocationDTO } from "@/types/BookStockLocationDTO";
 
 export const useCreateBookLocation = () => {
   const mutation = useMutation({

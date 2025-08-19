@@ -40,11 +40,13 @@ export function LocationManagementTab({ searchTerm }: Props) {
   // Ordenar las ubicaciones de cada libro por última actualización
   const paginatedBooksWithSortedLocations = paginatedBooks.map((book) => ({
     ...book,
-    locations: [...(book.locations ?? [])].sort(
-      (a, b) =>
-        new Date(b.lastUpdatedAt || 0).getTime() -
-        new Date(a.lastUpdatedAt || 0).getTime()
-    ),
+    locations: [...(book.locations ?? [])]
+      .filter((loc) => loc.stock > 0)
+      .sort(
+        (a, b) =>
+          new Date(b.lastUpdatedAt || 0).getTime() -
+          new Date(a.lastUpdatedAt || 0).getTime()
+      ),
   }));
 
   const totalLocations = paginatedBooksWithSortedLocations.reduce(
