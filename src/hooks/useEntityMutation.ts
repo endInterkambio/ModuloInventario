@@ -1,4 +1,3 @@
-// hooks/useEntityMutation.ts
 import { useMutation, useQueryClient, UseMutationOptions } from '@tanstack/react-query';
 
 type MutationFn<TData, TVariables> = (vars: TVariables) => Promise<TData>;

@@ -1,6 +1,7 @@
 import { create } from "zustand";
-import { BookDTO, BookStockLocationDTO } from "@/types/BookDTO";
+import { BookDTO } from "@/types/BookDTO";
 import { Page } from "@/types/Pagination";
+import { BookStockLocationDTO } from "@/types/BookStockLocationDTO";
 
 interface BookStore {
   // Core data
@@ -9,6 +10,7 @@ interface BookStore {
   itemsPerPage: number; // Items por página (opcional si backend maneja esto)
   totalPages: number; // Total de páginas
   totalElements: number;
+  locations: BookStockLocationDTO[];
 
   // Searching
   searchTerm: string;
@@ -45,10 +47,16 @@ interface BookStore {
     updates: Partial<Omit<BookStockLocationDTO, "stock">>
   ) => void;
   removeBookLocally: (id: number) => void;
+  addBookLocation: (bookId: number, location: BookStockLocationDTO) => void;
+  updateLocation: (
+    locationId: number,
+    updates: Partial<Omit<BookStockLocationDTO, "stock">>
+  ) => void;
 }
 
 export const useBookStore = create<BookStore>((set, get) => ({
   books: [],
+  locations: [],
   editedBook: {},
   currentPage: 1,
   itemsPerPage: 12,
@@ -144,14 +152,32 @@ export const useBookStore = create<BookStore>((set, get) => ({
       books: state.books.map((book) =>
         book.id === bookId
           ? {
-              ...book,
-              locations:
-                book.locations?.map((loc) =>
+              ...book, // nueva referencia del libro
+              locations: [
+                ...(book.locations || []).map((loc) =>
                   loc.id === locationId ? { ...loc, ...updates } : loc
-                ) || [],
+                ),
+              ],
             }
           : book
       ),
     }));
   },
+
+  addBookLocation: (bookId: number, location: BookStockLocationDTO) => {
+    set((state) => ({
+      books: state.books.map((book) =>
+        book.id === bookId
+          ? { ...book, locations: [...(book.locations || []), location] }
+          : book
+      ),
+    }));
+  },
+
+  updateLocation: (locationId, updates) =>
+    set((state) => ({
+      locations: state.locations.map((loc) =>
+        loc.id === locationId ? { ...loc, ...updates } : loc
+      ),
+    })),
 }));

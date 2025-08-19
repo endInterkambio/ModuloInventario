@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useCreateInventoryTransaction } from "@/hooks/useCreateInventoryTransaction";
 import toast from "react-hot-toast";
-import { BookDTO, BookStockLocationDTO } from "@/types/BookDTO";
+import { BookDTO } from "@/types/BookDTO";
 import { useCreateBookLocation } from "@/hooks/useCreateBookLocation";
 import { useBookStore } from "@/stores/useBookStore";
 import { useWarehouses } from "@/hooks/useWarehouses";
+import { BookStockLocationDTO } from "@/types/BookStockLocationDTO";
 
 interface Props {
   isOpen: boolean;
@@ -99,7 +100,7 @@ export function TransferModal({
 
   const handleCreateLocation = async () => {
     try {
-      // Clonamos la ubicación nueva y asignamos la condición del libro desde la ubicación origen
+      // 1️⃣ Ubicación origen
       const fromLocation = book.locations.find(
         (loc) => loc.id === fromLocationId
       );
@@ -108,35 +109,47 @@ export function TransferModal({
         return;
       }
 
-      const locationToCreate = {
+      // 2️⃣ Preparamos la nueva ubicación
+      const locationToCreate: Partial<BookStockLocationDTO> = {
         ...newLocation,
         bookSku: book.sku,
         stock: 0,
         bookCondition: fromLocation.bookCondition, // heredamos la condición
       };
 
+      // 3️⃣ Llamamos al backend
       const created = await createLocation(locationToCreate);
-      console.log("Ubicación creada desde backend:", created);
 
       if (!created) {
         toast.error("No se pudo crear la ubicación");
         return;
       }
 
-      // Actualizar store inmediatamente
-      useBookStore.setState((state) => ({
-        books: state.books.map((b) =>
-          b.sku === book.sku
-            ? { ...b, locations: [...(b.locations || []), created] }
-            : b
-        ),
-      }));
+      // 4️⃣ Aseguramos lastUpdatedAt
+      const createdWithTimestamp: BookStockLocationDTO = {
+        ...created,
+        lastUpdatedAt: created.lastUpdatedAt || new Date().toISOString(),
+        warehouse: {
+          id:
+            created.warehouse?.id ??
+            (newLocation.warehouse as { id: number }).id,
+          name:
+            created.warehouse?.name ??
+            (newLocation.warehouse as { name: string }).name,
+        },
+      };
 
-      book.locations = [...(book.locations || []), created];
-      toast.success("Ubicación creada con éxito");
+      // 5️⃣ Actualizamos la store y el estado local del libro
+      useBookStore.getState().addBookLocation(book.id, createdWithTimestamp);
+
+      // 5.1️⃣ Agrega la ubicación a la copia local del modal para que el SELECT la vea
+      book.locations = [createdWithTimestamp, ...(book.locations || [])];
+
+      // 6️⃣ Actualizamos selectores / UI
       setToLocationId(created.id);
       setShowCreateLocation(false);
-      // toast.success("Ubicación creada con éxito");
+
+      toast.success("Ubicación creada con éxito");
     } catch (err) {
       console.error(err);
       toast.error("Error al crear ubicación");

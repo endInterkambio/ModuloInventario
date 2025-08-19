@@ -1,6 +1,7 @@
+import { BookStockLocationDTO } from "./BookStockLocationDTO";
 import { SimpleIdNameDTO } from "./SimpleIdNameDTO";
 
-export interface BookStockLocationDTO {
+/*export interface BookStockLocationDTO {
   id: number;
   bookSku: string;
   warehouse: SimpleIdNameDTO;
@@ -11,7 +12,7 @@ export interface BookStockLocationDTO {
   bookCondition: string;
   locationType: string;
   lastUpdatedAt: string;
-}
+}*/
 
 export interface BookDTO {
   id: number;

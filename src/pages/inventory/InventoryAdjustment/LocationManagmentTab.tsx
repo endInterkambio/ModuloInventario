@@ -32,27 +32,32 @@ export function LocationManagementTab({ searchTerm }: Props) {
 
   useEffect(() => {
     if (!data) return;
-
-    const currentStoreBooks = useBookStore.getState().books;
-    const isSame =
-      JSON.stringify(currentStoreBooks) === JSON.stringify(data.content);
-    if (!isSame) {
-      setBooks(data);
-    }
+    setBooks(data);
   }, [data, setBooks]);
 
   const paginatedBooks = storeBooks ?? [];
-  const totalLocations = paginatedBooks.reduce(
+
+  // Ordenar las ubicaciones de cada libro por última actualización
+  const paginatedBooksWithSortedLocations = paginatedBooks.map((book) => ({
+    ...book,
+    locations: [...(book.locations ?? [])].sort(
+      (a, b) =>
+        new Date(b.lastUpdatedAt || 0).getTime() -
+        new Date(a.lastUpdatedAt || 0).getTime()
+    ),
+  }));
+
+  const totalLocations = paginatedBooksWithSortedLocations.reduce(
     (acc, book) => acc + (book.locations?.length || 0),
     0
   );
 
   // 🔹 Función para abrir modal de transferencia
   const openTransferModal = (bookSku: string, fromLocationId: number) => {
-  const book = storeBooks.find((b) => b.sku === bookSku);
-  if (!book) return;
-  setTransferData({ book, fromLocationId });
-};
+    const book = storeBooks.find((b) => b.sku === bookSku);
+    if (!book) return;
+    setTransferData({ book, fromLocationId });
+  };
 
   // 🔹 Función para cerrar modal
   const closeTransferModal = () => {
@@ -100,7 +105,7 @@ export function LocationManagementTab({ searchTerm }: Props) {
                 </tr>
               </thead>
               <tbody className="divide-y">
-                {paginatedBooks.map((book) =>
+                {paginatedBooksWithSortedLocations.map((book) =>
                   book.locations?.map((loc) => (
                     <tr key={`${book.id}-${loc.id}`} className="align-top">
                       <td className="py-4 pr-4">
@@ -203,7 +208,7 @@ export function LocationManagementTab({ searchTerm }: Props) {
           isOpen={!!transferData}
           onClose={closeTransferModal}
           fromLocationId={transferData.fromLocationId}
-          book={transferData.book} 
+          book={transferData.book}
         />
       )}
     </div>

@@ -1,6 +1,20 @@
 import axiosInstance from '@/api/axiosInstance';
-import { BookStockLocationDTO } from '@/types/BookDTO';
+import { BookStockLocationDTO } from '@/types/BookStockLocationDTO';
 import { endpoints } from '../endpoints';
+
+export const getBookStockLocations = async (
+  sort?: string
+): Promise<BookStockLocationDTO[]> => {
+  const response = await axiosInstance.get<BookStockLocationDTO[]>(
+    endpoints.locations,
+    {
+      params: sort ? { sort } : undefined,
+    }
+  );
+  return response.data;
+};
+
+
 
 // Crear nueva ubicación con stock inicial = 0
 export const createBookStockLocation = async (
