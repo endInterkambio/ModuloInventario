@@ -124,6 +124,7 @@ export function LocationManagementTab({ searchTerm }: Props) {
                       </td>
                       <td className="py-4 text-gray-700">
                         <InfoRow
+                          key={loc.warehouse.id}
                           className="py-4 w-16"
                           label=""
                           value={loc.warehouse.name || "-"}

@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { BookDTO, BookStockLocationDTO } from "@/types/BookDTO";
 import { useCreateBookLocation } from "@/hooks/useCreateBookLocation";
 import { useBookStore } from "@/stores/useBookStore";
+import { useWarehouses } from "@/hooks/useWarehouses";
 
 interface Props {
   isOpen: boolean;
@@ -115,6 +116,7 @@ export function TransferModal({
       };
 
       const created = await createLocation(locationToCreate);
+      console.log("Ubicación creada desde backend:", created);
 
       if (!created) {
         toast.error("No se pudo crear la ubicación");
@@ -130,9 +132,11 @@ export function TransferModal({
         ),
       }));
 
+      book.locations = [...(book.locations || []), created];
+      toast.success("Ubicación creada con éxito");
       setToLocationId(created.id);
       setShowCreateLocation(false);
-      toast.success("Ubicación creada con éxito");
+      // toast.success("Ubicación creada con éxito");
     } catch (err) {
       console.error(err);
       toast.error("Error al crear ubicación");
@@ -188,16 +192,14 @@ export function TransferModal({
         {showCreateLocation && (
           <div className="border p-2 mb-4 rounded bg-gray-50">
             <label className="block text-sm mb-1">Almacén</label>
-            <input
-              type="number"
+            <WarehouseSelect
               value={newLocation.warehouse?.id || ""}
-              onChange={(e) =>
+              onChange={(id, name) =>
                 setNewLocation((prev) => ({
                   ...prev,
-                  warehouse: { id: Number(e.target.value), name: "" },
+                  warehouse: { id, name },
                 }))
               }
-              className="border w-full p-1 mb-2 rounded"
             />
 
             <label className="block text-sm mb-1">Estante</label>
@@ -303,3 +305,35 @@ export function TransferModal({
     </div>
   );
 }
+
+const WarehouseSelect = ({
+  value,
+  onChange,
+}: {
+  value: number | "";
+  onChange: (id: number, name: string) => void;
+}) => {
+  const { data: warehouses, isLoading } = useWarehouses();
+
+  if (isLoading) return <div>Cargando almacenes...</div>;
+
+  return (
+    <select
+      value={value}
+      onChange={(e) => {
+        const selected = warehouses?.find(
+          (w) => w.id === Number(e.target.value)
+        );
+        if (selected) onChange(selected.id, selected.name);
+      }}
+      className="border w-full p-1 mb-2 rounded"
+    >
+      <option value="">Selecciona un almacén</option>
+      {warehouses?.map((w) => (
+        <option key={w.id} value={w.id}>
+          {w.name}
+        </option>
+      ))}
+    </select>
+  );
+};
