@@ -9,6 +9,7 @@ import BookTransactions from "./BookTransactions";
 import BookHistory from "./BookHistory";
 import type { TabId } from "@/types/ui/BookDetailUI";
 import BookSidebar from "./BookSideBar";
+import BackButton from "@components/shared/BackButton";
 
 const BookDetailPage = () => {
   const { sku } = useParams();
@@ -50,6 +51,7 @@ const BookDetailPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <BackButton />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
