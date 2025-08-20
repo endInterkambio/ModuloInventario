@@ -207,7 +207,7 @@ export function LocationManagementTab({ searchTerm }: Props) {
           </div>
 
           <div className="mt-4 text-sm text-gray-500">
-            {booksWithLocations.length} libros encontrados con stock
+            {booksWithLocations.length} libros encontrados con ubicación existente
           </div>
           <PaginationBar />
         </>
