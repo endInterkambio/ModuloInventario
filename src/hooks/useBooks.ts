@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { uploadBooks } from "@/api/modules/books";
 import axiosInstance from "@/api/axiosInstance";
+import { BookDTO } from "@/types/BookDTO";
+import { endpoints } from "@/api/endpoints";
 
 export function useBooks(
   page: number = 0, // por defecto página 0
@@ -26,6 +28,19 @@ export function useBooks(
     placeholderData: (prev) => prev,
   });
 }
+
+export const useBook = (sku: string | undefined) => {
+  return useQuery<BookDTO | null>({
+    queryKey: ["book", sku],
+    queryFn: async () => {
+      const { data } = await axiosInstance.get<BookDTO>(
+        endpoints.getBookBySku(sku || "")
+      );
+      return data ?? null; // devuelve null si el backend responde vacío
+    },
+    enabled: !!sku,
+  });
+};
 
 export const useUploadBooks = () => {
   const queryClient = useQueryClient();

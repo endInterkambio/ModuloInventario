@@ -1,17 +1,18 @@
 import { toast } from "react-hot-toast";
-import { updateBook } from "@/api/modules/books";
 import { BookDTO } from "@/types/BookDTO";
 import { InfoRow } from "./InfoRow";
 import { Package, Tag, BookOpen, FileText, User } from "lucide-react";
 import { useEffect } from "react";
 import { useBookStore } from "@/stores/useBookStore";
+import { useUpdateBook } from "@/hooks/useUpdateBooks";
 
 interface Props {
   book: BookDTO;
 }
 
 const BookGeneralInfo = ({ book }: Props) => {
-  const { editedBook, setEditedBook, updateBookLocally } = useBookStore();
+  const { editedBook, setEditedBook } = useBookStore();
+  const updateBookMutation = useUpdateBook();
 
   console.log("editedBook", editedBook);
 
@@ -23,16 +24,10 @@ const BookGeneralInfo = ({ book }: Props) => {
   const isAdmin = true;
 
   const handleFieldUpdate = (field: keyof BookDTO, value: string | number) => {
-    // Actualización local inmediata
-    setEditedBook({ [field]: value });
-
-    // Enviar cambios al backend
     const patch = { [field]: value };
 
     toast.promise(
-      updateBook(book.id, patch).then((updatedBookFromServer) => {
-        updateBookLocally(updatedBookFromServer); // Sync global book list si hace falta
-      }),
+      updateBookMutation.mutateAsync({ id: book.id, data: patch }),
       {
         loading: "Guardando...",
         success: "Cambios guardados",

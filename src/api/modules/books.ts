@@ -8,6 +8,13 @@ export const fetchBooks = async (): Promise<Page<BookDTO>> => {
   return response.data;
 };
 
+export const getBookBySku = async (sku: string): Promise<BookDTO | null> => {
+  const { data } = await axiosInstance.get<BookDTO>(
+    `${endpoints.getBookBySku(sku)}`
+  );
+  return data ?? null;
+};
+
 export const uploadBooks = async (file: File): Promise<string> => {
   const formData = new FormData();
   formData.append("file", file);

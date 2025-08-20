@@ -2,16 +2,17 @@ import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { InfoRow } from "./InfoRow";
 import { BookDTO } from "@/types/BookDTO";
-import { updateBook } from "@/api/modules/books";
 import { useBookStore } from "@/stores/useBookStore";
 import { DollarSign } from "lucide-react";
+import { useUpdateBook } from "@/hooks/useUpdateBooks";
 
 interface Props {
   book: BookDTO;
 }
 
 const BookTransactions = ({ book }: Props) => {
-  const { editedBook, setEditedBook, updateBookLocally } = useBookStore();
+  const { editedBook, setEditedBook } = useBookStore();
+  const updateBookMutation = useUpdateBook();
 
   useEffect(() => {
     setEditedBook(book);
@@ -38,9 +39,7 @@ const BookTransactions = ({ book }: Props) => {
     setEditedBook({ [field]: parsedValue });
 
     toast.promise(
-      updateBook(book.id, { [field]: parsedValue }).then((updatedBook) => {
-        updateBookLocally(updatedBook);
-      }),
+      updateBookMutation.mutateAsync({ id: book.id, data: { [field]: parsedValue } }),
       {
         loading: "Guardando...",
         success: "Cambios guardados",

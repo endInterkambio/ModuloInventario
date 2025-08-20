@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import { useBookStore } from "@/stores/useBookStore";
 import { useState } from "react";
 import BookHeader from "./BookHeader";
 import BookTabs from "./BookTabs";
@@ -10,12 +9,22 @@ import BookHistory from "./BookHistory";
 import type { TabId } from "@/types/ui/BookDetailUI";
 import BookSidebar from "./BookSideBar";
 import BackButton from "@components/shared/BackButton";
+import { useBook } from "@/hooks/useBooks";
 
 const BookDetailPage = () => {
-  const { sku } = useParams();
-  const { books } = useBookStore();
-  const book = books.find((b) => b.sku === sku);
+  const { sku } = useParams<{ sku: string }>();
   const [activeTab, setActiveTab] = useState<TabId>("general");
+
+  // Obtener el libro por SKU desde el backend para persistencia de datos
+  const { data: book, isLoading, error } = useBook(sku);
+
+  if (isLoading) {
+    return <div className="p-10 text-center">Cargando libro...</div>;
+  }
+
+  if (error) {
+    return <div className="p-10 text-center">Error al cargar libro.</div>;
+  }
 
   if (!book) {
     return <div className="p-10 text-center">Libro no encontrado.</div>;
