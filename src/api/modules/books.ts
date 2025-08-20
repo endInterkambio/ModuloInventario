@@ -1,7 +1,7 @@
-import axiosInstance from '@/api/axiosInstance'
+import axiosInstance from "@/api/axiosInstance";
 import { endpoints } from "../endpoints";
 import { BookDTO } from "@/types/BookDTO";
-import { Page } from '@/types/Pagination';
+import { Page } from "@/types/Pagination";
 
 export const fetchBooks = async (): Promise<Page<BookDTO>> => {
   const response = await axiosInstance.get<Page<BookDTO>>(endpoints.books);
@@ -16,6 +16,11 @@ export const uploadBooks = async (file: File): Promise<string> => {
   return response.data;
 };
 
+// Delete book by ID
+export const deleteBook = async (id: number): Promise<void> => {
+  await axiosInstance.delete(`${endpoints.books}/${id}`);
+};
+
 // Update book by ID (Partial update)
 export const updateBook = async (
   id: number,
@@ -23,5 +28,4 @@ export const updateBook = async (
 ): Promise<BookDTO> => {
   const response = await axiosInstance.patch(`${endpoints.books}/${id}`, data);
   return response.data;
-}
-
+};

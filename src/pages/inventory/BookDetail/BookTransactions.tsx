@@ -49,32 +49,39 @@ const BookTransactions = ({ book }: Props) => {
     );
   };
 
+  const className =
+    "flex items-center justify-between py-2 border-b border-gray-100 group";
+
   return (
     <div className="space-y-1">
       <InfoRow
+        className={className}
         label="Precio de compra"
-        value={`${editedBook.purchasePrice?.toFixed(2) ?? 0.00}`}
+        value={`${editedBook.purchasePrice?.toFixed(2) ?? 0.0}`}
         icon={<span className="text-sm font-medium text-gray-500">S/.</span>}
         editable={isAdmin}
         onSave={(val) => handleFieldUpdate("purchasePrice", val)}
       />
       <InfoRow
+        className={className}
         label="Precio de venta"
-        value={`${editedBook.sellingPrice?.toFixed(2) ?? 0.00}`}
+        value={`${editedBook.sellingPrice?.toFixed(2) ?? 0.0}`}
         icon={<span className="text-sm font-medium text-gray-500">S/.</span>}
         editable={isAdmin}
         onSave={(val) => handleFieldUpdate("sellingPrice", val)}
       />
       <InfoRow
+        className={className}
         label="Precio de feria"
-        value={`${editedBook.fairPrice?.toFixed(2) ?? 0.00}`}
+        value={`${editedBook.fairPrice?.toFixed(2) ?? 0.0}`}
         icon={<span className="text-sm font-medium text-gray-500">S/.</span>}
         editable={isAdmin}
         onSave={(val) => handleFieldUpdate("fairPrice", val)}
       />
       <InfoRow
+        className={className}
         label="Precio de portada"
-        value={`${editedBook.coverPrice?.toFixed(2) ?? 0.00}`}
+        value={`${editedBook.coverPrice?.toFixed(2) ?? 0.0}`}
         icon={<DollarSign className="w-4 h-4" />}
         editable={isAdmin}
         onSave={(val) => handleFieldUpdate("coverPrice", val)}

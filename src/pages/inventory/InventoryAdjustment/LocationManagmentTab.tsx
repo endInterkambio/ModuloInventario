@@ -1,125 +1,218 @@
-// components/LocationManagementTab.tsx
-import { Pencil } from 'lucide-react';
-import { useState } from 'react';
-import toast from 'react-hot-toast';
+import { useEffect, useState } from "react";
+import { useBooks } from "@/hooks/useBooks";
+import { useBookStore } from "@/stores/useBookStore";
+import { InfoRow } from "../BookDetail/InfoRow";
+import { TransferModal } from "./TransferModal";
+import { BookDTO } from "@/types/BookDTO";
 
-interface BookLocation {
-  id: number;
-  title: string;
-  isbn: string;
-  author: string;
-  location: {
-    warehouse: string;
-    floor: string;
-    shelf: string;
-  };
+interface Props {
+  searchTerm: string;
 }
 
-const mockLocations: BookLocation[] = [
-  {
-    id: 1,
-    title: 'PJ Masks Save the Library!',
-    isbn: '9781481488334',
-    author: 'Style Guide',
-    location: { warehouse: 'Almacén Principal', floor: 'Piso 1', shelf: 'Est. A1' },
-  },
-  {
-    id: 2,
-    title: 'The Great Adventure',
-    isbn: '9781234567890',
-    author: 'Jane Doe',
-    location: { warehouse: 'Almacén Secundario', floor: 'Piso 2', shelf: 'Est. B2' },
-  },
-  {
-    id: 3,
-    title: 'Learning to Code',
-    isbn: '9780987654321',
-    author: 'John Smith',
-    location: { warehouse: 'Almacén Principal', floor: 'Piso 1', shelf: 'Est. C3' },
-  },
-];
+export function LocationManagementTab({ searchTerm }: Props) {
+  const {
+    currentPage,
+    books: storeBooks,
+    setBooks,
+    sortOrder,
+    itemsPerPage,
+  } = useBookStore();
 
-export function LocationManagementTab() {
-  const [books, setBooks] = useState<BookLocation[]>(mockLocations);
+  const [transferData, setTransferData] = useState<{
+    book: BookDTO;
+    fromLocationId: number;
+  } | null>(null);
 
-  const handleEditLocation = (id: number) => {
-    const book = books.find(b => b.id === id);
+  // 🔹 Hook para obtener libros desde backend
+  const {
+    data,
+    isLoading: booksLoading,
+    isError,
+  } = useBooks(currentPage - 1, itemsPerPage, sortOrder, searchTerm);
+
+  useEffect(() => {
+    if (!data) return;
+    setBooks(data);
+  }, [data, setBooks]);
+
+  const paginatedBooks = storeBooks ?? [];
+
+  // Ordenar las ubicaciones de cada libro por última actualización
+  const paginatedBooksWithSortedLocations = paginatedBooks.map((book) => ({
+    ...book,
+    locations: [...(book.locations ?? [])]
+      .filter((loc) => loc.stock > 0)
+      .sort(
+        (a, b) =>
+          new Date(b.lastUpdatedAt || 0).getTime() -
+          new Date(a.lastUpdatedAt || 0).getTime()
+      ),
+  }));
+
+  const totalLocations = paginatedBooksWithSortedLocations.reduce(
+    (acc, book) => acc + (book.locations?.length || 0),
+    0
+  );
+
+  // 🔹 Función para abrir modal de transferencia
+  const openTransferModal = (bookSku: string, fromLocationId: number) => {
+    const book = storeBooks.find((b) => b.sku === bookSku);
     if (!book) return;
+    setTransferData({ book, fromLocationId });
+  };
 
-    const warehouse = prompt('Nuevo almacén:', book.location.warehouse);
-    const floor = prompt('Nuevo piso:', book.location.floor);
-    const shelf = prompt('Nuevo estante:', book.location.shelf);
-
-    if (!warehouse || !floor || !shelf) {
-      toast.error('Ubicación inválida');
-      return;
-    }
-
-    setBooks(prev =>
-      prev.map(b =>
-        b.id === id
-          ? {
-              ...b,
-              location: { warehouse, floor, shelf },
-            }
-          : b
-      )
-    );
-    toast.success('Ubicación actualizada');
+  // 🔹 Función para cerrar modal
+  const closeTransferModal = () => {
+    setTransferData(null);
   };
 
   return (
     <div className="bg-white border rounded-lg shadow-sm p-4">
       <h2 className="text-lg font-semibold mb-4">Gestión de Ubicaciones</h2>
       <div className="text-sm text-gray-500 mb-4">
-        Esta funcionalidad permite gestionar la ubicación específica de cada libro dentro de los almacenes.
+        Esta funcionalidad permite gestionar la ubicación específica de cada
+        libro dentro de los almacenes.
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-sm">
-          <thead className="text-gray-500 uppercase border-b">
-            <tr className="text-left">
-              <th className="py-2">Libro</th>
-              <th className="py-2">Almacén</th>
-              <th className="py-2">Piso</th>
-              <th className="py-2">Estante</th>
-              <th className="py-2">Acciones</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y">
-            {books.map(book => (
-              <tr key={book.id} className="align-top">
-                <td className="py-4 pr-4">
-                  <div className="flex gap-4">
-                    <div className="w-12 h-16 bg-gray-200 rounded" />
-                    <div>
-                      <div className="font-medium text-gray-800">{book.title}</div>
-                      <div className="text-xs text-gray-500">ISBN: {book.isbn}</div>
-                      <div className="text-xs text-gray-400">{book.author}</div>
-                    </div>
-                  </div>
-                </td>
-                <td className="py-4 text-gray-700">{book.location.warehouse}</td>
-                <td className="py-4 text-gray-700">{book.location.floor}</td>
-                <td className="py-4 text-gray-700">{book.location.shelf}</td>
-                <td className="py-4">
-                  <button
-                    onClick={() => handleEditLocation(book.id)}
-                    className="flex items-center text-blue-600 text-sm hover:underline"
-                  >
-                    <Pencil className="w-4 h-4 mr-1" />
-                    Editar
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {booksLoading ? (
+        <div className="text-center text-gray-500 py-10">Cargando...</div>
+      ) : isError ? (
+        <div className="text-center text-red-500 py-10">
+          Error al cargar datos
+        </div>
+      ) : searchTerm.trim() === "" ? (
+        <div className="text-center text-gray-500 py-10">
+          Ingrese el libro a editar en la barra de búsqueda para mostrar
+          resultados
+        </div>
+      ) : totalLocations === 0 ? (
+        <div className="text-center text-gray-500 py-10">
+          No se encontraron resultados para "<strong>{searchTerm}</strong>".
+        </div>
+      ) : (
+        <>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead className="text-gray-500 uppercase border-b">
+                <tr className="text-left">
+                  <th className="py-2">Libro</th>
+                  <th className="py-2">Almacén</th>
+                  <th className="py-2">Ubicación específica</th>
+                  <th className="py-2">Stock</th>
+                  <th className="py-2">Estante</th>
+                  <th className="py-2">Piso</th>
+                  <th className="py-2">Condición</th>
+                  <th className="py-2">Última actualización</th>
+                  <th className="py-2">Acciones</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y">
+                {paginatedBooksWithSortedLocations.map((book) =>
+                  book.locations?.map((loc) => (
+                    <tr key={`${book.id}-${loc.id}`} className="align-top">
+                      <td className="py-4 pr-4">
+                        <div className="flex gap-4">
+                          <div className="w-12 h-16 bg-gray-200 rounded" />
+                          <div>
+                            <div className="w-80 font-medium text-gray-800 truncate">
+                              {book.title}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              SKU: {book.sku}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              ISBN: {book.isbn}
+                            </div>
+                            <div className="text-xs text-gray-400">
+                              {book.author}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-4 text-gray-700">
+                        <InfoRow
+                          key={loc.warehouse.id}
+                          className="py-4 w-16"
+                          label=""
+                          value={loc.warehouse.name || "-"}
+                        />
+                      </td>
+                      <td className="py-4 text-sm text-gray-700">
+                        <InfoRow
+                          className="py-4 w-16"
+                          label=""
+                          value={loc.locationType}
+                        />
+                      </td>
+                      <td className="py-4 text-sm text-gray-700">
+                        <InfoRow
+                          className="py-4 w-16"
+                          label=""
+                          value={loc.stock}
+                        />
+                      </td>
+                      <td className="py-4 text-sm text-gray-700">
+                        <InfoRow
+                          className="py-4 w-16"
+                          label=""
+                          value={loc.bookcase}
+                        />
+                      </td>
+                      <td className="py-4 text-sm text-gray-700">
+                        <InfoRow
+                          className="py-4 w-16"
+                          label=""
+                          value={loc.bookcaseFloor}
+                        />
+                      </td>
+                      <td className="py-4 text-sm text-gray-700">
+                        <InfoRow
+                          className="py-4 w-16"
+                          label=""
+                          value={loc.bookCondition || "-"}
+                        />
+                      </td>
+                      <td className="py-4 text-sm text-gray-700">
+                        <InfoRow
+                          className="py-4"
+                          label=""
+                          value={
+                            loc.lastUpdatedAt
+                              ? new Date(loc.lastUpdatedAt).toLocaleString()
+                              : "-"
+                          }
+                        />
+                      </td>
+                      <td className="flex items-center justify-center h-20">
+                        <button
+                          className="px-4 py-1 bg-blue-500 text-white rounded text-sm"
+                          onClick={() => openTransferModal(book.sku, loc.id)}
+                        >
+                          Transferir
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
 
-      <div className="mt-4 text-sm text-gray-500">
-        {books.length} libros encontrados
-      </div>
+          <div className="mt-4 text-sm text-gray-500">
+            {totalLocations} ubicaciones encontradas
+          </div>
+        </>
+      )}
+
+      {/* 🔹 Modal de transferencia */}
+      {transferData && (
+        <TransferModal
+          isOpen={!!transferData}
+          onClose={closeTransferModal}
+          fromLocationId={transferData.fromLocationId}
+          book={transferData.book}
+        />
+      )}
     </div>
   );
 }

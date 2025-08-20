@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import {
   ChevronDown,
@@ -8,6 +8,7 @@ import {
   ArrowUpDown,
   Download,
   Upload,
+  FilterIcon,
 } from "lucide-react";
 
 import { useUploadBooks } from "@/hooks/useBooks";
@@ -17,12 +18,17 @@ import ExportMenu from "./ExportMenu";
 import SubmenuItem from "./SubmenuItem";
 import ViewToggle from "./ViewToggle";
 import { SearchBar } from "@components/SearchBar/SearchBar";
+import FilterMenu from "./FilterMenu";
+import { useBookStore } from "@/stores/useBookStore";
 
 const HeaderNavigation: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
-
+  const { setMinStock } = useBookStore();
+  const [selectedStockFilter, setSelectedStockFilter] = useState(
+    "Artículos con existencias"
+  );
   const mutation = useUploadBooks();
 
   const handleImport = (file: File) => {
@@ -36,6 +42,22 @@ const HeaderNavigation: React.FC = () => {
     });
   };
 
+  useEffect(() => {
+    // Inicializamos el filtro por defecto al montar
+    setMinStock(1);
+  }, [setMinStock]);
+
+  const handleStockFilter = (type: string) => {
+    if (type === "Artículos con existencias") {
+      setMinStock(1); // filtrar solo con stock >= 1
+    } else if (type === "Todos los artículos") {
+      setMinStock(undefined); // desactiva el filtro
+    }
+
+    setSelectedStockFilter(type);
+    setIsDropdownOpen(false);
+  };
+
   return (
     <div className="flex items-center justify-between bg-white border-b border-gray-200 px-6 py-3">
       <div className="relative">
@@ -43,25 +65,26 @@ const HeaderNavigation: React.FC = () => {
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           className="flex items-center gap-2 text-gray-700 hover:text-gray-900 font-medium"
         >
-          <span>Todos los artículos</span>
+          <span>{selectedStockFilter}</span>
           <ChevronDown className="w-4 h-4" />
         </button>
         {isDropdownOpen && (
           <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
             <div className="py-1">
               {[
+                "Artículos con existencias",
                 "Todos los artículos",
                 "Artículos recientes",
                 "Mis artículos",
                 "Borradores",
               ].map((item) => (
-                <a
+                <button
                   key={item}
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  onClick={() => handleStockFilter(item)}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                 >
                   {item}
-                </a>
+                </button>
               ))}
             </div>
           </div>
@@ -97,6 +120,15 @@ const HeaderNavigation: React.FC = () => {
                     onHover={() => setActiveSubmenu("ordenar")}
                   />
                   {activeSubmenu === "ordenar" && <SortMenu />}
+                </div>
+                <div className="relative">
+                  <SubmenuItem
+                    icon={<FilterIcon className="w-4 h-4 text-blue-500" />}
+                    label="Filtrar por stock"
+                    isActive={activeSubmenu === "filtrar"}
+                    onHover={() => setActiveSubmenu("filtrar")}
+                  />
+                  {activeSubmenu === "filtrar" && <FilterMenu />}
                 </div>
 
                 <div className="relative">

@@ -1,11 +1,25 @@
 import { useBookStore } from "@/stores/useBookStore";
 import { IoMdClose } from "react-icons/io";
 
-export function SearchBar() {
-  const { searchTerm, setSearchTerm } = useBookStore();
+interface SearchBarProps {
+  searchTerm?: string;
+  setSearchTerm?: (term: string) => void;
+}
+
+export function SearchBar({
+  searchTerm: propTerm,
+  setSearchTerm: propSet,
+}: SearchBarProps) {
+  const { searchTerm: storeTerm, setSearchTerm: storeSet } = useBookStore();
+
+  const term = propTerm ?? storeTerm;
+  const setTerm = propSet ?? storeSet;
 
   return (
-    <form className="max-w-md w-full mx-auto">
+    <form
+      className="max-w-md w-full mx-auto"
+      onSubmit={(e) => e.preventDefault()}
+    >
       <label
         htmlFor="default-search"
         className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
@@ -33,16 +47,16 @@ export function SearchBar() {
         <input
           type="search"
           id="default-search"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          value={term}
+          onChange={(e) => setTerm(e.target.value)}
           className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="Buscar por título, autor, ISBN..."
           required
         />
-        {searchTerm && (
+        {term && (
           <button
             type="button"
-            onClick={() => setSearchTerm("")}
+            onClick={() => setTerm("")}
             className="absolute inset-y-0 end-0 flex items-center pe-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
             aria-label="Limpiar búsqueda"
           >

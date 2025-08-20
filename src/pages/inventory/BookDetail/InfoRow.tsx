@@ -1,11 +1,13 @@
 import { Pencil, Check } from "lucide-react";
 import { useState } from "react";
 // import { toast } from "react-hot-toast";
-import { InfoRowProps } from "@/types/ui/BookDetailUi";
+import { InfoRowProps } from "@/types/ui/BookDetailUI";
 
 export const InfoRow = ({
   label,
   value,
+  className,
+  inputClassName,
   icon,
   editable = false,
   onSave,
@@ -33,7 +35,7 @@ export const InfoRow = ({
 
   return (
     <div
-      className="flex items-center justify-between py-2 border-b border-gray-100 group"
+      className={`${className || ""}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -47,7 +49,7 @@ export const InfoRow = ({
           <>
             <input
               type="text"
-              className="border-b border-gray-300 focus:outline-none focus:border-blue-500 bg-transparent text-right"
+              className={`${inputClassName || ""}`}
               value={editedValue}
               onChange={(e) => setEditedValue(e.target.value)}
               onKeyDown={(e) => {
@@ -72,7 +74,7 @@ export const InfoRow = ({
         ) : (
           <>
             <span>
-              {stringValue.length > 50 ? `${stringValue.substring(0, 50)}...` : stringValue}
+              {stringValue.length > 30 ? `${stringValue.substring(0, 30)}...` : stringValue}
             </span>
             {editable && hovered && (
               <button

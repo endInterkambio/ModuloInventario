@@ -1,9 +1,11 @@
-export type TabId = "general" | "attributes" | "transactions" | "history";
+export type TabId = "general" | "locations" | "transactions" | "history";
 
 export interface InfoRowProps {
   label: string;
   value: string | number | undefined;
   icon?: React.ReactNode;
+  inputClassName?: string;
+  className?: string; 
   editable?: boolean;
   isEditing?: boolean;
   onEdit?: () => void;

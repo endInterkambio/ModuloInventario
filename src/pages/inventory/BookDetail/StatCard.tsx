@@ -1,4 +1,4 @@
-import { StatCardProps } from "@/types/ui/BookDetailUi";
+import { StatCardProps } from "@/types/ui/BookDetailUI";
 import { Package, Download } from "lucide-react";
 
 const StatCard = ({ title, stats, type }: StatCardProps) => {

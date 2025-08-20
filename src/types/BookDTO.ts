@@ -1,4 +1,18 @@
+import { BookStockLocationDTO } from "./BookStockLocationDTO";
 import { SimpleIdNameDTO } from "./SimpleIdNameDTO";
+
+/*export interface BookStockLocationDTO {
+  id: number;
+  bookSku: string;
+  warehouse: SimpleIdNameDTO;
+  bookcase: number;
+  bookcaseFloor: number;
+  stock: number;
+  lastStock: number;
+  bookCondition: string;
+  locationType: string;
+  lastUpdatedAt: string;
+}*/
 
 export interface BookDTO {
   id: number;
@@ -7,8 +21,6 @@ export interface BookDTO {
   isbn: string;
   author: string;
   publisher: string;
-  stock: number;
-  bookCondition: string;
   description: string;
   category: string;
   subjects: string;
@@ -23,9 +35,8 @@ export interface BookDTO {
   tag: string;
   filter: string;
   productSaleType: string;
-  bookcase: number;
-  bookcaseFloor: number;
-  warehouse: SimpleIdNameDTO | null;
+  totalStock: number;
+  locations: BookStockLocationDTO[];
   createdAt: string;
   updatedAt: string;
   createdBy: SimpleIdNameDTO | null;

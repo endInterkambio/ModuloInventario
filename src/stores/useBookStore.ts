@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { BookDTO } from "@/types/BookDTO";
 import { Page } from "@/types/Pagination";
+import { BookStockLocationDTO } from "@/types/BookStockLocationDTO";
 
 interface BookStore {
   // Core data
@@ -9,6 +10,7 @@ interface BookStore {
   itemsPerPage: number; // Items por página (opcional si backend maneja esto)
   totalPages: number; // Total de páginas
   totalElements: number;
+  locations: BookStockLocationDTO[];
 
   // Searching
   searchTerm: string;
@@ -16,7 +18,11 @@ interface BookStore {
 
   // Ordenamiento
   sortOrder: string;
+  minStock?: number;
+  maxStock?: number;
   setSortOrder: (order: string) => void;
+  setMinStock: (value: number | undefined) => void;
+  setMaxStock: (value: number | undefined) => void;
 
   // Book selection state
   selectedBooks: BookDTO[];
@@ -35,17 +41,31 @@ interface BookStore {
   setBooks: (booksPage: Page<BookDTO>) => void;
   setEditedBook: (updates: Partial<BookDTO>) => void;
   updateBookLocally: (updatedBook: BookDTO) => void;
+  updateBookLocationLocally: (
+    bookId: number,
+    locationId: number,
+    updates: Partial<Omit<BookStockLocationDTO, "stock">>
+  ) => void;
+  removeBookLocally: (id: number) => void;
+  addBookLocation: (bookId: number, location: BookStockLocationDTO) => void;
+  updateLocation: (
+    locationId: number,
+    updates: Partial<Omit<BookStockLocationDTO, "stock">>
+  ) => void;
 }
 
 export const useBookStore = create<BookStore>((set, get) => ({
   books: [],
+  locations: [],
   editedBook: {},
   currentPage: 1,
   itemsPerPage: 12,
   totalPages: 1,
   totalElements: 0,
   searchTerm: "",
-  sortOrder: "stock,desc", // Sorting by stock for default
+  sortOrder: "", // Sorting by title for default
+  setMinStock: (value) => set({ minStock: value }),
+  setMaxStock: (value) => set({ maxStock: value }),
   setSortOrder: (order) => set({ sortOrder: order, currentPage: 1 }),
   setSearchTerm: (term) => set({ searchTerm: term, currentPage: 1 }),
 
@@ -112,4 +132,52 @@ export const useBookStore = create<BookStore>((set, get) => ({
       editedBook: {},
     }));
   },
+
+  removeBookLocally: (id: number) => {
+    const { books, totalElements, totalPages, currentPage } = get();
+
+    const newContent = books.filter((b) => b.id !== id);
+
+    // Actualizamos directamente el estado con set()
+    set({
+      books: newContent,
+      totalElements: totalElements - 1,
+      totalPages, // opcional, si no cambia
+      currentPage, // opcional, si no cambia
+    });
+  },
+
+  updateBookLocationLocally: (bookId, locationId, updates) => {
+    set((state) => ({
+      books: state.books.map((book) =>
+        book.id === bookId
+          ? {
+              ...book, // nueva referencia del libro
+              locations: [
+                ...(book.locations || []).map((loc) =>
+                  loc.id === locationId ? { ...loc, ...updates } : loc
+                ),
+              ],
+            }
+          : book
+      ),
+    }));
+  },
+
+  addBookLocation: (bookId: number, location: BookStockLocationDTO) => {
+    set((state) => ({
+      books: state.books.map((book) =>
+        book.id === bookId
+          ? { ...book, locations: [...(book.locations || []), location] }
+          : book
+      ),
+    }));
+  },
+
+  updateLocation: (locationId, updates) =>
+    set((state) => ({
+      locations: state.locations.map((loc) =>
+        loc.id === locationId ? { ...loc, ...updates } : loc
+      ),
+    })),
 }));
