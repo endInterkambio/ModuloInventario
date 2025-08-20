@@ -14,8 +14,6 @@ const BookGeneralInfo = ({ book }: Props) => {
   const { editedBook, setEditedBook } = useBookStore();
   const updateBookMutation = useUpdateBook();
 
-  console.log("editedBook", editedBook);
-
   useEffect(() => {
     setEditedBook(book);
   }, [book, setEditedBook]);

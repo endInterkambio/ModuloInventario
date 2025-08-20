@@ -4,6 +4,7 @@ import { useBookStore } from "@/stores/useBookStore";
 import { InfoRow } from "../BookDetail/InfoRow";
 import { TransferModal } from "./TransferModal";
 import { BookDTO } from "@/types/BookDTO";
+import PaginationBar from "@components/shared/pagination/PaginationBar";
 
 interface Props {
   searchTerm: string;
@@ -23,45 +24,48 @@ export function LocationManagementTab({ searchTerm }: Props) {
     fromLocationId: number;
   } | null>(null);
 
-  // 🔹 Hook para obtener libros desde backend
+  // Hook para obtener libros desde backend
   const {
     data,
     isLoading: booksLoading,
     isError,
-  } = useBooks(currentPage - 1, itemsPerPage, sortOrder, searchTerm);
+  } = useBooks(0, 100, sortOrder, searchTerm);
 
   useEffect(() => {
     if (!data) return;
     setBooks(data);
   }, [data, setBooks]);
 
-  const paginatedBooks = storeBooks ?? [];
-
-  // Ordenar las ubicaciones de cada libro por última actualización
-  const paginatedBooksWithSortedLocations = paginatedBooks.map((book) => ({
+  // 1. Ordena ubicaciones de cada libro
+  const booksWithSortedLocations = (storeBooks ?? []).map((book) => ({
     ...book,
-    locations: [...(book.locations ?? [])]
-      .filter((loc) => loc.stock > 0)
-      .sort(
-        (a, b) =>
-          new Date(b.lastUpdatedAt || 0).getTime() -
-          new Date(a.lastUpdatedAt || 0).getTime()
-      ),
+    locations: [...(book.locations ?? [])].sort(
+      (a, b) =>
+        new Date(b.lastUpdatedAt || 0).getTime() -
+        new Date(a.lastUpdatedAt || 0).getTime()
+    ),
   }));
 
-  const totalLocations = paginatedBooksWithSortedLocations.reduce(
-    (acc, book) => acc + (book.locations?.length || 0),
-    0
+  // 2. Filtra solo libros con ubicaciones
+  const booksWithLocations = booksWithSortedLocations.filter(
+    (book) => book.locations && book.locations.length > 0
   );
 
-  // 🔹 Función para abrir modal de transferencia
+  // 3. Aplica paginación sobre los libros filtrados
+  const startIdx = (currentPage - 1) * itemsPerPage;
+  const paginatedBooks = booksWithLocations.slice(
+    startIdx,
+    startIdx + itemsPerPage
+  );
+
+  // Función para abrir modal de transferencia
   const openTransferModal = (bookSku: string, fromLocationId: number) => {
     const book = storeBooks.find((b) => b.sku === bookSku);
     if (!book) return;
     setTransferData({ book, fromLocationId });
   };
 
-  // 🔹 Función para cerrar modal
+  // Función para cerrar modal
   const closeTransferModal = () => {
     setTransferData(null);
   };
@@ -85,7 +89,7 @@ export function LocationManagementTab({ searchTerm }: Props) {
           Ingrese el libro a editar en la barra de búsqueda para mostrar
           resultados
         </div>
-      ) : totalLocations === 0 ? (
+      ) : booksWithLocations.length === 0 ? (
         <div className="text-center text-gray-500 py-10">
           No se encontraron resultados para "<strong>{searchTerm}</strong>".
         </div>
@@ -107,8 +111,8 @@ export function LocationManagementTab({ searchTerm }: Props) {
                 </tr>
               </thead>
               <tbody className="divide-y">
-                {paginatedBooksWithSortedLocations.map((book) =>
-                  book.locations?.map((loc) => (
+                {paginatedBooks.map((book) =>
+                  book.locations.map((loc) => (
                     <tr key={`${book.id}-${loc.id}`} className="align-top">
                       <td className="py-4 pr-4">
                         <div className="flex gap-4">
@@ -194,17 +198,22 @@ export function LocationManagementTab({ searchTerm }: Props) {
                     </tr>
                   ))
                 )}
+                {/*
+                  // TODO: Integrar la creación de ubicaciones para libros sin stock.
+                  // Por ahora, los libros sin ubicaciones no se muestran.
+                */}
               </tbody>
             </table>
           </div>
 
           <div className="mt-4 text-sm text-gray-500">
-            {totalLocations} ubicaciones encontradas
+            {booksWithLocations.length} libros encontrados con stock
           </div>
+          <PaginationBar />
         </>
       )}
 
-      {/* 🔹 Modal de transferencia */}
+      {/* Modal de transferencia */}
       {transferData && (
         <TransferModal
           isOpen={!!transferData}
