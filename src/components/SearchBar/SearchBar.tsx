@@ -6,14 +6,20 @@ interface SearchBarProps {
   setSearchTerm?: (term: string) => void;
 }
 
-export function SearchBar({ searchTerm: propTerm, setSearchTerm: propSet }: SearchBarProps) {
+export function SearchBar({
+  searchTerm: propTerm,
+  setSearchTerm: propSet,
+}: SearchBarProps) {
   const { searchTerm: storeTerm, setSearchTerm: storeSet } = useBookStore();
 
   const term = propTerm ?? storeTerm;
   const setTerm = propSet ?? storeSet;
 
   return (
-    <form className="max-w-md w-full mx-auto">
+    <form
+      className="max-w-md w-full mx-auto"
+      onSubmit={(e) => e.preventDefault()}
+    >
       <label
         htmlFor="default-search"
         className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
