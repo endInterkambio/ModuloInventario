@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { BookStockLocationDTO } from "@/types/BookDTO";
 import { updateLocationPartial } from "@/api/modules/bookLocations";
+import { BookStockLocationDTO } from "@/types/BookStockLocationDTO";
 
 export function useUpdateLocation({
   onStart,
