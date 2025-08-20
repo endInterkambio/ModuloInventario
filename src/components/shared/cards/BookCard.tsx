@@ -26,6 +26,8 @@ const BookCard = ({ book }: BookCardProps) => {
       />
       <h3 className="font-bold text-sm uppercase">{book.title}</h3>
       <p className="text-xs text-gray-600 mt-1">SKU: {book.sku || "N/A"}</p>
+      <p className="text-xs text-gray-600 mt-1">{book.publisher || ""}</p>
+      <p className="text-xs text-gray-600 mt-1">{book.format || ""}</p>
       <p className="text-sm text-green-600 mt-1">
         Stock: <span className="font-semibold">{book.totalStock} pcs</span>
       </p>
