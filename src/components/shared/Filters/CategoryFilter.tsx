@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { ChevronUp, ChevronDown, Filter } from "lucide-react";
-
-interface Props {
-  selected: string[];
-  onChange: (categories: string[]) => void;
-}
+import { useBookStore } from "@/stores/useBookStore";
 
 const CATEGORIES = [
   { id: "action", label: "Action & Adventure" },
@@ -26,16 +22,24 @@ const CATEGORIES = [
 
 const INITIAL_VISIBLE_CATEGORIES = 8;
 
-const CategoryFilter = ({ selected, onChange }: Props) => {
+const CategoryFilter = () => {
   const [showAll, setShowAll] = useState(false);
   const [expanded, setExpanded] = useState(true);
 
+  const { filters, setFilters } = useBookStore();
+
+  // Convert selected categories to a string for the store
+  const selected = filters.categories
+    ? filters.categories.split(",").filter(Boolean)
+    : [];
+
   const handleChange = (id: string) => {
-    onChange(
-      selected.includes(id)
-        ? selected.filter((c) => c !== id)
-        : [...selected, id]
-    );
+    const newSelected = selected.includes(id)
+      ? selected.filter((c) => c !== id)
+      : [...selected, id];
+
+    // guardar como string en el store
+    setFilters({ categories: newSelected.join(",") });
   };
 
   const visibleCategories = showAll
@@ -50,16 +54,25 @@ const CategoryFilter = ({ selected, onChange }: Props) => {
       >
         <h3 className="text-lg font-semibold text-gray-900">Category</h3>
         {expanded ? (
-          <ChevronUp size={20} className="text-gray-400 group-hover:text-gray-600" />
+          <ChevronUp
+            size={20}
+            className="text-gray-400 group-hover:text-gray-600"
+          />
         ) : (
-          <ChevronDown size={20} className="text-gray-400 group-hover:text-gray-600" />
+          <ChevronDown
+            size={20}
+            className="text-gray-400 group-hover:text-gray-600"
+          />
         )}
       </button>
 
       {expanded && (
         <div className="space-y-3">
           {visibleCategories.map((cat) => (
-            <label key={cat.id} className="flex items-center gap-3 cursor-pointer group">
+            <label
+              key={cat.id}
+              className="flex items-center gap-3 cursor-pointer group"
+            >
               <input
                 type="checkbox"
                 checked={selected.includes(cat.id)}
@@ -81,7 +94,12 @@ const CategoryFilter = ({ selected, onChange }: Props) => {
             </button>
           )}
 
-          <button className="flex items-center gap-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg">
+          <button
+            onClick={() => {
+              /* ya está aplicando en tiempo real con setFilters */
+            }}
+            className="flex items-center gap-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg"
+          >
             <Filter size={14} />
             Aplicar
           </button>

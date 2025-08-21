@@ -3,6 +3,12 @@ import { BookDTO } from "@/types/BookDTO";
 import { Page } from "@/types/Pagination";
 import { BookStockLocationDTO } from "@/types/BookStockLocationDTO";
 
+export interface BookFilters {
+  categories?: string;
+  minPrice?: string;
+  maxPrice?: string;
+}
+
 interface BookStore {
   // Core data
   books: BookDTO[]; // Libros recibidos desde backend paginado
@@ -11,6 +17,7 @@ interface BookStore {
   totalPages: number; // Total de páginas
   totalElements: number;
   locations: BookStockLocationDTO[];
+  filters: BookFilters;
 
   // Searching
   searchTerm: string;
@@ -23,6 +30,10 @@ interface BookStore {
   setSortOrder: (order: string) => void;
   setMinStock: (value: number | undefined) => void;
   setMaxStock: (value: number | undefined) => void;
+
+  // Filters
+  setFilters: (filters: BookFilters) => void;
+  clearFilters: () => void;
 
   // Book selection state
   selectedBooks: BookDTO[];
@@ -64,6 +75,11 @@ export const useBookStore = create<BookStore>((set, get) => ({
   totalElements: 0,
   searchTerm: "",
   sortOrder: "", // Sorting by title for default
+  filters: {
+    categories: "",
+    minPrice: "",
+    maxPrice: "",
+  },
   setMinStock: (value) => set({ minStock: value }),
   setMaxStock: (value) => set({ maxStock: value }),
   setSortOrder: (order) => set({ sortOrder: order, currentPage: 1 }),
@@ -180,4 +196,12 @@ export const useBookStore = create<BookStore>((set, get) => ({
         loc.id === locationId ? { ...loc, ...updates } : loc
       ),
     })),
+  setFilters: (newFilters) =>
+    set((state) => ({
+      filters: { ...state.filters, ...newFilters },
+    })),
+  clearFilters: () =>
+    set({
+      filters: { categories: "", minPrice: "", maxPrice: "" },
+    }),
 }));

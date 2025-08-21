@@ -1,14 +1,14 @@
-import { FilterState } from "./FilterSidebar";
+import { BookFilters } from "@/stores/useBookStore";
 
 interface Props {
-  filterState: FilterState;
+  filters: BookFilters;
 }
 
-const ActiveFiltersSummary = ({ filterState }: Props) => {
+const ActiveFiltersSummary = ({ filters }: Props) => {
   const hasActiveFilters =
-    filterState.selectedCategories.length > 0 ||
-    filterState.minPrice !== "" ||
-    filterState.maxPrice !== "";
+    (filters.categories && filters.categories.trim() !== "") ||
+    filters.minPrice !== undefined ||
+    filters.maxPrice !== undefined;
 
   if (!hasActiveFilters) return null;
 
@@ -16,14 +16,20 @@ const ActiveFiltersSummary = ({ filterState }: Props) => {
     <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
       <h4 className="font-medium text-blue-900 mb-2">Filtros activos:</h4>
       <div className="space-y-1 text-sm text-blue-800">
-        {filterState.selectedCategories.length > 0 && (
+        {filters.categories  && (
           <p>
-            Categorías: {filterState.selectedCategories.length} seleccionada
+            Categorías: {" "}
+            {
+              filters.categories
+              .split(",")
+              .filter((c) => c.trim() !== "").length
+            }{" "}
+            seleccionada(s)
           </p>
         )}
-        {(filterState.minPrice || filterState.maxPrice) && (
+        {(filters.minPrice !== undefined || filters.maxPrice !== undefined) && (
           <p>
-            Precio: {filterState.minPrice || "0"} - {filterState.maxPrice || "∞"}
+            Precio: {filters.minPrice ?? 0} - {filters.maxPrice ?? "∞"}
           </p>
         )}
       </div>

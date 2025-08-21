@@ -4,7 +4,7 @@ import { useBookStore } from "@/stores/useBookStore";
 import BookCard from "@/components/shared/cards/BookCard";
 import PaginationBar from "@/components/shared/pagination/PaginationBar";
 import HeaderNavigation from "@components/HeaderNavigation/HeaderNavigation";
-import FilterSidebar from "@components/shared/sidemenu/FilterSidebar";
+import FilterSidebar from "@components/shared/Filters/FilterSidebar";
 
 const InventoryPage = () => {
   const {
