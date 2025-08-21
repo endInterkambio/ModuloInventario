@@ -23,9 +23,10 @@ export function useBooks(
       if (search) params.search = search;
       if (minStock !== undefined) params.minStock = minStock;
       if (maxStock !== undefined) params.maxStock = maxStock;
+      if (filters.categories) params.categories = filters.categories;
+      if (filters.format) params.format = filters.format;
       if (filters.minPrice !== undefined) params.minPrice = filters.minPrice;
       if (filters.maxPrice !== undefined) params.maxPrice = filters.maxPrice;
-      if (filters.categories) params.categories = filters.categories;
 
       const res = await axiosInstance.get("/books", { params });
       return res.data;

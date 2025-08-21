@@ -3,28 +3,28 @@ import { ChevronUp, ChevronDown, LucideBrushCleaning } from "lucide-react";
 import { useBookStore } from "@/stores/useBookStore";
 
 const formats = [
-  { id: "audio-books", label: "Audio books" },
-  { id: "audio-cd", label: "Audio CD" },
-  { id: "board-book", label: "Board Book" },
-  { id: "book-club-edition", label: "Book club edition" },
+  { id: "audiobooks", label: "Audio books" },
+  { id: "audio cd", label: "Audio CD" },
+  { id: "board", label: "Board" },
+  { id: "book club edition", label: "Book club edition" },
   { id: "color", label: "Color" },
   { id: "hardback", label: "Hardback" },
   { id: "hardcover", label: "Hardcover" },
-  { id: "interactive-book", label: "Interactive book" },
-  { id: "lether", label: "Lether" },
-  { id: "library-binding", label: "Library binding" },
+  { id: "interactive", label: "Interactive" },
+  { id: "leather", label: "Leather" },
+  { id: "library", label: "Library binding" },
   { id: "magazine", label: "Magazine" },
   { id: "manga", label: "Manga" },
-  { id: "other-format", label: "Other format" },
+  { id: "other format", label: "Other format" },
   { id: "paperback", label: "Paperback" },
-  { id: "plastic-comb", label: "Plastic comb" },
+  { id: "plastic comb", label: "Plastic comb" },
   { id: "rustica", label: "Rústica" },
-  { id: "spiral-bound", label: "Spiral bound" },
+  { id: "spiral bound", label: "Spiral bound" },
   { id: "softcover", label: "Softcover" },
-  { id: "sticker-book", label: "Sticker book" },
-  { id: "trade-paperback", label: "Trade Paperback" },
-  { id: "tapa-blanda", label: "Tapa blanda" },
-  { id: "tapa-dura", label: "Tapa dura" },
+  { id: "sticker book", label: "Sticker book" },
+  { id: "trade paperback", label: "Trade Paperback" },
+  { id: "tapa blanda", label: "Tapa blanda" },
+  { id: "tapa dura", label: "Tapa dura" },
 ];
 
 const INITIAL_VISIBLE_FORMATS = 8;
@@ -36,8 +36,8 @@ const FormatFilter = () => {
   const { filters, setFilters, clearFilters } = useBookStore();
 
   // Convert selected categories to a string for the store
-  const selected = filters.categories
-    ? filters.categories.split(",").filter(Boolean)
+  const selected = filters.format
+    ? filters.format.split(",").filter(Boolean)
     : [];
 
   const handleChange = (id: string) => {
@@ -46,7 +46,7 @@ const FormatFilter = () => {
       : [...selected, id];
 
     // guardar como string en el store
-    setFilters({ categories: newSelected.join(",") });
+    setFilters({ format: newSelected.join(",") });
   };
 
   const visibleFormats = showAll
@@ -103,7 +103,7 @@ const FormatFilter = () => {
 
           <button
             onClick={() => {
-              clearFilters(["categories"]);
+              clearFilters(["format"]);
             }}
             className="flex items-center gap-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg"
           >
