@@ -4,6 +4,7 @@ import { useBookStore } from "@/stores/useBookStore";
 import BookCard from "@/components/shared/cards/BookCard";
 import PaginationBar from "@/components/shared/pagination/PaginationBar";
 import HeaderNavigation from "@components/HeaderNavigation/HeaderNavigation";
+import FilterSidebar from "@components/shared/sidemenu/FilterSidebar";
 
 const InventoryPage = () => {
   const {
@@ -41,8 +42,9 @@ const InventoryPage = () => {
   return (
     <>
       <HeaderNavigation />
-      <div className="flex flex-col min-h-screen">
-        <div className="flex-grow p-6">
+      <div className="flex min-h-screen">
+        <FilterSidebar />
+        <div className="flex-grow w-96 p-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
             {paginatedBooks.length > 0 ? (
               paginatedBooks.map((book) => (
@@ -55,12 +57,11 @@ const InventoryPage = () => {
             )}
           </div>
         </div>
-
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="w-full overflow-x-auto">
-            <div className="min-w-max sm:min-w-0">
-              <PaginationBar />
-            </div>
+      </div>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="w-full overflow-x-auto">
+          <div className="min-w-max sm:min-w-0">
+            <PaginationBar />
           </div>
         </div>
       </div>
