@@ -18,7 +18,7 @@ const CATEGORIES = [
   { id: "novels", label: "Novels" },
 ];
 
-const INITIAL_VISIBLE_CATEGORIES = 8;
+const INITIAL_VISIBLE_CATEGORIES = 5;
 
 const CategoryFilter = () => {
   const [showAll, setShowAll] = useState(false);

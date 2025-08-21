@@ -27,7 +27,7 @@ const formats = [
   { id: "tapa dura", label: "Tapa dura" },
 ];
 
-const INITIAL_VISIBLE_FORMATS = 8;
+const INITIAL_VISIBLE_FORMATS = 5;
 
 const FormatFilter = () => {
   const [showAll, setShowAll] = useState(false);
