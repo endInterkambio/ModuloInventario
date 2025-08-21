@@ -2,25 +2,34 @@ import { useState } from "react";
 import { ChevronUp, ChevronDown, LucideBrushCleaning } from "lucide-react";
 import { useBookStore } from "@/stores/useBookStore";
 
-const CATEGORIES = [
-  { id: "art", label: "Art" },
-  { id: "action", label: "Action & Adventure" },
-  { id: "biography", label: "Biography & Autobiography" },
-  { id: "board", label: "Board Books" },
-  { id: "children", label: "Children" },
-  { id: "comics", label: "Comics & Graphic Novels" },
-  { id: "fiction", label: "Fiction" },
-  { id: "health", label: "Health" },
-  { id: "history", label: "History & Geography" },
-  { id: "religion", label: "Inspirationals" },
-  { id: "learning", label: "Learning" },
-  { id: "music", label: "Music" },
-  { id: "novels", label: "Novels" },
+const formats = [
+  { id: "audio-books", label: "Audio books" },
+  { id: "audio-cd", label: "Audio CD" },
+  { id: "board-book", label: "Board Book" },
+  { id: "book-club-edition", label: "Book club edition" },
+  { id: "color", label: "Color" },
+  { id: "hardback", label: "Hardback" },
+  { id: "hardcover", label: "Hardcover" },
+  { id: "interactive-book", label: "Interactive book" },
+  { id: "lether", label: "Lether" },
+  { id: "library-binding", label: "Library binding" },
+  { id: "magazine", label: "Magazine" },
+  { id: "manga", label: "Manga" },
+  { id: "other-format", label: "Other format" },
+  { id: "paperback", label: "Paperback" },
+  { id: "plastic-comb", label: "Plastic comb" },
+  { id: "rustica", label: "Rústica" },
+  { id: "spiral-bound", label: "Spiral bound" },
+  { id: "softcover", label: "Softcover" },
+  { id: "sticker-book", label: "Sticker book" },
+  { id: "trade-paperback", label: "Trade Paperback" },
+  { id: "tapa-blanda", label: "Tapa blanda" },
+  { id: "tapa-dura", label: "Tapa dura" },
 ];
 
-const INITIAL_VISIBLE_CATEGORIES = 8;
+const INITIAL_VISIBLE_FORMATS = 8;
 
-const CategoryFilter = () => {
+const FormatFilter = () => {
   const [showAll, setShowAll] = useState(false);
   const [expanded, setExpanded] = useState(true);
 
@@ -40,9 +49,9 @@ const CategoryFilter = () => {
     setFilters({ categories: newSelected.join(",") });
   };
 
-  const visibleCategories = showAll
-    ? CATEGORIES
-    : CATEGORIES.slice(0, INITIAL_VISIBLE_CATEGORIES);
+  const visibleFormats = showAll
+    ? formats
+    : formats.slice(0, INITIAL_VISIBLE_FORMATS);
 
   return (
     <div className="mb-8">
@@ -50,7 +59,7 @@ const CategoryFilter = () => {
         onClick={() => setExpanded(!expanded)}
         className="flex items-center justify-between w-full text-left mb-4 group"
       >
-        <h3 className="text-lg font-semibold text-gray-900">Categoría</h3>
+        <h3 className="text-lg font-semibold text-gray-900">Formato</h3>
         {expanded ? (
           <ChevronUp
             size={20}
@@ -66,7 +75,7 @@ const CategoryFilter = () => {
 
       {expanded && (
         <div className="space-y-3">
-          {visibleCategories.map((cat) => (
+          {visibleFormats.map((cat) => (
             <label
               key={cat.id}
               className="flex items-center gap-3 cursor-pointer group"
@@ -83,7 +92,7 @@ const CategoryFilter = () => {
             </label>
           ))}
 
-          {CATEGORIES.length > INITIAL_VISIBLE_CATEGORIES && (
+          {formats.length > INITIAL_VISIBLE_FORMATS && (
             <button
               onClick={() => setShowAll(!showAll)}
               className="text-sm text-blue-600 hover:text-blue-800 font-medium"
@@ -107,4 +116,4 @@ const CategoryFilter = () => {
   );
 };
 
-export default CategoryFilter;
+export default FormatFilter;

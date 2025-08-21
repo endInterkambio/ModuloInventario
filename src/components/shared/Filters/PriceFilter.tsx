@@ -36,7 +36,7 @@ const PriceFilter = () => {
         onClick={() => setExpanded(!expanded)}
         className="flex items-center justify-between w-full text-left mb-4 group"
       >
-        <h3 className="text-lg font-semibold text-gray-900">PRICE</h3>
+        <h3 className="text-lg font-semibold text-gray-900">Precio</h3>
         {expanded ? (
           <ChevronUp
             size={20}
