@@ -7,54 +7,59 @@ import InventoryPage from "@/pages/inventory/InventoryPage";
 import BookDetailPage from "@/pages/inventory/BookDetail/BookDetailPage";
 import InventoryManagementPage from "@/pages/inventory/InventoryAdjustment/InventoryManagementPage";
 
-export const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Root />,
-    children: [
-      /// Dashboard Routes
-      {
-        path: "dashboard",
-        element: <DashboardLayout />,
-        children: [
-          {
-            path: "",
-            element: <Dashboard />,
-          },
-          {
-            path: "inventory",
-            element: <InventoryPage />,
-          },
-          {
-            path: "inventory/:sku",
-            element: <BookDetailPage />,
-          },
-          {
-            path: "inventoryAdjust",
-            element: <InventoryManagementPage />,
-          },
-          {
-            path: "purchase",
-            element: <PurchasePage />,
-          },
-          {
-            path: "selling",
-            element: <SellingPage />,
-          },
-        ],
-      },
+export const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <Root />,
+      children: [
+        /// Dashboard Routes
+        {
+          path: "dashboard",
+          element: <DashboardLayout />,
+          children: [
+            {
+              path: "",
+              element: <Dashboard />,
+            },
+            {
+              path: "inventory",
+              element: <InventoryPage />,
+            },
+            {
+              path: "inventory/:sku",
+              element: <BookDetailPage />,
+            },
+            {
+              path: "inventoryAdjust",
+              element: <InventoryManagementPage />,
+            },
+            {
+              path: "purchase",
+              element: <PurchasePage />,
+            },
+            {
+              path: "selling",
+              element: <SellingPage />,
+            },
+          ],
+        },
 
-      /// Auth Routes
-      {
-        path: "auth",
-        element: <AuthLayout />,
-        children: [
-          {
-            path: "login",
-            element: <LoginPage />,
-          },
-        ],
-      },
-    ],
-  },
-]);
+        /// Auth Routes
+        {
+          path: "auth",
+          element: <AuthLayout />,
+          children: [
+            {
+              path: "login",
+              element: <LoginPage />,
+            },
+          ],
+        },
+      ],
+    },
+  ],
+  {
+    basename: "/app",
+  }
+);
