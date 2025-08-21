@@ -33,7 +33,7 @@ interface BookStore {
 
   // Filters
   setFilters: (filters: BookFilters) => void;
-  clearFilters: () => void;
+  clearFilters: (key?: (keyof BookFilters)[]) => void;
 
   // Book selection state
   selectedBooks: BookDTO[];
@@ -200,8 +200,18 @@ export const useBookStore = create<BookStore>((set, get) => ({
     set((state) => ({
       filters: { ...state.filters, ...newFilters },
     })),
-  clearFilters: () =>
-    set({
-      filters: { categories: "", minPrice: "", maxPrice: "" },
+  clearFilters: (keys) =>
+    set((state) => {
+      if (!keys) {
+        // resetear todo
+        return { filters: { categories: "", minPrice: "", maxPrice: "" } };
+      }
+
+      // limpiar solo los keys especificados
+      const newFilters = { ...state.filters };
+      keys.forEach((key) => {
+        newFilters[key] = "";
+      });
+      return { filters: newFilters };
     }),
 }));

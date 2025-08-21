@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { ChevronUp, ChevronDown, Filter } from "lucide-react";
+import { ChevronUp, ChevronDown, LucideBrushCleaning } from "lucide-react";
 import { useBookStore } from "@/stores/useBookStore";
 
 const CATEGORIES = [
+  { id: "art", label: "Art" },
   { id: "action", label: "Action & Adventure" },
   { id: "biography", label: "Biography & Autobiography" },
   { id: "board", label: "Board Books" },
@@ -15,9 +16,6 @@ const CATEGORIES = [
   { id: "learning", label: "Learning" },
   { id: "music", label: "Music" },
   { id: "novels", label: "Novels" },
-  { id: "tweens-fiction", label: "Tweens Fiction" },
-  { id: "tweens-nonfiction", label: "Tweens Nonfiction" },
-  { id: "young-adult", label: "Young Adult Fiction" },
 ];
 
 const INITIAL_VISIBLE_CATEGORIES = 8;
@@ -26,7 +24,7 @@ const CategoryFilter = () => {
   const [showAll, setShowAll] = useState(false);
   const [expanded, setExpanded] = useState(true);
 
-  const { filters, setFilters } = useBookStore();
+  const { filters, setFilters, clearFilters } = useBookStore();
 
   // Convert selected categories to a string for the store
   const selected = filters.categories
@@ -96,12 +94,12 @@ const CategoryFilter = () => {
 
           <button
             onClick={() => {
-              /* ya está aplicando en tiempo real con setFilters */
+              clearFilters(["categories"]);
             }}
             className="flex items-center gap-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg"
           >
-            <Filter size={14} />
-            Aplicar
+            <LucideBrushCleaning size={14} />
+            Limpiar
           </button>
         </div>
       )}

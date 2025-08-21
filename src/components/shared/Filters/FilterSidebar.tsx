@@ -5,7 +5,7 @@ import ActiveFiltersSummary from "./ActiveFiltersSummary";
 import { useBookStore } from "@/stores/useBookStore";
 
 const FilterSidebar = () => {
-  const { filters, setFilters, clearFilters } = useBookStore();
+  const { filters, clearFilters } = useBookStore();
 
   const hasActiveFilters =
     (filters.categories && filters.categories.length > 0) ||
@@ -26,16 +26,7 @@ const FilterSidebar = () => {
 
         <div className="h-px bg-gray-200"></div>
 
-        <PriceFilter
-          minPrice={filters.minPrice?.toString() || ""}
-          maxPrice={filters.maxPrice?.toString() || ""}
-          onChange={(field, value) =>
-            setFilters({
-              ...filters,
-              [field]: value ? parseFloat(value) : undefined,
-            })
-          }
-        />
+        <PriceFilter />
       </div>
 
       <ActiveFiltersSummary filters={filters} />
