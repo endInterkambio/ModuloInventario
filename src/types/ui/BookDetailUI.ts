@@ -2,7 +2,7 @@ export type TabId = "general" | "locations" | "transactions" | "history";
 
 export interface InfoRowProps {
   label: string;
-  value: string | number | undefined;
+  value: string | number | undefined | string[];
   icon?: React.ReactNode;
   inputClassName?: string;
   className?: string; 

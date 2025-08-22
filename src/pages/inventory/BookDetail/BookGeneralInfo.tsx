@@ -22,7 +22,19 @@ const BookGeneralInfo = ({ book }: Props) => {
   const isAdmin = true;
 
   const handleFieldUpdate = (field: keyof BookDTO, value: string | number) => {
-    const patch = { [field]: value };
+    let normalizedValue: string | number | string[] = value;
+
+    // Normalizamos formatos y categorías a array
+    if (field === "formats" || field === "categories") {
+      if (typeof value === "string") {
+        normalizedValue = value
+          .split(",")
+          .map((v) => v.trim())
+          .filter((v) => v.length > 0);
+      }
+    }
+
+    const patch = { [field]: normalizedValue } as Partial<BookDTO>;
 
     toast.promise(
       updateBookMutation.mutateAsync({ id: book.id, data: patch }),
