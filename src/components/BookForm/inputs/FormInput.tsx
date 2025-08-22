@@ -1,4 +1,4 @@
-interface FormInputProps<T extends string | number> {
+interface FormInputProps<T extends string | number | string[]> {
   label: string;
   value: T;
   onChange: (value: T) => void;
@@ -8,7 +8,7 @@ interface FormInputProps<T extends string | number> {
   min?: string;
 }
 
-export const FormInput = <T extends string | number>({
+export const FormInput = <T extends string | number | string[]>({
   label,
   value,
   onChange,

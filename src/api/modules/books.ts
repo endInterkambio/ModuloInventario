@@ -15,6 +15,12 @@ export const getBookBySku = async (sku: string): Promise<BookDTO | null> => {
   return data ?? null;
 };
 
+// Create new book
+export const createBook = async (book: Omit<BookDTO, "id">): Promise<BookDTO> => {
+  const response = await axiosInstance.post<BookDTO>(endpoints.books, book);
+  return response.data;
+};
+
 export const uploadBooks = async (file: File): Promise<string> => {
   const formData = new FormData();
   formData.append("file", file);

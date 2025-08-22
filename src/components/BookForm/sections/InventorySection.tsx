@@ -1,4 +1,4 @@
-import { FormInput } from '../inputs/FormInput';
+//import { FormInput } from '../inputs/FormInput';
 import { SectionHeader } from '../SectionHeader';
 import { Plus } from 'lucide-react';
 import { StockLocationItem } from '../StockLocationItem';
@@ -22,19 +22,19 @@ interface Props {
 
 export const InventorySection = ({
   formData,
-  onFieldChange,
+  //onFieldChange,
   onLocationChange,
   onRemoveLocation,
 }: Props) => (
   <div className="space-y-6">
     <SectionHeader title="Inventario" icon={<Plus />} />
-    <FormInput
+    {/* <FormInput
       label="Stock Total"
       type="number"
       min="0"
       value={formData.totalStock}
       onChange={(value) => onFieldChange('totalStock', value)}
-    />
+    /> */}
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium text-gray-700">Ubicaciones de Stock</h3>

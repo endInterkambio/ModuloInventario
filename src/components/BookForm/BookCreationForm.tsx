@@ -5,6 +5,7 @@ import { BasicInfoSection } from "./sections/BasicInfoSection";
 import { PricingSection } from "./sections/PricingSection";
 import { InventorySection } from "./sections/InventorySection";
 import { BookStockLocationDTO } from "@/types/BookStockLocationDTO";
+import { useCreateBook } from "@/hooks/useCreateBook";
 
 export const BookCreationForm = () => {
   const [activeSection, setActiveSection] = useState<FormSectionId>("basic");
@@ -16,9 +17,9 @@ export const BookCreationForm = () => {
     author: "",
     publisher: "",
     description: "",
-    categories: "",
+    categories: [],
     subjects: "",
-    formats: "",
+    formats: [],
     language: "",
     imageUrl: "",
     websiteUrl: "",
@@ -29,11 +30,13 @@ export const BookCreationForm = () => {
     tag: "",
     filter: "",
     productSaleType: "",
-    totalStock: 0,
-    locations: [],
+    totalStock: 0, // calculado en backend (no se envía)
+    locations: [], // se crean aparte (no se envía aquí)
   });
 
-  // 🔹 Tipado seguro para campos simples
+  const { createBook, isCreatingBook } = useCreateBook();
+
+  // campos simples
   const handleFieldChange = <K extends keyof BookFormData>(
     name: K,
     value: BookFormData[K]
@@ -41,17 +44,15 @@ export const BookCreationForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // 🔹 Tipado seguro para locations
-  const handleLocationChange = <
-    K extends keyof BookStockLocationDTO
-  >(
+  // locations solo en memoria
+  const handleLocationChange = <K extends keyof BookStockLocationDTO>(
     index: number,
     field: K,
     value: BookStockLocationDTO[K]
   ) => {
-    const updatedLocations = [...formData.locations];
-    updatedLocations[index] = { ...updatedLocations[index], [field]: value };
-    setFormData((prev) => ({ ...prev, locations: updatedLocations }));
+    const updated = [...formData.locations];
+    updated[index] = { ...updated[index], [field]: value };
+    setFormData((prev) => ({ ...prev, locations: updated }));
   };
 
   const removeLocation = (index: number) => {
@@ -61,9 +62,68 @@ export const BookCreationForm = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const resetForm = () =>
+    setFormData({
+      sku: "",
+      title: "",
+      isbn: "",
+      author: "",
+      publisher: "",
+      description: "",
+      categories: [],
+      subjects: "",
+      formats: [],
+      language: "",
+      imageUrl: "",
+      websiteUrl: "",
+      coverPrice: 0,
+      purchasePrice: 0,
+      sellingPrice: 0,
+      fairPrice: 0,
+      tag: "",
+      filter: "",
+      productSaleType: "",
+      totalStock: 0,
+      locations: [],
+    });
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Datos para enviar al backend:", formData);
+    try {
+      // 🔹 Payload sin totalStock ni locations
+      type BookPayload = Omit<BookFormData, "totalStock" | "locations"> & {
+        categories: string[];
+        formats: string[];
+        createdBy: { id: number, name: string } | null;
+      };
+
+      // 🔹 Construimos explícitamente el payload
+      const { totalStock: _, locations: __, ...rest } = formData;
+
+      const bookPayload: BookPayload = {
+        ...rest,
+        categories: Array.isArray(rest.categories)
+          ? rest.categories
+          : String(rest.categories)
+              .split(",")
+              .map((c) => c.trim())
+              .filter(Boolean),
+        formats: Array.isArray(rest.formats)
+          ? rest.formats
+          : String(rest.formats)
+              .split(",")
+              .map((f) => f.trim())
+              .filter(Boolean),
+        createdBy: { id: 10, name: "invitado" },
+      };
+
+      await createBook(bookPayload);
+
+      console.log("Libro creado:", bookPayload);
+      resetForm();
+    } catch (err) {
+      console.error("Error creando libro:", err);
+    }
   };
 
   const renderCurrentSection = () => {
@@ -100,7 +160,9 @@ export const BookCreationForm = () => {
         {/* Header */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-8">
           <div className="px-6 py-4 border-b border-gray-200">
-            <h1 className="text-2xl font-bold text-gray-900">Crear Nuevo Libro</h1>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Crear Nuevo Libro
+            </h1>
             <p className="text-gray-600 mt-1">
               Complete la información del libro para agregarlo al catálogo
             </p>
@@ -140,16 +202,22 @@ export const BookCreationForm = () => {
           <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg flex items-center justify-end space-x-4">
             <button
               type="button"
+              onClick={resetForm}
               className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="flex items-center space-x-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              disabled={isCreatingBook}
+              className={`flex items-center space-x-2 px-6 py-2 rounded-lg transition-colors ${
+                isCreatingBook
+                  ? "bg-gray-400 text-white cursor-not-allowed"
+                  : "bg-blue-600 text-white hover:bg-blue-700"
+              }`}
             >
               <Save className="w-4 h-4" />
-              <span>Guardar Libro</span>
+              <span>{isCreatingBook ? "Guardando..." : "Guardar Libro"}</span>
             </button>
           </div>
         </form>
