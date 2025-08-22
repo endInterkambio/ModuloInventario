@@ -6,6 +6,7 @@ import { Dashboard, LoginPage, PurchasePage, SellingPage } from "../pages";
 import BookDetailPage from "@/pages/inventory/BookDetail/BookDetailPage";
 import InventoryManagementPage from "@/pages/inventory/InventoryAdjustment/InventoryManagementPage";
 import BooksPage from "@/pages/inventory/BooksPage";
+import { BookCreationForm } from "@components/BookForm/BookCreationForm";
 
 export const router = createBrowserRouter(
   [
@@ -29,6 +30,10 @@ export const router = createBrowserRouter(
                 {
                   path: ":sku",
                   element: <BookDetailPage />,
+                },
+                {
+                  path: "new",
+                  element: <BookCreationForm />,
                 },
               ],
             },

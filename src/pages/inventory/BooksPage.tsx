@@ -29,6 +29,7 @@ const BooksPage = () => {
   );
 
   const location = useLocation();
+  const isNewBook = location.pathname.endsWith("/new");
   const isDetailView = location.pathname.match(/^\/dashboard\/inventory\/.+$/);
 
   // Sincroniza libros solo si cambia realmente la página o contenido
@@ -51,8 +52,8 @@ const BooksPage = () => {
         {!isDetailView && <FilterSidebar />}
 
         <div className={`flex-grow w-96 p-6 ${isDetailView ? "mx-auto" : ""}`}>
-          {isDetailView ? (
-            <Outlet /> // BookDetailPage
+          {isDetailView || isNewBook ? (
+            <Outlet /> // BookDetailPage o BookCreationForm
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
               {paginatedBooks.length > 0 ? (
