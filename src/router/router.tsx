@@ -3,9 +3,9 @@ import { createBrowserRouter } from "react-router-dom";
 import { Root } from "../Root";
 import { AuthLayout, DashboardLayout } from "../layouts";
 import { Dashboard, LoginPage, PurchasePage, SellingPage } from "../pages";
-import InventoryPage from "@/pages/inventory/InventoryPage";
 import BookDetailPage from "@/pages/inventory/BookDetail/BookDetailPage";
 import InventoryManagementPage from "@/pages/inventory/InventoryAdjustment/InventoryManagementPage";
+import BooksPage from "@/pages/inventory/BooksPage";
 
 export const router = createBrowserRouter(
   [
@@ -24,11 +24,13 @@ export const router = createBrowserRouter(
             },
             {
               path: "inventory",
-              element: <InventoryPage />,
-            },
-            {
-              path: "inventory/:sku",
-              element: <BookDetailPage />,
+              element: <BooksPage />,
+              children: [
+                {
+                  path: ":sku",
+                  element: <BookDetailPage />,
+                },
+              ],
             },
             {
               path: "inventoryAdjust",

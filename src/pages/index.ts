@@ -1,7 +1,7 @@
 
 
 export * from './dashboard/DashboardPage';
-export * from './inventory/InventoryPage';
+export * from './inventory/BooksPage';
 export * from './SellingPage';
 export * from './PurchasePage';
 
