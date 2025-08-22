@@ -24,7 +24,7 @@ export function useBooks(
       if (minStock !== undefined) params.minStock = minStock;
       if (maxStock !== undefined) params.maxStock = maxStock;
       if (filters.categories) params.categories = filters.categories;
-      if (filters.format) params.format = filters.format;
+      if (filters.formats) params.formats = filters.formats;
       if (filters.minPrice !== undefined) params.minPrice = filters.minPrice;
       if (filters.maxPrice !== undefined) params.maxPrice = filters.maxPrice;
 

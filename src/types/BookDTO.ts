@@ -9,9 +9,9 @@ export interface BookDTO {
   author: string;
   publisher: string;
   description: string;
-  category: string;
+  categories: string;
   subjects: string;
-  format: string;
+  formats: string;
   language: string;
   imageUrl: string;
   websiteUrl: string;

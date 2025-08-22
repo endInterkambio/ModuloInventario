@@ -5,25 +5,47 @@ import toast from "react-hot-toast";
 
 const PriceFilter = () => {
   const [expanded, setExpanded] = useState(true);
-  const { filters, setFilters, clearFilters} = useBookStore();
+  const { filters, setFilters, clearFilters } = useBookStore();
 
   const handleBlur = () => {
-    if (
-      filters.maxPrice &&
-      filters.minPrice &&
-      filters.maxPrice < filters.minPrice
-    ) {
-      toast.error(
-        "El precio máximo debe ser mayor o igual que el precio mínimo."
-      );
-      setFilters({
-        ...filters,
-        maxPrice: undefined, // Resetea el precio máximo si es inválido
-      });
-    }
+    if (filters.minPrice || filters.maxPrice)
+      if (
+        filters.maxPrice &&
+        filters.minPrice &&
+        filters.maxPrice < filters.minPrice
+      ) {
+        toast.error(
+          "El precio máximo debe ser mayor o igual que el precio mínimo."
+        );
+        setFilters({
+          ...filters,
+          maxPrice: undefined, // Resetea el precio máximo si es inválido
+        });
+      }
   };
 
   const handleChange = (key: "minPrice" | "maxPrice", value: string) => {
+    const min = filters.minPrice ? parseFloat(filters.minPrice) : undefined;
+    const max = filters.maxPrice ? parseFloat(filters.maxPrice) : undefined;
+
+    // ✅ Validación de negativos
+    if (min !== undefined && min < 0) {
+      toast.error("El precio mínimo no puede ser menor a 0.");
+      setFilters({
+        ...filters,
+        minPrice: undefined,
+      });
+      return;
+    }
+
+    if (max !== undefined && max < 0) {
+      toast.error("El precio máximo no puede ser menor a 0.");
+      setFilters({
+        ...filters,
+        maxPrice: undefined,
+      });
+      return;
+    }
     setFilters({
       ...filters,
       [key]: value ? Number(value) : undefined,
@@ -59,6 +81,7 @@ const PriceFilter = () => {
               </label>
               <input
                 type="number"
+                min={1}
                 value={filters.minPrice || ""}
                 onChange={(e) => handleChange("minPrice", e.target.value)}
                 onBlur={handleBlur}
@@ -70,6 +93,7 @@ const PriceFilter = () => {
                 Max S/.:
               </label>
               <input
+                min={1}
                 type="number"
                 value={filters.maxPrice ?? ""}
                 onChange={(e) => handleChange("maxPrice", e.target.value)}

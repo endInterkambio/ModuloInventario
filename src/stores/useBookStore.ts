@@ -5,7 +5,7 @@ import { BookStockLocationDTO } from "@/types/BookStockLocationDTO";
 
 export interface BookFilters {
   categories?: string;
-  format?: string;
+  formats?: string;
   minPrice?: string;
   maxPrice?: string;
 }

@@ -88,10 +88,10 @@ const BookGeneralInfo = ({ book }: Props) => {
       <InfoRow
         className={className}
         label="Categoría"
-        value={editedBook.category ?? "N/A"}
+        value={editedBook.categories ?? "N/A"}
         icon={<Tag className="w-4 h-4" />}
         editable={isAdmin}
-        onSave={(val) => handleFieldUpdate("category", val)}
+        onSave={(val) => handleFieldUpdate("categories", val)}
       />
       <InfoRow
         className={className}
@@ -104,10 +104,10 @@ const BookGeneralInfo = ({ book }: Props) => {
       <InfoRow
         className={className}
         label="Formato"
-        value={editedBook.format ?? "N/A"}
+        value={editedBook.formats ?? "N/A"}
         icon={<FileText className="w-4 h-4" />}
         editable={isAdmin}
-        onSave={(val) => handleFieldUpdate("format", val)}
+        onSave={(val) => handleFieldUpdate("formats", val)}
       />
       <InfoRow
         className={className}

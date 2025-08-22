@@ -6,7 +6,7 @@ import { useBookStore } from "@/stores/useBookStore";
 import FormatFilter from "./FormatFilter";
 
 const FilterSidebar = () => {
-  const { filters, clearFilters } = useBookStore();
+  const { filters } = useBookStore();
 
   const hasActiveFilters =
     (filters.categories && filters.categories.length > 0) ||
@@ -17,7 +17,6 @@ const FilterSidebar = () => {
     <div className="w-80 bg-white border-r border-gray-200 h-full p-6 overflow-y-auto">
       <div className="space-y-6">
         <ClearFilters
-          clearAll={clearFilters}
           hasActiveFilters={hasActiveFilters}
         />
 

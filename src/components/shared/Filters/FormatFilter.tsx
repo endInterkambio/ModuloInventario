@@ -15,7 +15,7 @@ const formats = [
   { id: "library", label: "Library binding" },
   { id: "magazine", label: "Magazine" },
   { id: "manga", label: "Manga" },
-  { id: "other format", label: "Other format" },
+  { id: "other formats", label: "Other formats" },
   { id: "paperback", label: "Paperback" },
   { id: "plastic comb", label: "Plastic comb" },
   { id: "rustica", label: "Rústica" },
@@ -36,8 +36,8 @@ const FormatFilter = () => {
   const { filters, setFilters, clearFilters } = useBookStore();
 
   // Convert selected categories to a string for the store
-  const selected = filters.format
-    ? filters.format.split(",").filter(Boolean)
+  const selected = filters.formats
+    ? filters.formats.split(",").filter(Boolean)
     : [];
 
   const handleChange = (id: string) => {
@@ -46,7 +46,7 @@ const FormatFilter = () => {
       : [...selected, id];
 
     // guardar como string en el store
-    setFilters({ format: newSelected.join(",") });
+    setFilters({ formats: newSelected.join(",") });
   };
 
   const visibleFormats = showAll
@@ -103,7 +103,7 @@ const FormatFilter = () => {
 
           <button
             onClick={() => {
-              clearFilters(["format"]);
+              clearFilters(["formats"]);
             }}
             className="flex items-center gap-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg"
           >

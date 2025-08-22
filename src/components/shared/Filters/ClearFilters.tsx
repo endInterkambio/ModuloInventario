@@ -1,14 +1,16 @@
+import { useBookStore } from "@/stores/useBookStore";
 import { RotateCcw } from "lucide-react";
 
 interface Props {
-  clearAll: () => void;
   hasActiveFilters: boolean;
 }
 
-const ClearFilters = ({ clearAll, hasActiveFilters }: Props) => {
+const ClearFilters = ({ hasActiveFilters }: Props) => {
+  const clearFilters = useBookStore((state) => state.clearFilters);
+
   return (
     <button
-      onClick={clearAll}
+      onClick={() => clearFilters()}
       className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800 transition-colors mb-6 group"
       disabled={!hasActiveFilters}
     >
