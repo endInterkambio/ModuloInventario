@@ -10,6 +10,7 @@ import type { TabId } from "@/types/ui/BookDetailUI";
 import BookSidebar from "./BookSideBar";
 import BackButton from "@components/shared/BackButton";
 import { useBook } from "@/hooks/useBooks";
+import NewButton from "@components/NewButton";
 
 const BookDetailPage = () => {
   const { sku } = useParams<{ sku: string }>();
@@ -60,7 +61,10 @@ const BookDetailPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <BackButton />
+      <div className="flex justify-between items-start px-4 pt-4">
+        <BackButton />
+        <NewButton />
+      </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">

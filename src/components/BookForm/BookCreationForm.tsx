@@ -6,6 +6,7 @@ import { PricingSection } from "./sections/PricingSection";
 import { InventorySection } from "./sections/InventorySection";
 import { BookStockLocationDTO } from "@/types/BookStockLocationDTO";
 import { useCreateBook } from "@/hooks/useCreateBook";
+import BackButton from "@components/shared/BackButton";
 
 export const BookCreationForm = () => {
   const [activeSection, setActiveSection] = useState<FormSectionId>("basic");
@@ -94,10 +95,11 @@ export const BookCreationForm = () => {
       type BookPayload = Omit<BookFormData, "totalStock" | "locations"> & {
         categories: string[];
         formats: string[];
-        createdBy: { id: number, name: string } | null;
+        createdBy: { id: number; name: string } | null;
       };
 
       // 🔹 Construimos explícitamente el payload
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { totalStock: _, locations: __, ...rest } = formData;
 
       const bookPayload: BookPayload = {
@@ -156,6 +158,7 @@ export const BookCreationForm = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <BackButton className="relative top-5 left-5" />
       <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-8">

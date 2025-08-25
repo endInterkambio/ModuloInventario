@@ -23,7 +23,7 @@ export const UploadButton = () => {
   const BASE_URL =
     import.meta.env.MODE === "development"
       ? "http://localhost:5173/app"
-      : "https://el.gusanitolector.pe/app/isbn/";
+      : "https://el.gusanitolector.pe/app/isbn";
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.currentTarget.files?.[0];

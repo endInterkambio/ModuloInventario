@@ -45,7 +45,7 @@ const BooksPage = () => {
 
   return (
     <>
-      <HeaderNavigation />
+      {!isDetailView && <HeaderNavigation />}
 
       <div className="flex min-h-screen">
         {/* Mostrar sidebar solo si no es detalle */}

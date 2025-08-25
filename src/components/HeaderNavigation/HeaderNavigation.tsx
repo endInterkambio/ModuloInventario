@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import {
   ChevronDown,
-  Plus,
   MoreHorizontal,
   RotateCcw,
   ArrowUpDown,
@@ -20,7 +19,7 @@ import ViewToggle from "./ViewToggle";
 import { SearchBar } from "@components/SearchBar/SearchBar";
 import FilterMenu from "./FilterMenu";
 import { useBookStore } from "@/stores/useBookStore";
-import { useNavigate } from "react-router-dom";
+import NewButton from "@components/NewButton";
 
 const HeaderNavigation: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -31,7 +30,6 @@ const HeaderNavigation: React.FC = () => {
     "Artículos con existencias"
   );
   const mutation = useUploadBooks();
-  const navigate = useNavigate();
 
   const handleImport = (file: File) => {
     toast.promise(mutation.mutateAsync(file), {
@@ -98,13 +96,7 @@ const HeaderNavigation: React.FC = () => {
       <div className="flex items-center gap-3">
         <ViewToggle />
 
-        <button
-          onClick={() => navigate("/dashboard/inventory/new")}
-          className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Nuevo
-        </button>
+        <NewButton />
 
         <div className="relative">
           <button

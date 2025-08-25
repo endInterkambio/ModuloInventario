@@ -11,7 +11,7 @@ const BackButton = ({
 }: BackButtonProps) => {
   const navigate = useNavigate();
   return (
-    <div className="relative left-5 pb-4 xl:pb-0 top-5 mt-2 ml-2 z-10">
+    <div className="">
       <button
         type="button"
         onClick={() => navigate(-1)}
