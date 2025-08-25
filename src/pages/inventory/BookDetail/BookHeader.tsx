@@ -54,7 +54,7 @@ const BookHeader = ({ book }: Props) => {
             </span>
             <span className="flex items-center gap-1">
               <Tag className="b-4 h-4" />
-              {book.category}
+              {book.categories}
             </span>
           </div>
           <p
@@ -63,14 +63,6 @@ const BookHeader = ({ book }: Props) => {
               __html: DOMPurify.sanitize(book.description || "Sin descripción"),
             }}
           />
-          <div className="flex items-center gap-2 mt-2">
-            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-              Disponible
-            </span>
-            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-              {book.format}
-            </span>
-          </div>
         </div>
         <button
           onClick={() => handleDelete(book.id)}
