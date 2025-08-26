@@ -9,5 +9,6 @@ export const endpoints = {
   bookStockAdjustments: "/book-stock-adjustments",
   inventoryTransactions: "/inventory-transactions",
   uploadImage: "/upload/image",
+  exportBooks: "books/export"
   // Se agregarán más cuando estén todas las entidad construidas y asignada a la API
 };
