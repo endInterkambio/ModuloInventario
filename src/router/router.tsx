@@ -10,7 +10,7 @@ import { BookCreationForm } from "@components/BookForm/BookCreationForm";
 import { SaleOrdersPage } from "@/pages/sales/SaleOrders";
 import { PaymentReceivedPage } from "@/pages/sales/PaymentReceivedPage";
 import { CustomerPage } from "@/pages/sales/CustomerPage";
-import { SellingPage } from "@/pages/SellingPage";
+import SalesOrderForm from "@components/SalesOrderForm/SalesOrderForm";
 
 export const router = createBrowserRouter(
   [
@@ -54,10 +54,10 @@ export const router = createBrowserRouter(
               element: <SaleOrdersPage />,
               children: [
                 {
-                  path: ":newSaleOrder",
-                  element: <SellingPage/>
-                }
-              ]
+                  path: "newSaleOrder",
+                  element: <SalesOrderForm />,
+                },
+              ],
             },
             {
               path: "paymentReceived",

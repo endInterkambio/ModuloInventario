@@ -2,8 +2,27 @@ import { SearchBar } from "@components/SearchBar/SearchBar";
 import { InfoRow } from "../inventory/BookDetail/InfoRow";
 import NewButton from "@components/NewButton";
 import { DropdownMenu } from "@components/HeaderNavigation/DropdownMenu";
+import { useLocation } from "react-router-dom";
+import SalesOrderForm from "@components/SalesOrderForm/SalesOrderForm";
 
 export function SaleOrdersPage() {
+  const location = useLocation();
+  const isNewSaleOrder = location.pathname.endsWith("/newSaleOrder");
+  const isSaleOrderView = location.pathname.match(/^\/dashboard\/selling\/.+$/);
+
+  if (isNewSaleOrder) {
+    return <SalesOrderForm />;
+  }
+
+  if (isSaleOrderView) {
+    return (
+      <div className="bg-white border rounded-lg shadow-sm p-6">
+        <h2 className="text-xl font-semibold">Detalle de orden de venta</h2>
+        {/* Aquí iría el detalle de una orden específica */}
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white border rounded-lg shadow-sm p-4">
       <div className="flex justify-between items-start px-4 pt-4">
