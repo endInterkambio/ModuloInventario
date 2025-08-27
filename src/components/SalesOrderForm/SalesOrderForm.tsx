@@ -13,6 +13,7 @@ import { Select } from "./ui/Select";
 import FileUploadSection from "./sections/FileUploadSection";
 import ArticlesTable from "./sections/ArticlesTable";
 import toast from "react-hot-toast";
+import BackButton from "@components/shared/BackButton";
 
 // Main Component
 const SalesOrderForm: React.FC = () => {
@@ -122,8 +123,9 @@ const SalesOrderForm: React.FC = () => {
 
   return (
     <div className=" mx-auto p-6 bg-white min-h-screen">
+      <BackButton/>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 pb-4 border-b">
+      <div className="pt-5 flex items-center justify-between mb-6 pb-4 border-b">
         <h1 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
           🛒 Nueva orden de venta
         </h1>
