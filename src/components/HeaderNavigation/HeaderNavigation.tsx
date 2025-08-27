@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import {
-  ChevronDown,
   MoreHorizontal,
   RotateCcw,
   ArrowUpDown,
@@ -20,16 +19,27 @@ import { SearchBar } from "@components/SearchBar/SearchBar";
 import FilterMenu from "./FilterMenu";
 import { useBookStore } from "@/stores/useBookStore";
 import NewButton from "@components/NewButton";
+import { DropdownMenu } from "./DropdownMenu";
 
 const HeaderNavigation: React.FC = () => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
   const { setMinStock } = useBookStore();
-  const [selectedStockFilter, setSelectedStockFilter] = useState(
-    "Artículos con existencias"
-  );
   const mutation = useUploadBooks();
+
+  // inicializamos filtro por defecto
+  useEffect(() => {
+    setMinStock(1);
+  }, [setMinStock]);
+
+  const handleStockFilter = (type: string) => {
+    if (type === "Artículos con existencias") {
+      setMinStock(1);
+    } else if (type === "Todos los artículos") {
+      setMinStock(undefined);
+    }
+    // otros filtros...
+  };
 
   const handleImport = (file: File) => {
     toast.promise(mutation.mutateAsync(file), {
@@ -42,61 +52,26 @@ const HeaderNavigation: React.FC = () => {
     });
   };
 
-  useEffect(() => {
-    // Inicializamos el filtro por defecto al montar
-    setMinStock(1);
-  }, [setMinStock]);
-
-  const handleStockFilter = (type: string) => {
-    if (type === "Artículos con existencias") {
-      setMinStock(1); // filtrar solo con stock >= 1
-    } else if (type === "Todos los artículos") {
-      setMinStock(undefined); // desactiva el filtro
-    }
-
-    setSelectedStockFilter(type);
-    setIsDropdownOpen(false);
-  };
-
   return (
     <div className="flex items-center justify-between bg-white border-b border-gray-200 px-6 py-3">
-      <div className="relative">
-        <button
-          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="flex items-center gap-2 text-gray-700 hover:text-gray-900 font-medium"
-        >
-          <span>{selectedStockFilter}</span>
-          <ChevronDown className="w-4 h-4" />
-        </button>
-        {isDropdownOpen && (
-          <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
-            <div className="py-1">
-              {[
-                "Artículos con existencias",
-                "Todos los artículos",
-                "Artículos recientes",
-                "Mis artículos",
-                "Borradores",
-              ].map((item) => (
-                <button
-                  key={item}
-                  onClick={() => handleStockFilter(item)}
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                >
-                  {item}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+      {/* 🔽 Dropdown reutilizable */}
+      <DropdownMenu
+        label="Artículos con existencias"
+        options={[
+          "Artículos con existencias",
+          "Todos los artículos",
+          "Artículos recientes",
+          "Mis artículos",
+          "Borradores",
+        ]}
+        onSelect={handleStockFilter}
+      />
 
       <SearchBar />
 
       <div className="flex items-center gap-3">
         <ViewToggle />
-
-        <NewButton />
+        <NewButton to={"/dashboard/inventory/newBook"} label={"Nuevo"} />
 
         <div className="relative">
           <button
@@ -127,7 +102,6 @@ const HeaderNavigation: React.FC = () => {
                   />
                   {activeSubmenu === "filtrar" && <FilterMenu />}
                 </div>
-
                 <div className="relative">
                   <SubmenuItem
                     icon={<Download className="w-4 h-4 text-blue-500" />}
@@ -139,7 +113,6 @@ const HeaderNavigation: React.FC = () => {
                     <ImportMenu handleImport={handleImport} />
                   )}
                 </div>
-
                 <div className="relative">
                   <SubmenuItem
                     icon={<Upload className="w-4 h-4 text-blue-500" />}

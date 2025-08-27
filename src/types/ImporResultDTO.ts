@@ -1,3 +1,5 @@
+import { BookDTO } from "./BookDTO";
+
 export interface ImportResultDTO {
   success: boolean;
   message: string;           // Mensaje general, por ejemplo: "Se importaron 5 libros, 2 fallaron"

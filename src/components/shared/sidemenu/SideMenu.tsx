@@ -39,8 +39,12 @@ const menuItems: MenuItem[] = [
   {
     title: 'Ventas',
     subTitle: 'Módulo de ventas',
-    href: '/dashboard/selling',
     Icon: IoPawOutline,
+    children: [
+      { title: 'Clientes', subTitle: 'Registrar y consultar', href: '/dashboard/customer', Icon: IoPawOutline },
+      { title: 'Ordenes de venta', subTitle: 'Detalles y estado', href: '/dashboard/selling', Icon: IoPawOutline },
+      { title: 'Pagos recibidos', subTitle: 'Detalles', href: '/dashboard/paymentReceived', Icon: IoPawOutline },
+    ]
   },
 ];
 

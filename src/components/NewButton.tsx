@@ -1,18 +1,25 @@
-import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { LucideIcon } from "lucide-react";
 
-const NewButton = () => {
+interface NavButtonProps {
+  to: string; // ruta de destino
+  label: string; // texto a mostrar
+  icon?: LucideIcon; // ícono opcional (de lucide-react)
+  className?: string; // estilos adicionales opcionales
+}
+
+const NavButton = ({ to, label, icon: Icon, className = "" }: NavButtonProps) => {
   const navigate = useNavigate();
 
   return (
     <button
-      onClick={() => navigate("/dashboard/inventory/new")}
-      className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition-colors"
+      onClick={() => navigate(to)}
+      className={`flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition-colors ${className}`}
     >
-      <Plus className="w-4 h-4" />
-      Nuevo
+      {Icon && <Icon className="w-4 h-4" />}
+      {label}
     </button>
   );
 };
 
-export default NewButton;
+export default NavButton;

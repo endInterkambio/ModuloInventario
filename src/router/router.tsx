@@ -2,11 +2,15 @@ import { createBrowserRouter } from "react-router-dom";
 
 import { Root } from "../Root";
 import { AuthLayout, DashboardLayout } from "../layouts";
-import { Dashboard, LoginPage, PurchasePage, SellingPage } from "../pages";
+import { Dashboard, LoginPage, PurchasePage } from "../pages";
 import BookDetailPage from "@/pages/inventory/BookDetail/BookDetailPage";
 import InventoryManagementPage from "@/pages/inventory/InventoryAdjustment/InventoryManagementPage";
 import BooksPage from "@/pages/inventory/BooksPage";
 import { BookCreationForm } from "@components/BookForm/BookCreationForm";
+import { SaleOrdersPage } from "@/pages/sales/SaleOrders";
+import { PaymentReceivedPage } from "@/pages/sales/PaymentReceivedPage";
+import { CustomerPage } from "@/pages/sales/CustomerPage";
+import { SellingPage } from "@/pages/SellingPage";
 
 export const router = createBrowserRouter(
   [
@@ -32,7 +36,7 @@ export const router = createBrowserRouter(
                   element: <BookDetailPage />,
                 },
                 {
-                  path: "new",
+                  path: "newBook",
                   element: <BookCreationForm />,
                 },
               ],
@@ -47,7 +51,21 @@ export const router = createBrowserRouter(
             },
             {
               path: "selling",
-              element: <SellingPage />,
+              element: <SaleOrdersPage />,
+              children: [
+                {
+                  path: ":newSaleOrder",
+                  element: <SellingPage/>
+                }
+              ]
+            },
+            {
+              path: "paymentReceived",
+              element: <PaymentReceivedPage />,
+            },
+            {
+              path: "customer",
+              element: <CustomerPage />,
             },
           ],
         },
