@@ -54,12 +54,8 @@ const BooksPage = () => {
         <div className={`flex-grow w-96 px-6 ${isDetailView ? "mx-auto" : ""}`}>
           {/* Mostrar paginación solo si no es detalle */}
           {!isDetailView && (
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-4">
-              <div className="w-full overflow-x-auto">
-                <div className="min-w-max sm:min-w-0">
-                  <PaginationBar />
-                </div>
-              </div>
+            <div className="container mx-auto pb-4">
+                <PaginationBar />
             </div>
           )}
           {isDetailView || isNewBook ? (

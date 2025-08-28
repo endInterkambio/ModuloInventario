@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-primary: #00ab55;
+  --color-secondary: #fed700;
+  --color-bg: #ffffff;
+  --color-text: #1f2937;
+}
+
+.dark {
+  --color-primary: #16a34a;
+  --color-secondary: #fbbf24;
+  --color-bg: #1f2937;
+  --color-text: #f9fafb;
+}
 
 h1 {
   @apply text-3xl font-bold text-gray-800;
