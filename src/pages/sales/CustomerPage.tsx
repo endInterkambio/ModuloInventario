@@ -3,7 +3,7 @@ import { InfoRow } from "../inventory/BookDetail/InfoRow";
 import NewButton from "@components/NewButton";
 import { DropdownMenu } from "@components/HeaderNavigation/DropdownMenu";
 import { useLocation } from "react-router-dom";
-import { CustomerCreationForm } from "@components/CustomerForm/CustomerCreationForm";
+import CustomerCreationForm from "@components/CustomerForm/CustomerCreationForm";
 
 export function CustomerPage() {
   const location = useLocation();

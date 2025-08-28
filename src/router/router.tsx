@@ -11,7 +11,7 @@ import { SaleOrdersPage } from "@/pages/sales/SaleOrders";
 import { PaymentReceivedPage } from "@/pages/sales/PaymentReceivedPage";
 import { CustomerPage } from "@/pages/sales/CustomerPage";
 import SalesOrderForm from "@components/SalesOrderForm/SalesOrderForm";
-import { CustomerCreationForm } from "@components/CustomerForm/CustomerCreationForm";
+import CustomerCreationForm from "@components/CustomerForm/CustomerCreationForm";
 
 export const router = createBrowserRouter(
   [
