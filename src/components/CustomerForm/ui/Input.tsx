@@ -4,7 +4,7 @@ export function Input({
   onChange,
   placeholder = "",
   className = "",
-  maxLength = 0,
+  maxLength,
   icon,
 }: {
   type?: string;

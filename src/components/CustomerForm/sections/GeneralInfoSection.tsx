@@ -2,7 +2,6 @@ import { FormData } from "../types/FormData";
 import { FormField } from "../ui/FormField";
 import { Input } from "../ui/Input";
 import { RadioButton } from "../buttons/RadioButton";
-import { useState } from "react";
 
 interface Props {
   formData: FormData;
@@ -21,21 +20,20 @@ export default function GeneralInfoSection({
   formData,
   updateFormData,
 }: Props) {
-  const [docType, setDocType] = useState<"DNI" | "CE">("DNI");
+  const isPerson = formData.customerType === "PERSON";
+  const isCompany = formData.customerType === "COMPANY";
+  const docType = formData.documentType;
 
   return (
     <>
       {/* Customer type */}
-      <FormField
-        label="Tipo de cliente"
-        tooltip="Seleccione el tipo de cliente"
-      >
+      <FormField label="Tipo de cliente" tooltip="Seleccione el tipo de cliente">
         <div className="flex space-x-6">
           <RadioButton
             id="person"
             name="customerType"
             value="PERSON"
-            checked={formData.customerType === "PERSON"}
+            checked={isPerson}
             onChange={(value) =>
               updateFormData("customerType", value as "PERSON" | "COMPANY")
             }
@@ -45,7 +43,7 @@ export default function GeneralInfoSection({
             id="company"
             name="customerType"
             value="COMPANY"
-            checked={formData.customerType === "COMPANY"}
+            checked={isCompany}
             onChange={(value) =>
               updateFormData("customerType", value as "PERSON" | "COMPANY")
             }
@@ -55,20 +53,17 @@ export default function GeneralInfoSection({
       </FormField>
 
       {/* Person fields */}
-      {formData.customerType === "PERSON" && (
+      {isPerson && (
         <>
           {/* Document type selector */}
-          <FormField label="Tipo de cliente">
+          <FormField label="Tipo de documento">
             <div className="flex space-x-4">
               <RadioButton
                 id="dni"
                 name="documentType"
                 value="DNI"
                 checked={docType === "DNI"}
-                onChange={() => {
-                  setDocType("DNI");
-                  updateFormData("documentType", "DNI");
-                }}
+                onChange={() => updateFormData("documentType", "DNI")}
                 label="DNI"
               />
               <RadioButton
@@ -76,10 +71,7 @@ export default function GeneralInfoSection({
                 name="documentType"
                 value="CE"
                 checked={docType === "CE"}
-                onChange={() => {
-                  setDocType("CE");
-                  updateFormData("documentType", "CE");
-                }}
+                onChange={() => updateFormData("documentType", "CE")}
                 label="CE"
               />
             </div>
@@ -96,10 +88,13 @@ export default function GeneralInfoSection({
           </FormField>
 
           {/* Full name */}
-          <FormField label="Nombre completo" tooltip="Ingrese el nombre y apellido del cliente">
+          <FormField
+            label="Nombre completo"
+            tooltip="Ingrese el nombre y apellido del cliente"
+          >
             <Input
-              value={formData.fullName || ""}
-              onChange={(value) => updateFormData("fullName", value)}
+              value={formData.name || ""}
+              onChange={(value) => updateFormData("name", value)}
               placeholder="John Doe"
             />
           </FormField>
@@ -126,10 +121,10 @@ export default function GeneralInfoSection({
       )}
 
       {/* Company fields */}
-      {formData.customerType === "COMPANY" && (
+      {isCompany && (
         <>
           {/* RUC */}
-          <FormField label="RUC" tooltip="11-digit company RUC number">
+          <FormField label="RUC" tooltip="Debe contener 11 dígitos">
             <Input
               value={formData.documentNumber}
               maxLength={11}
@@ -142,16 +137,16 @@ export default function GeneralInfoSection({
           </FormField>
 
           {/* Company name */}
-          <FormField label="ComNombre completo">
+          <FormField label="Nombre de la empresa">
             <Input
               value={formData.companyName || ""}
               onChange={(value) => updateFormData("companyName", value)}
-              placeholder="Enter company name"
+              placeholder="Nombre de la empresa"
             />
           </FormField>
 
           {/* Email */}
-          <FormField label="Company Email">
+          <FormField label="Correo electrónico de la empresa">
             <Input
               type="email"
               value={formData.email}
@@ -161,11 +156,11 @@ export default function GeneralInfoSection({
           </FormField>
 
           {/* Phone */}
-          <FormField label="Company Phone">
+          <FormField label="Teléfono corporativo">
             <Input
               value={formData.phoneNumber}
               onChange={(value) => updateFormData("phoneNumber", value)}
-              placeholder="Enter company phone"
+              placeholder="Ingrese el teléfono de la empresa"
             />
           </FormField>
         </>

@@ -4,6 +4,8 @@ import { TabButton } from "./buttons/TabButton";
 import GeneralInfoSection from "./sections/GeneralInfoSection";
 import AddressSection from "./sections/AddressSection";
 import ContactsSection from "./sections/ContactsSection";
+import { useCreateCustomer } from "@/hooks/useCustomers";
+import { mapFormDataToCustomerDTO } from "./types/mapFormDataToCustomerDTO";
 
 export default function CustomerCreationForm() {
   const [activeTab, setActiveTab] = useState("address");
@@ -12,12 +14,34 @@ export default function CustomerCreationForm() {
     customerType: "PERSON",
     documentType: "DNI",
     documentNumber: "",
-    fullName: "",
+    name: "",
     companyName: "",
     email: "",
     phoneNumber: "",
     address: "",
     contacts: [],
+  });
+
+  // hook para crear cliente
+  const createCustomer = useCreateCustomer({
+    onSuccess: () => {
+      console.log("✅ Cliente creado correctamente");
+      // aquí podrías resetear el form o redirigir
+      setFormData({
+        customerType: "PERSON",
+        documentType: "DNI",
+        documentNumber: "",
+        name: "Nombre",
+        companyName: "",
+        email: "",
+        phoneNumber: "",
+        address: "",
+        contacts: [],
+      });
+    },
+    onError: (error) => {
+      console.error("❌ Error creando cliente:", error.message);
+    },
   });
 
   const updateFormData = <K extends keyof FormData>(
@@ -41,7 +65,12 @@ export default function CustomerCreationForm() {
     }));
   };
 
-  const handleSubmit = () => console.log("Form submitted:", formData);
+  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const dto = mapFormDataToCustomerDTO(formData);
+    createCustomer.mutate(dto);
+  };
+
   const handleCancel = () => console.log("Form cancelled");
 
   const tabs = [
@@ -89,19 +118,6 @@ export default function CustomerCreationForm() {
             </div>
           ))}
 
-        {/* Placeholder for not implemented tabs */}
-        {!["address", "contacts"].includes(activeTab) && (
-          <div className="py-8 text-center text-gray-500">
-            <div>
-              Content of tab{" "}
-              {tabs.find((t) => t.id === activeTab)?.label}
-            </div>
-            <div className="text-sm mt-2">
-              Esta sección sería implementada de acuerdo a requerimientos específicos
-            </div>
-          </div>
-        )}
-
         {/* Actions */}
         <div className="flex justify-end space-x-4 pt-6">
           <button
@@ -114,9 +130,10 @@ export default function CustomerCreationForm() {
           <button
             type="button"
             onClick={handleSubmit}
-            className="px-6 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700"
+            disabled={createCustomer.isPending} // 👈 Deshabilitamos mientras hace request
+            className="px-6 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 disabled:opacity-50"
           >
-            Guardar
+            {createCustomer.isPending ? "Guardando..." : "Guardar"}
           </button>
         </div>
       </div>
