@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { FormData } from "./types/FormData";
 import { TabButton } from "./buttons/TabButton";
 import GeneralInfoSection from "./sections/GeneralInfoSection";
@@ -22,32 +23,35 @@ export default function CustomerCreationForm() {
     contacts: [],
   });
 
+  const [formErrors, setFormErrors] = useState<Partial<Record<keyof FormData, string>>>({});
+
   // hook para crear cliente
   const createCustomer = useCreateCustomer({
     onSuccess: () => {
-      console.log("✅ Cliente creado correctamente");
-      // aquí podrías resetear el form o redirigir
+      toast.success("Cliente creado correctamente");
       setFormData({
         customerType: "PERSON",
         documentType: "DNI",
         documentNumber: "",
-        name: "Nombre",
+        name: "",
         companyName: "",
         email: "",
         phoneNumber: "",
         address: "",
         contacts: [],
       });
+      setFormErrors({});
     },
     onError: (error) => {
-      console.error("❌ Error creando cliente:", error.message);
+      toast.error(`❌ Error creando cliente: ${error.message}`);
     },
   });
 
-  const updateFormData = <K extends keyof FormData>(
-    field: K,
-    value: FormData[K]
-  ) => setFormData((prev) => ({ ...prev, [field]: value }));
+  const updateFormData = <K extends keyof FormData>(field: K, value: FormData[K]) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    // Limpiar error si el usuario empieza a escribir
+    setFormErrors((prev) => ({ ...prev, [field]: "" }));
+  };
 
   const updateNestedFormData = <T extends keyof FormData>(
     field: T,
@@ -57,21 +61,48 @@ export default function CustomerCreationForm() {
     setFormData((prev) => ({
       ...prev,
       [field]: {
-        ...(typeof prev[field] === "object" && prev[field] !== null
-          ? prev[field]
-          : {}),
+        ...(typeof prev[field] === "object" && prev[field] !== null ? prev[field] : {}),
         [subField]: value,
       },
     }));
+    setFormErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
+    const errors: Partial<Record<keyof FormData, string>> = {};
+
+    if (!formData.customerType) errors.customerType = "Selecciona el tipo de cliente";
+
+    if (formData.customerType === "PERSON") {
+      if (!formData.documentNumber) errors.documentNumber = `${formData.documentType} es requerido`;
+      if (!formData.name) errors.name = "Nombre completo es requerido";
+      if (!formData.email) errors.email = "Email es requerido";
+      if (!formData.phoneNumber) errors.phoneNumber = "Teléfono es requerido";
+    }
+
+    if (formData.customerType === "COMPANY") {
+      if (!formData.documentNumber) errors.documentNumber = "RUC es requerido";
+      if (!formData.companyName) errors.companyName = "Nombre de la empresa es requerido";
+      if (!formData.email) errors.email = "Email de la empresa es requerido";
+      if (!formData.phoneNumber) errors.phoneNumber = "Teléfono corporativo es requerido";
+    }
+
+    setFormErrors(errors);
+
+    if (Object.keys(errors).length > 0) {
+      Object.values(errors).forEach((err) => toast.error(err));
+      return;
+    }
+
     const dto = mapFormDataToCustomerDTO(formData);
     createCustomer.mutate(dto);
   };
 
-  const handleCancel = () => console.log("Form cancelled");
+  const handleCancel = () => {
+    toast("Formulario cancelado");
+  };
 
   const tabs = [
     { id: "address", label: "Dirección" },
@@ -80,9 +111,7 @@ export default function CustomerCreationForm() {
 
   return (
     <div className="mx-auto p-6 bg-white">
-      <h1 className="text-2xl font-semibold text-gray-900 mb-8">
-        Nuevo Cliente
-      </h1>
+      <h1 className="text-2xl font-semibold text-gray-900 mb-8">Nuevo Cliente</h1>
 
       <div className="space-y-6">
         {/* General Information */}
@@ -90,6 +119,7 @@ export default function CustomerCreationForm() {
           formData={formData}
           updateFormData={updateFormData}
           updateNestedFormData={updateNestedFormData}
+          formErrors={formErrors} // <-- pasar errores inline
         />
 
         {/* Tabs */}
@@ -130,7 +160,7 @@ export default function CustomerCreationForm() {
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={createCustomer.isPending} // 👈 Deshabilitamos mientras hace request
+            disabled={createCustomer.isPending}
             className="px-6 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 disabled:opacity-50"
           >
             {createCustomer.isPending ? "Guardando..." : "Guardar"}

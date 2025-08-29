@@ -14,6 +14,7 @@ interface Props {
     subField: keyof FormData[T],
     value: FormData[T][keyof FormData[T]]
   ) => void;
+  formErrors?: Partial<Record<keyof FormData, string>>;
 }
 
 export default function GeneralInfoSection({
@@ -37,7 +38,7 @@ export default function GeneralInfoSection({
             onChange={(value) =>
               updateFormData("customerType", value as "PERSON" | "COMPANY")
             }
-            label="Person"
+            label="Persona"
           />
           <RadioButton
             id="company"
@@ -47,7 +48,7 @@ export default function GeneralInfoSection({
             onChange={(value) =>
               updateFormData("customerType", value as "PERSON" | "COMPANY")
             }
-            label="Company"
+            label="Empresa"
           />
         </div>
       </FormField>
@@ -78,24 +79,23 @@ export default function GeneralInfoSection({
           </FormField>
 
           {/* Document number */}
-          <FormField label={docType} tooltip={`Ingresa ${docType} number`}>
+          <FormField label={docType} tooltip={`Ingresa ${docType}`}>
             <Input
               value={formData.documentNumber}
               maxLength={docType === "DNI" ? 8 : 9}
               onChange={(value) => updateFormData("documentNumber", value)}
-              placeholder={`Ingresa el número de ${docType}`}
+              placeholder={`Número de ${docType}`}
+              error={!formData.documentNumber ? "Campo requerido" : ""}
             />
           </FormField>
 
           {/* Full name */}
-          <FormField
-            label="Nombre completo"
-            tooltip="Ingrese el nombre y apellido del cliente"
-          >
+          <FormField label="Nombre completo" tooltip="Ingrese el nombre y apellido del cliente">
             <Input
               value={formData.name || ""}
               onChange={(value) => updateFormData("name", value)}
               placeholder="John Doe"
+              error={!formData.name ? "Campo requerido" : ""}
             />
           </FormField>
 
@@ -106,15 +106,17 @@ export default function GeneralInfoSection({
               value={formData.email}
               onChange={(value) => updateFormData("email", value)}
               placeholder="example@email.com"
+              error={!formData.email ? "Campo requerido" : ""}
             />
           </FormField>
 
           {/* Phone */}
-          <FormField label="Phone">
+          <FormField label="Teléfono">
             <Input
               value={formData.phoneNumber}
               onChange={(value) => updateFormData("phoneNumber", value)}
               placeholder="Ingresa el número de teléfono"
+              error={!formData.phoneNumber ? "Campo requerido" : ""}
             />
           </FormField>
         </>
@@ -132,7 +134,8 @@ export default function GeneralInfoSection({
                 updateFormData("documentType", "RUC");
                 updateFormData("documentNumber", value);
               }}
-              placeholder="Enter RUC"
+              placeholder="RUC"
+              error={!formData.documentNumber ? "Campo requerido" : ""}
             />
           </FormField>
 
@@ -142,16 +145,18 @@ export default function GeneralInfoSection({
               value={formData.companyName || ""}
               onChange={(value) => updateFormData("companyName", value)}
               placeholder="Nombre de la empresa"
+              error={!formData.companyName ? "Campo requerido" : ""}
             />
           </FormField>
 
           {/* Email */}
-          <FormField label="Correo electrónico de la empresa">
+          <FormField label="Correo electrónico">
             <Input
               type="email"
               value={formData.email}
               onChange={(value) => updateFormData("email", value)}
-              placeholder="company@email.com"
+              placeholder="empresa@email"
+              error={!formData.email ? "Campo requerido" : ""}
             />
           </FormField>
 
@@ -160,7 +165,8 @@ export default function GeneralInfoSection({
             <Input
               value={formData.phoneNumber}
               onChange={(value) => updateFormData("phoneNumber", value)}
-              placeholder="Ingrese el teléfono de la empresa"
+              placeholder="Teléfono de la empresa"
+              error={!formData.phoneNumber ? "Campo requerido" : ""}
             />
           </FormField>
         </>
@@ -168,3 +174,4 @@ export default function GeneralInfoSection({
     </>
   );
 }
+
