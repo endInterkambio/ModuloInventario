@@ -6,13 +6,18 @@ import AddressSection from "./sections/AddressSection";
 import ContactsSection from "./sections/ContactsSection";
 
 export default function CustomerCreationForm() {
-  const [activeTab, setActiveTab] = useState("direccion");
+  const [activeTab, setActiveTab] = useState("address");
+
   const [formData, setFormData] = useState<FormData>({
-    tipoCliente: "individuo",
-    contactoPrincipal: { nombre: "", apellido: "" },
-    nombreEmpresa: "",
+    customerType: "PERSON",
+    documentType: "DNI",
+    documentNumber: "",
+    fullName: "",
+    companyName: "",
     email: "",
-    telefono: { laboral: "", movil: "" },
+    phoneNumber: "",
+    address: "",
+    contacts: [],
   });
 
   const updateFormData = <K extends keyof FormData>(
@@ -40,18 +45,18 @@ export default function CustomerCreationForm() {
   const handleCancel = () => console.log("Form cancelled");
 
   const tabs = [
-    { id: "direccion", label: "Dirección" },
-    { id: "personas-contacto", label: "Personas de contacto" },
+    { id: "address", label: "Dirección" },
+    { id: "contacts", label: "Persona de contacto" },
   ];
 
   return (
     <div className="mx-auto p-6 bg-white">
       <h1 className="text-2xl font-semibold text-gray-900 mb-8">
-        Nuevo cliente
+        Nuevo Cliente
       </h1>
 
       <div className="space-y-6">
-        {/* Información general */}
+        {/* General Information */}
         <GeneralInfoSection
           formData={formData}
           updateFormData={updateFormData}
@@ -72,35 +77,32 @@ export default function CustomerCreationForm() {
           </nav>
         </div>
 
-        {/* Secciones dinámicas */}
-        {activeTab === "direccion" && <AddressSection />}
+        {/* Dynamic sections */}
+        {activeTab === "address" && <AddressSection />}
 
-        {activeTab === "personas-contacto" &&
-          (formData.tipoCliente === "empresarial" ? (
+        {activeTab === "contacts" &&
+          (formData.customerType === "COMPANY" ? (
             <ContactsSection />
           ) : (
             <div className="py-8 text-center text-gray-500">
-              Solo disponible para clientes empresariales
+              Disponible solo para clientes empresariales
             </div>
           ))}
 
-        {/* Placeholder para tabs no implementados */}
-        {!["otros-detalles", "direccion", "personas-contacto"].includes(
-          activeTab
-        ) && (
+        {/* Placeholder for not implemented tabs */}
+        {!["address", "contacts"].includes(activeTab) && (
           <div className="py-8 text-center text-gray-500">
             <div>
-              Contenido de la pestaña{" "}
+              Content of tab{" "}
               {tabs.find((t) => t.id === activeTab)?.label}
             </div>
             <div className="text-sm mt-2">
-              Esta sección estaría implementada según los requerimientos
-              específicos
+              Esta sección sería implementada de acuerdo a requerimientos específicos
             </div>
           </div>
         )}
 
-        {/* Acciones */}
+        {/* Actions */}
         <div className="flex justify-end space-x-4 pt-6">
           <button
             type="button"

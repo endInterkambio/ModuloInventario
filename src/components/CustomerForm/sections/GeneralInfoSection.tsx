@@ -20,180 +20,152 @@ interface Props {
 export default function GeneralInfoSection({
   formData,
   updateFormData,
-  updateNestedFormData,
 }: Props) {
-  const [docType, setDocType] = useState<"dni" | "ce">("dni");
+  const [docType, setDocType] = useState<"DNI" | "CE">("DNI");
+
   return (
     <>
-      {/* Selección del tipo de cliente */}
+      {/* Customer type */}
       <FormField
         label="Tipo de cliente"
         tooltip="Seleccione el tipo de cliente"
       >
         <div className="flex space-x-6">
           <RadioButton
-            id="individuo"
-            name="tipoCliente"
-            value="individuo"
-            checked={formData.tipoCliente === "individuo"}
+            id="person"
+            name="customerType"
+            value="PERSON"
+            checked={formData.customerType === "PERSON"}
             onChange={(value) =>
-              updateFormData(
-                "tipoCliente",
-                value as "empresarial" | "individuo"
-              )
+              updateFormData("customerType", value as "PERSON" | "COMPANY")
             }
-            label="Individuo"
+            label="Person"
           />
           <RadioButton
-            id="empresarial"
-            name="tipoCliente"
-            value="empresarial"
-            checked={formData.tipoCliente === "empresarial"}
+            id="company"
+            name="customerType"
+            value="COMPANY"
+            checked={formData.customerType === "COMPANY"}
             onChange={(value) =>
-              updateFormData(
-                "tipoCliente",
-                value as "empresarial" | "individuo"
-              )
+              updateFormData("customerType", value as "PERSON" | "COMPANY")
             }
-            label="Empresarial"
+            label="Company"
           />
         </div>
       </FormField>
 
-      {/* Campos condicionales */}
-      {formData.tipoCliente === "individuo" && (
+      {/* Person fields */}
+      {formData.customerType === "PERSON" && (
         <>
-          {/* Selector DNI / CE */}
-          <FormField label="Tipo de documento">
+          {/* Document type selector */}
+          <FormField label="Tipo de cliente">
             <div className="flex space-x-4">
               <RadioButton
                 id="dni"
-                name="documento"
-                value="dni"
-                checked={docType === "dni"}
-                onChange={() => setDocType("dni")}
+                name="documentType"
+                value="DNI"
+                checked={docType === "DNI"}
+                onChange={() => {
+                  setDocType("DNI");
+                  updateFormData("documentType", "DNI");
+                }}
                 label="DNI"
               />
               <RadioButton
                 id="ce"
-                name="documento"
-                value="ce"
-                checked={docType === "ce"}
-                onChange={() => setDocType("ce")}
+                name="documentType"
+                value="CE"
+                checked={docType === "CE"}
+                onChange={() => {
+                  setDocType("CE");
+                  updateFormData("documentType", "CE");
+                }}
                 label="CE"
               />
             </div>
           </FormField>
 
-          {/* Campo DNI o CE dinámico */}
-          {docType === "dni" && (
-            <FormField label="DNI" tooltip="Número de 8 dígitos">
-              <Input
-                value={formData.dni || ""}
-                maxLength={8}
-                onChange={(value) => updateFormData("dni", value)}
-                placeholder="Ingrese el DNI de 8 dígitos"
-              />
-            </FormField>
-          )}
-
-          {docType === "ce" && (
-            <FormField label="CE" tooltip="Número de 9 dígitos">
-              <Input
-                value={formData.ce || ""}
-                maxLength={9}
-                onChange={(value) => updateFormData("ce", value)}
-                placeholder="Ingrese el CE de 9 dígitos"
-              />
-            </FormField>
-          )}
-          <FormField
-            label="Contacto principal"
-            tooltip="Información del contacto principal"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Input
-                value={formData.contactoPrincipal.nombre}
-                onChange={(value) =>
-                  updateNestedFormData("contactoPrincipal", "nombre", value)
-                }
-                placeholder="Nombre"
-              />
-              <Input
-                value={formData.contactoPrincipal.apellido}
-                onChange={(value) =>
-                  updateNestedFormData("contactoPrincipal", "apellido", value)
-                }
-                placeholder="Apellido"
-              />
-            </div>
+          {/* Document number */}
+          <FormField label={docType} tooltip={`Ingresa ${docType} number`}>
+            <Input
+              value={formData.documentNumber}
+              maxLength={docType === "DNI" ? 8 : 9}
+              onChange={(value) => updateFormData("documentNumber", value)}
+              placeholder={`Ingresa el número de ${docType}`}
+            />
           </FormField>
 
-          <FormField label="Correo electrónico">
+          {/* Full name */}
+          <FormField label="Nombre completo" tooltip="Ingrese el nombre y apellido del cliente">
+            <Input
+              value={formData.fullName || ""}
+              onChange={(value) => updateFormData("fullName", value)}
+              placeholder="John Doe"
+            />
+          </FormField>
+
+          {/* Email */}
+          <FormField label="Email">
             <Input
               type="email"
               value={formData.email}
               onChange={(value) => updateFormData("email", value)}
-              placeholder="ejemplo@correo.com"
+              placeholder="example@email.com"
             />
           </FormField>
 
-          <FormField label="Teléfono">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input
-                value={formData.telefono.laboral}
-                onChange={(value) =>
-                  updateNestedFormData("telefono", "laboral", value)
-                }
-                placeholder="Teléfono laboral"
-              />
-              <Input
-                value={formData.telefono.movil}
-                onChange={(value) =>
-                  updateNestedFormData("telefono", "movil", value)
-                }
-                placeholder="Móvil"
-              />
-            </div>
+          {/* Phone */}
+          <FormField label="Phone">
+            <Input
+              value={formData.phoneNumber}
+              onChange={(value) => updateFormData("phoneNumber", value)}
+              placeholder="Ingresa el número de teléfono"
+            />
           </FormField>
         </>
       )}
 
-      {formData.tipoCliente === "empresarial" && (
+      {/* Company fields */}
+      {formData.customerType === "COMPANY" && (
         <>
-          <FormField label="RUC" tooltip="Número de 11 dígitos">
+          {/* RUC */}
+          <FormField label="RUC" tooltip="11-digit company RUC number">
             <Input
-              value={formData.ruc || ""}
+              value={formData.documentNumber}
               maxLength={11}
-              onChange={(value) => updateFormData("ruc", value)}
-              placeholder="Ingrese el RUC"
+              onChange={(value) => {
+                updateFormData("documentType", "RUC");
+                updateFormData("documentNumber", value);
+              }}
+              placeholder="Enter RUC"
             />
           </FormField>
 
-          <FormField label="Razón social (Nombre de la empresa)">
+          {/* Company name */}
+          <FormField label="ComNombre completo">
             <Input
-              value={formData.nombreEmpresa}
-              onChange={(value) => updateFormData("nombreEmpresa", value)}
-              placeholder="Ingrese el nombre de la empresa"
+              value={formData.companyName || ""}
+              onChange={(value) => updateFormData("companyName", value)}
+              placeholder="Enter company name"
             />
           </FormField>
 
-          <FormField label="Correo electrónico de la empresa">
+          {/* Email */}
+          <FormField label="Company Email">
             <Input
               type="email"
               value={formData.email}
               onChange={(value) => updateFormData("email", value)}
-              placeholder="ejemplo@empresa.com"
+              placeholder="company@email.com"
             />
           </FormField>
 
-          <FormField label="Teléfono de la empresa">
+          {/* Phone */}
+          <FormField label="Company Phone">
             <Input
-              value={formData.telefono.laboral}
-              onChange={(value) =>
-                updateNestedFormData("telefono", "laboral", value)
-              }
-              placeholder="Teléfono"
+              value={formData.phoneNumber}
+              onChange={(value) => updateFormData("phoneNumber", value)}
+              placeholder="Enter company phone"
             />
           </FormField>
         </>
