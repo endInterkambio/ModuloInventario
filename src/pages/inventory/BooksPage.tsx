@@ -14,6 +14,8 @@ const BooksPage = () => {
     setBooks,
     sortOrder,
     itemsPerPage,
+    setCurrentPage,
+    setItemsPerPage,
     searchTerm,
     minStock,
     maxStock,
@@ -55,7 +57,14 @@ const BooksPage = () => {
           {/* Mostrar paginación solo si no es detalle */}
           {!isDetailView && (
             <div className="container mx-auto pb-4">
-                <PaginationBar />
+                <PaginationBar
+                currentPage={currentPage}
+                totalPages={data.totalPages}
+                totalElements={data.totalElements}
+                itemsPerPage={itemsPerPage}
+                onPageChange={setCurrentPage}
+                onItemsPerPageChange={setItemsPerPage}
+              />
             </div>
           )}
           {isDetailView || isNewBook ? (

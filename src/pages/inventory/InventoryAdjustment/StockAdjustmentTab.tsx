@@ -15,6 +15,8 @@ export default function InventoryAdjustmentTab({ searchTerm }: Props) {
     currentPage,
     books: storeBooks,
     setBooks,
+    setCurrentPage,
+    setItemsPerPage,
     sortOrder,
     itemsPerPage,
   } = useBookStore();
@@ -164,177 +166,184 @@ export default function InventoryAdjustmentTab({ searchTerm }: Props) {
             {books.map((book) =>
               book.locations && book.locations.length > 0 ? (
                 book.locations
-                .sort((a, b) =>b.stock - a.stock) // Ordenar por stock descendente
-                .map((location) => {
-                  const isEditing = editingLocationId === location.id;
-                  const stockValue = isEditing
-                    ? tempStock ?? 0
-                    : location.stock;
-                  const stockColor =
-                    stockValue == null
-                      ? ""
-                      : stockValue === 0
-                      ? "bg-red-100 text-red-600"
-                      : stockValue > 10
-                      ? "bg-purple-100 text-purple-600"
-                      : "bg-green-100 text-green-600";
+                  .sort((a, b) => b.stock - a.stock) // Ordenar por stock descendente
+                  .map((location) => {
+                    const isEditing = editingLocationId === location.id;
+                    const stockValue = isEditing
+                      ? tempStock ?? 0
+                      : location.stock;
+                    const stockColor =
+                      stockValue == null
+                        ? ""
+                        : stockValue === 0
+                        ? "bg-red-100 text-red-600"
+                        : stockValue > 10
+                        ? "bg-purple-100 text-purple-600"
+                        : "bg-green-100 text-green-600";
 
-                  return (
-                    <tr key={`${book.id}-${location.id}`} className="align-top">
-                      {/* Libro */}
-                      <td className="py-4 pr-4">
-                        <div className="flex gap-4">
-                          <div className="w-12 h-16 bg-gray-200 rounded" />
-                          <div>
-                            <div className="w-80 font-medium text-gray-800 truncate">
-                              {book.title}
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              ISBN: {book.isbn}
-                            </div>
-                            <div className="text-xs text-gray-400">
-                              {book.author}
+                    return (
+                      <tr
+                        key={`${book.id}-${location.id}`}
+                        className="align-top"
+                      >
+                        {/* Libro */}
+                        <td className="py-4 pr-4">
+                          <div className="flex gap-4">
+                            <div className="w-12 h-16 bg-gray-200 rounded" />
+                            <div>
+                              <div className="w-80 font-medium text-gray-800 truncate">
+                                {book.title}
+                              </div>
+                              <div className="text-xs text-gray-500">
+                                ISBN: {book.isbn}
+                              </div>
+                              <div className="text-xs text-gray-400">
+                                {book.author}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </td>
-                      {/* Último stock */}
-                      <td className="py-4 text-gray-700">
-                        {location.lastStock ?? "-"}
-                      </td>
-                      {/* Stock actual */}
-                      <td className="py-4">
-                        <span
-                          className={`px-2 py-1 rounded text-xs ${stockColor}`}
-                        >
-                          {location.stock}
-                        </span>
-                      </td>
-                      {/* Nueva cantidad */}
-                      <td className="py-4">
-                        {isEditing ? (
-                          <input
-                            type="number"
-                            min={0}
-                            value={newQuantity === null ? "" : newQuantity}
-                            placeholder={location.stock.toString()}
-                            onChange={(e) =>
-                              handleNewQuantityChange(
-                                e.target.value,
-                                location.stock
-                              )
-                            }
-                            className="w-20 text-center border border-gray-300 rounded px-1 py-0.5 text-sm"
-                            disabled={isPending}
-                          />
-                        ) : (
-                          <span>-</span>
-                        )}
-                      </td>
-                      {/* Cantidad ajustada (±) */}
-                      <td className="py-4">
-                        {isEditing ? (
-                          <input
-                            type="number"
-                            step="1"
-                            value={tempStock === null ? "" : tempStock}
-                            placeholder="±0"
-                            onChange={(e) =>
-                              handleAdjustmentChange(
-                                e.target.value,
-                                location.stock
-                              )
-                            }
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter")
-                                saveStock(
-                                  book.sku,
-                                  location.id,
-                                  location.stock
-                                );
-                              if (e.key === "Escape") cancelEditing();
-                            }}
-                            className="w-20 text-center border border-gray-300 rounded px-1 py-0.5 text-sm"
-                            autoFocus
-                            disabled={isPending}
-                          />
-                        ) : (
-                          <span>-</span>
-                        )}
-                      </td>
-                      {/* Motivo */}
-                      <td className="py-4 text-gray-700">
-                        {isEditing ? (
-                          <input
-                            type="text"
-                            value={tempReason}
-                            onChange={(e) => setTempReason(e.target.value)}
-                            placeholder="Motivo del ajuste"
-                            className="w-40 border border-gray-300 rounded px-2 py-1 text-sm"
-                            disabled={isPending}
-                          />
-                        ) : (
-                          <span className="text-gray-500 italic">-</span>
-                        )}
-                      </td>
-                      {/* Ubicación */}
-                      <td className="py-4 text-gray-600 text-xs">
-                        <div className="flex items-center gap-1">
-                          <Warehouse className="w-4 h-4" />
-                          {location.warehouse.name}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <MapPin className="w-4 h-4" />
-                          Estante: {location.bookcase}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Layers className="w-4 h-4" />
-                          Piso: {location.bookcaseFloor}
-                        </div>
-                        <div className="text-xs mt-1">
-                          Condición: {location.bookCondition} | Tipo:{" "}
-                          {location.locationType}
-                        </div>
-                      </td>
-                      {/* Acciones */}
-                      <td className="py-4">
-                        {isEditing ? (
-                          <>
-                            <button
-                              onClick={() =>
-                                saveStock(book.sku, location.id, location.stock)
-                              }
-                              className="text-green-600 hover:text-green-800 mr-2"
-                              title="Guardar"
-                              type="button"
-                              disabled={isPending}
-                            >
-                              <Check className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={cancelEditing}
-                              className="text-gray-500 hover:text-gray-700"
-                              title="Cancelar"
-                              type="button"
-                              disabled={isPending}
-                            >
-                              <X className="w-4 h-4" />
-                            </button>
-                          </>
-                        ) : (
-                          <button
-                            onClick={() => startEditing(book.id, location.id)}
-                            className="flex items-center text-blue-600 text-sm hover:underline"
-                            type="button"
+                        </td>
+                        {/* Último stock */}
+                        <td className="py-4 text-gray-700">
+                          {location.lastStock ?? "-"}
+                        </td>
+                        {/* Stock actual */}
+                        <td className="py-4">
+                          <span
+                            className={`px-2 py-1 rounded text-xs ${stockColor}`}
                           >
-                            <Pencil className="w-4 h-4 mr-1" />
-                            Ajustar
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })
+                            {location.stock}
+                          </span>
+                        </td>
+                        {/* Nueva cantidad */}
+                        <td className="py-4">
+                          {isEditing ? (
+                            <input
+                              type="number"
+                              min={0}
+                              value={newQuantity === null ? "" : newQuantity}
+                              placeholder={location.stock.toString()}
+                              onChange={(e) =>
+                                handleNewQuantityChange(
+                                  e.target.value,
+                                  location.stock
+                                )
+                              }
+                              className="w-20 text-center border border-gray-300 rounded px-1 py-0.5 text-sm"
+                              disabled={isPending}
+                            />
+                          ) : (
+                            <span>-</span>
+                          )}
+                        </td>
+                        {/* Cantidad ajustada (±) */}
+                        <td className="py-4">
+                          {isEditing ? (
+                            <input
+                              type="number"
+                              step="1"
+                              value={tempStock === null ? "" : tempStock}
+                              placeholder="±0"
+                              onChange={(e) =>
+                                handleAdjustmentChange(
+                                  e.target.value,
+                                  location.stock
+                                )
+                              }
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter")
+                                  saveStock(
+                                    book.sku,
+                                    location.id,
+                                    location.stock
+                                  );
+                                if (e.key === "Escape") cancelEditing();
+                              }}
+                              className="w-20 text-center border border-gray-300 rounded px-1 py-0.5 text-sm"
+                              autoFocus
+                              disabled={isPending}
+                            />
+                          ) : (
+                            <span>-</span>
+                          )}
+                        </td>
+                        {/* Motivo */}
+                        <td className="py-4 text-gray-700">
+                          {isEditing ? (
+                            <input
+                              type="text"
+                              value={tempReason}
+                              onChange={(e) => setTempReason(e.target.value)}
+                              placeholder="Motivo del ajuste"
+                              className="w-40 border border-gray-300 rounded px-2 py-1 text-sm"
+                              disabled={isPending}
+                            />
+                          ) : (
+                            <span className="text-gray-500 italic">-</span>
+                          )}
+                        </td>
+                        {/* Ubicación */}
+                        <td className="py-4 text-gray-600 text-xs">
+                          <div className="flex items-center gap-1">
+                            <Warehouse className="w-4 h-4" />
+                            {location.warehouse.name}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <MapPin className="w-4 h-4" />
+                            Estante: {location.bookcase}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Layers className="w-4 h-4" />
+                            Piso: {location.bookcaseFloor}
+                          </div>
+                          <div className="text-xs mt-1">
+                            Condición: {location.bookCondition} | Tipo:{" "}
+                            {location.locationType}
+                          </div>
+                        </td>
+                        {/* Acciones */}
+                        <td className="py-4">
+                          {isEditing ? (
+                            <>
+                              <button
+                                onClick={() =>
+                                  saveStock(
+                                    book.sku,
+                                    location.id,
+                                    location.stock
+                                  )
+                                }
+                                className="text-green-600 hover:text-green-800 mr-2"
+                                title="Guardar"
+                                type="button"
+                                disabled={isPending}
+                              >
+                                <Check className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={cancelEditing}
+                                className="text-gray-500 hover:text-gray-700"
+                                title="Cancelar"
+                                type="button"
+                                disabled={isPending}
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </>
+                          ) : (
+                            <button
+                              onClick={() => startEditing(book.id, location.id)}
+                              className="flex items-center text-blue-600 text-sm hover:underline"
+                              type="button"
+                            >
+                              <Pencil className="w-4 h-4 mr-1" />
+                              Ajustar
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
               ) : (
                 <tr key={book.id} className="align-top">
                   {/* Libro */}
@@ -395,7 +404,14 @@ export default function InventoryAdjustmentTab({ searchTerm }: Props) {
           </tbody>
         </table>
       </div>
-      <PaginationBar />
+      <PaginationBar
+        currentPage={currentPage}
+        totalPages={data?.totalPages ?? 1}
+        totalElements={data?.totalElements ?? 0}
+        itemsPerPage={itemsPerPage}
+        onPageChange={(page) => setCurrentPage(page)}
+        onItemsPerPageChange={(size) => setItemsPerPage(size)}
+      />
     </div>
   );
 }

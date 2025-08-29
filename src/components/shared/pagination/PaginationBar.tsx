@@ -1,20 +1,25 @@
-import { useBookStore } from "@/stores/useBookStore";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const PaginationBar = () => {
-  const {
-    currentPage,
-    totalPages,
-    totalElements,
-    itemsPerPage,
-    setCurrentPage,
-    setItemsPerPage,
-  } = useBookStore();
+interface PaginationBarProps {
+  currentPage: number;
+  totalPages: number;
+  totalElements: number;
+  itemsPerPage: number;
+  onPageChange: (page: number) => void;
+  onItemsPerPageChange?: (size: number) => void;
+}
 
+const PaginationBar = ({
+  currentPage,
+  totalPages,
+  totalElements,
+  itemsPerPage,
+  onPageChange,
+  onItemsPerPageChange,
+}: PaginationBarProps) => {
   const start = totalElements === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
   const end = Math.min(start + itemsPerPage - 1, totalElements);
 
-  // Generar un rango de páginas visibles (ej: [1,2,3,...,10])
   const getPageNumbers = () => {
     const pages = [];
     if (totalPages <= 7) {
@@ -36,14 +41,14 @@ const PaginationBar = () => {
       {/* Información de ítems */}
       <div className="flex flex-1 justify-between sm:hidden">
         <button
-          onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+          onClick={() => onPageChange(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1}
           className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
         >
           Previous
         </button>
         <button
-          onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+          onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage === totalPages}
           className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
         >
@@ -61,24 +66,23 @@ const PaginationBar = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Selector de cantidad por página */}
-          <select
-            value={itemsPerPage}
-            onChange={(e) => setItemsPerPage(Number(e.target.value))}
-            className="border rounded px-2 py-1 text-sm"
-          >
-            {[12, 24, 48, 96].map((option) => (
-              <option key={option} value={option}>
-                {option} por página
-              </option>
-            ))}
-          </select>
+          {onItemsPerPageChange && (
+            <select
+              value={itemsPerPage}
+              onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
+              className="border rounded px-2 py-1 text-sm"
+            >
+              {[12, 24, 48, 96].map((option) => (
+                <option key={option} value={option}>
+                  {option} por página
+                </option>
+              ))}
+            </select>
+          )}
 
-          {/* Botones de paginación */}
           <nav aria-label="Pagination" className="isolate inline-flex -space-x-px rounded-md shadow-sm">
-            {/* Botón anterior */}
             <button
-              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+              onClick={() => onPageChange(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
               className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 hover:bg-gray-50 disabled:opacity-50"
             >
@@ -86,7 +90,6 @@ const PaginationBar = () => {
               <ChevronLeft className="w-5 h-5" />
             </button>
 
-            {/* Números de páginas */}
             {getPageNumbers().map((page, idx) =>
               page === "..." ? (
                 <span
@@ -98,11 +101,9 @@ const PaginationBar = () => {
               ) : (
                 <button
                   key={idx}
-                  onClick={() => setCurrentPage(Number(page))}
+                  onClick={() => onPageChange(Number(page))}
                   className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20 focus:outline-offset-0 ${
-                    currentPage === page
-                      ? "z-10 bg-[var(--color-secondary)]"
-                      : "text-gray-900 hover:bg-gray-50"
+                    currentPage === page ? "z-10 bg-[var(--color-secondary)]" : "text-gray-900 hover:bg-gray-50"
                   }`}
                 >
                   {page}
@@ -110,9 +111,8 @@ const PaginationBar = () => {
               )
             )}
 
-            {/* Botón siguiente */}
             <button
-              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+              onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
               disabled={currentPage === totalPages}
               className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 hover:bg-gray-50 disabled:opacity-50"
             >

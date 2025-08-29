@@ -15,6 +15,8 @@ export function LocationManagementTab({ searchTerm }: Props) {
     currentPage,
     books: storeBooks,
     setBooks,
+    setCurrentPage,
+    setItemsPerPage,
     sortOrder,
     itemsPerPage,
   } = useBookStore();
@@ -207,9 +209,17 @@ export function LocationManagementTab({ searchTerm }: Props) {
           </div>
 
           <div className="mt-4 text-sm text-gray-500">
-            {booksWithLocations.length} libros encontrados con ubicación existente
+            {booksWithLocations.length} libros encontrados con ubicación
+            existente
           </div>
-          <PaginationBar />
+          <PaginationBar
+            currentPage={currentPage}
+            totalPages={data?.totalPages ?? 1}
+            totalElements={data?.totalElements ?? 0}
+            itemsPerPage={itemsPerPage}
+            onPageChange={(page) => setCurrentPage(page)}
+            onItemsPerPageChange={(size) => setItemsPerPage(size)}
+          />
         </>
       )}
 

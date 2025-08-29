@@ -6,6 +6,7 @@ export const endpoints = {
   roles: "/roles",
   warehouses: "/warehouses",
   locations: "/book-stock-locations",
+  customers: "/customers",
   bookStockAdjustments: "/book-stock-adjustments",
   inventoryTransactions: "/inventory-transactions",
   uploadImage: "/upload/image",
