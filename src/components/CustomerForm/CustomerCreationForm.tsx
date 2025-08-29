@@ -19,11 +19,20 @@ export default function CustomerCreationForm() {
     companyName: "",
     email: "",
     phoneNumber: "",
-    address: "",
+    address: {
+      street1: "",
+      street2: "",
+      department: "",
+      district: "",
+      province: "",
+      postalCode: "",
+    },
     contacts: [],
   });
 
-  const [formErrors, setFormErrors] = useState<Partial<Record<keyof FormData, string>>>({});
+  const [formErrors, setFormErrors] = useState<
+    Partial<Record<keyof FormData, string>>
+  >({});
 
   // hook para crear cliente
   const createCustomer = useCreateCustomer({
@@ -37,7 +46,14 @@ export default function CustomerCreationForm() {
         companyName: "",
         email: "",
         phoneNumber: "",
-        address: "",
+        address: {
+          street1: "",
+          street2: "",
+          department: "",
+          district: "",
+          province: "",
+          postalCode: "",
+        },
         contacts: [],
       });
       setFormErrors({});
@@ -47,7 +63,10 @@ export default function CustomerCreationForm() {
     },
   });
 
-  const updateFormData = <K extends keyof FormData>(field: K, value: FormData[K]) => {
+  const updateFormData = <K extends keyof FormData>(
+    field: K,
+    value: FormData[K]
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Limpiar error si el usuario empieza a escribir
     setFormErrors((prev) => ({ ...prev, [field]: "" }));
@@ -61,7 +80,9 @@ export default function CustomerCreationForm() {
     setFormData((prev) => ({
       ...prev,
       [field]: {
-        ...(typeof prev[field] === "object" && prev[field] !== null ? prev[field] : {}),
+        ...(typeof prev[field] === "object" && prev[field] !== null
+          ? prev[field]
+          : {}),
         [subField]: value,
       },
     }));
@@ -71,12 +92,15 @@ export default function CustomerCreationForm() {
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
+    // Validaciones
     const errors: Partial<Record<keyof FormData, string>> = {};
 
-    if (!formData.customerType) errors.customerType = "Selecciona el tipo de cliente";
+    if (!formData.customerType)
+      errors.customerType = "Selecciona el tipo de cliente";
 
     if (formData.customerType === "PERSON") {
-      if (!formData.documentNumber) errors.documentNumber = `${formData.documentType} es requerido`;
+      if (!formData.documentNumber)
+        errors.documentNumber = `${formData.documentType} es requerido`;
       if (!formData.name) errors.name = "Nombre completo es requerido";
       if (!formData.email) errors.email = "Email es requerido";
       if (!formData.phoneNumber) errors.phoneNumber = "Teléfono es requerido";
@@ -84,10 +108,20 @@ export default function CustomerCreationForm() {
 
     if (formData.customerType === "COMPANY") {
       if (!formData.documentNumber) errors.documentNumber = "RUC es requerido";
-      if (!formData.companyName) errors.companyName = "Nombre de la empresa es requerido";
+      if (!formData.companyName)
+        errors.companyName = "Nombre de la empresa es requerido";
       if (!formData.email) errors.email = "Email de la empresa es requerido";
-      if (!formData.phoneNumber) errors.phoneNumber = "Teléfono corporativo es requerido";
+      if (!formData.phoneNumber)
+        errors.phoneNumber = "Teléfono corporativo es requerido";
     }
+
+    // Validación de dirección (si existe)
+    if (!formData.address.street1)
+      errors.address = "Calle principal es requerida";
+    if (!formData.address.district) errors.address = "Distrito es requerido";
+    if (!formData.address.province) errors.address = "Provincia es requerida";
+    if (!formData.address.postalCode)
+      errors.address = "Código postal es requerido";
 
     setFormErrors(errors);
 
@@ -96,7 +130,18 @@ export default function CustomerCreationForm() {
       return;
     }
 
-    const dto = mapFormDataToCustomerDTO(formData);
+    // Convertimos address a string para enviar al backend
+    const addressString = `${formData.address.street1}${
+      formData.address.street2 ? " " + formData.address.street2 : ""
+    }, ${formData.address.district}, ${formData.address.province}, ${
+      formData.address.postalCode
+    }`;
+
+    const dto = {
+      ...mapFormDataToCustomerDTO(formData),
+      address: addressString, // enviamos la dirección como string
+    };
+
     createCustomer.mutate(dto);
   };
 
@@ -111,7 +156,9 @@ export default function CustomerCreationForm() {
 
   return (
     <div className="mx-auto p-6 bg-white">
-      <h1 className="text-2xl font-semibold text-gray-900 mb-8">Nuevo Cliente</h1>
+      <h1 className="text-2xl font-semibold text-gray-900 mb-8">
+        Nuevo Cliente
+      </h1>
 
       <div className="space-y-6">
         {/* General Information */}
@@ -137,7 +184,9 @@ export default function CustomerCreationForm() {
         </div>
 
         {/* Dynamic sections */}
-        {activeTab === "address" && <AddressSection />}
+        {activeTab === "address" && (
+          <AddressSection formData={formData} updateFormData={updateFormData} />
+        )}
 
         {activeTab === "contacts" &&
           (formData.customerType === "COMPANY" ? (

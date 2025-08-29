@@ -1,116 +1,65 @@
 import { FormField } from "../ui/FormField";
 import { Input } from "../ui/Input";
 import { Select } from "../ui/Select";
+import { FormData } from "../types/FormData";
 
-export default function AddressSection() {
+interface Props {
+  formData: FormData;
+  updateFormData: <K extends keyof FormData>(field: K, value: FormData[K]) => void;
+}
+
+export default function AddressSection({ formData, updateFormData }: Props) {
+  // Función para actualizar solo un subcampo del objeto address
+  const handleAddressChange = (field: keyof FormData["address"], value: string) => {
+    updateFormData("address", { ...formData.address, [field]: value });
+  };
+
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Columna izquierda */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">
-            Dirección de facturación
-          </h3>
-          <FormField label="A la atención de">
-            <Input value="" onChange={() => {}} placeholder="" />
-          </FormField>
+      {/* Solo una columna por simplicidad */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">Dirección</h3>
 
-          <FormField label="País/Región">
-            <Select
-              value=""
-              onChange={() => {}}
-              options={["Perú", "Colombia", "Chile", "Ecuador"]}
-              placeholder="Seleccione o escriba para agregar"
-            />
-          </FormField>
+        <FormField label="Dirección">
+          <Input
+            value={formData.address.street1}
+            onChange={(value) => handleAddressChange("street1", value)}
+            placeholder="Calle 1"
+          />
+        </FormField>
 
-          <FormField label="Dirección">
-            <div className="space-y-2">
-              <Input value="" onChange={() => {}} placeholder="Calle 1" />
-              <Input value="" onChange={() => {}} placeholder="Calle 2" />
-            </div>
-          </FormField>
+        <FormField label="Departamento">
+          <Select
+            value={formData.address.department}
+            onChange={(value) => handleAddressChange("department", value)}
+            options={["Lima", "Arequipa", "Cusco", "Trujillo"]}
+            placeholder="Seleccione o escriba para agregar"
+          />
+        </FormField>
 
-          <FormField label="Ciudad">
-            <Input value="" onChange={() => {}} placeholder="" />
-          </FormField>
+        <FormField label="Distrito">
+          <Input
+            value={formData.address.district}
+            onChange={(value) => handleAddressChange("district", value)}
+            placeholder=""
+          />
+        </FormField>
 
-          <FormField label="Estado">
-            <Select
-              value=""
-              onChange={() => {}}
-              options={["Lima", "Arequipa", "Cusco", "Trujillo"]}
-              placeholder="Seleccione o escriba para agregar"
-            />
-          </FormField>
+        <FormField label="Provincia">
+          <Input
+            value={formData.address.province}
+            onChange={(value) => handleAddressChange("province", value)}
+            placeholder=""
+          />
+        </FormField>
 
-          <FormField label="Código postal">
-            <Input value="" onChange={() => {}} placeholder="" />
-          </FormField>
-
-          <FormField label="Teléfono">
-            <Input value="" onChange={() => {}} placeholder="" />
-          </FormField>
-        </div>
-
-        {/* Columna derecha */}
-        <div className="space-y-4">
-          <div className="flex items-center space-x-2 mb-4">
-            <h3 className="text-lg font-medium text-gray-900">
-              Dirección de envío
-            </h3>
-            <span className="text-sm text-gray-500">(</span>
-            <button
-              type="button"
-              className="text-blue-600 hover:text-blue-800 text-sm"
-              onClick={() => console.log("Copiar dirección de facturación")}
-            >
-              Copiar la dirección de facturación
-            </button>
-            <span className="text-sm text-gray-500">)</span>
-          </div>
-
-          <FormField label="A la atención de">
-            <Input value="" onChange={() => {}} placeholder="" />
-          </FormField>
-
-          <FormField label="País/Región">
-            <Select
-              value=""
-              onChange={() => {}}
-              options={["Perú", "Colombia", "Chile", "Ecuador"]}
-              placeholder="Seleccione o escriba para agregar"
-            />
-          </FormField>
-
-          <FormField label="Dirección">
-            <div className="space-y-2">
-              <Input value="" onChange={() => {}} placeholder="Calle 1" />
-              <Input value="" onChange={() => {}} placeholder="Calle 2" />
-            </div>
-          </FormField>
-
-          <FormField label="Ciudad">
-            <Input value="" onChange={() => {}} placeholder="" />
-          </FormField>
-
-          <FormField label="Estado">
-            <Select
-              value=""
-              onChange={() => {}}
-              options={["Lima", "Arequipa", "Cusco", "Trujillo"]}
-              placeholder="Seleccione o escriba para agregar"
-            />
-          </FormField>
-
-          <FormField label="Código postal">
-            <Input value="" onChange={() => {}} placeholder="" />
-          </FormField>
-
-          <FormField label="Teléfono">
-            <Input value="" onChange={() => {}} placeholder="" />
-          </FormField>
-        </div>
+        <FormField label="Código postal">
+          <Input
+            value={formData.address.postalCode}
+            onChange={(value) => handleAddressChange("postalCode", value)}
+            placeholder=""
+          />
+        </FormField>
       </div>
     </div>
   );

@@ -8,7 +8,14 @@ export interface FormData {
 
   email: string;
   phoneNumber: string;                  // unified phone field
-  address: string;
+  address: {
+    street1: string;
+    street2?: string;
+    department: string;
+    district: string;
+    province: string;
+    postalCode: string;
+  };
 
   contacts?: {
     name: string;
