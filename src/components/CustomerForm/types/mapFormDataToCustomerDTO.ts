@@ -12,7 +12,9 @@ export function mapFormDataToCustomerDTO(
     companyName: form.customerType === "COMPANY" ? form.companyName ?? "" : "",
     email: form.email,
     phoneNumber: form.phoneNumber,
-    address: form.address ?? "",
+    address: form.address
+      ? `${form.address.street1}, ${form.address.street2 ?? ""}, ${form.address.district}, ${form.address.province}, ${form.address.department}, ${form.address.postalCode}`
+      : "",
     contacts:
       form.contacts?.map((c) => ({
         id: 0,

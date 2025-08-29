@@ -77,15 +77,23 @@ export default function CustomerCreationForm() {
     subField: keyof FormData[T],
     value: FormData[T][keyof FormData[T]]
   ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: {
-        ...(typeof prev[field] === "object" && prev[field] !== null
-          ? prev[field]
-          : {}),
-        [subField]: value,
-      },
-    }));
+    setFormData((prev) => {
+      // Garantizamos que prev[field] sea un objeto
+      const fieldValue = prev[field];
+      const fieldObject: Record<string, unknown> =
+        fieldValue && typeof fieldValue === "object"
+          ? (fieldValue as Record<string, unknown>)
+          : {};
+
+      return {
+        ...prev,
+        [field]: {
+          ...fieldObject,
+          [subField]: value,
+        } as FormData[T], // casteamos al tipo correcto
+      };
+    });
+
     setFormErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
