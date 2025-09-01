@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useBooks } from "@/hooks/useBooks";
 import { useBookStore } from "@/stores/useBookStore";
 import { InfoRow } from "../BookDetail/InfoRow";
-import { TransferModal } from "./TransferModal";
 import { BookDTO } from "@/types/BookDTO";
 import PaginationBar from "@components/shared/pagination/PaginationBar";
+import { TransferModal } from "@components/BookTransfer/TransferModal";
 
 interface Props {
   searchTerm: string;
@@ -48,29 +48,23 @@ export function LocationManagementTab({ searchTerm }: Props) {
     ),
   }));
 
-  // 2. Filtra solo libros con ubicaciones
-  const booksWithLocations = booksWithSortedLocations.filter(
-    (book) => book.locations && book.locations.length > 0
-  );
+  // 2. Incluye todos los libros (con o sin ubicaciones)
+  const booksWithLocations = booksWithSortedLocations;
 
-  // 3. Aplica paginación sobre los libros filtrados
+  // 3. Aplica paginación sobre los libros
   const startIdx = (currentPage - 1) * itemsPerPage;
   const paginatedBooks = booksWithLocations.slice(
     startIdx,
     startIdx + itemsPerPage
   );
 
-  // Función para abrir modal de transferencia
-  const openTransferModal = (bookSku: string, fromLocationId: number) => {
-    const book = storeBooks.find((b) => b.sku === bookSku);
-    if (!book) return;
+  // Función para abrir modal de transferencia o creación de ubicación
+  const openTransferModal = (book: BookDTO, fromLocationId: number) => {
     setTransferData({ book, fromLocationId });
   };
 
   // Función para cerrar modal
-  const closeTransferModal = () => {
-    setTransferData(null);
-  };
+  const closeTransferModal = () => setTransferData(null);
 
   return (
     <div className="bg-white border rounded-lg shadow-sm p-4">
@@ -114,8 +108,72 @@ export function LocationManagementTab({ searchTerm }: Props) {
               </thead>
               <tbody className="divide-y">
                 {paginatedBooks.map((book) =>
-                  book.locations.map((loc) => (
-                    <tr key={`${book.id}-${loc.id}`} className="align-top">
+                  book.locations && book.locations.length > 0 ? (
+                    book.locations.map((loc) => (
+                      <tr key={`${book.id}-${loc.id}`} className="align-top">
+                        <td className="py-4 pr-4">
+                          <div className="flex gap-4">
+                            <div className="w-12 h-16 bg-gray-200 rounded" />
+                            <div>
+                              <div className="w-80 font-medium text-gray-800 truncate">
+                                {book.title}
+                              </div>
+                              <div className="text-xs text-gray-500">
+                                SKU: {book.sku}
+                              </div>
+                              <div className="text-xs text-gray-500">
+                                ISBN: {book.isbn}
+                              </div>
+                              <div className="text-xs text-gray-400">
+                                {book.author}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-4 text-gray-700">
+                          <InfoRow
+                            label=""
+                            value={loc.warehouse?.name || "-"}
+                          />
+                        </td>
+                        <td className="py-4 text-sm text-gray-700">
+                          <InfoRow label="" value={loc.locationType} />
+                        </td>
+                        <td className="py-4 text-sm text-gray-700">
+                          <InfoRow label="" value={loc.stock} />
+                        </td>
+                        <td className="py-4 text-sm text-gray-700">
+                          <InfoRow label="" value={loc.bookcase} />
+                        </td>
+                        <td className="py-4 text-sm text-gray-700">
+                          <InfoRow label="" value={loc.bookcaseFloor} />
+                        </td>
+                        <td className="py-4 text-sm text-gray-700">
+                          <InfoRow label="" value={loc.bookCondition || "-"} />
+                        </td>
+                        <td className="py-4 text-sm text-gray-700">
+                          <InfoRow
+                            label=""
+                            value={
+                              loc.lastUpdatedAt
+                                ? new Date(loc.lastUpdatedAt).toLocaleString()
+                                : "-"
+                            }
+                          />
+                        </td>
+                        <td className="flex items-center justify-center h-20">
+                          <button
+                            className="px-4 py-1 bg-blue-500 text-white rounded text-sm"
+                            onClick={() => openTransferModal(book, loc.id)}
+                          >
+                            Transferir
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    // Libro sin ubicación
+                    <tr key={book.id} className="align-top">
                       <td className="py-4 pr-4">
                         <div className="flex gap-4">
                           <div className="w-12 h-16 bg-gray-200 rounded" />
@@ -135,82 +193,29 @@ export function LocationManagementTab({ searchTerm }: Props) {
                           </div>
                         </div>
                       </td>
-                      <td className="py-4 text-gray-700">
-                        <InfoRow
-                          key={loc.warehouse.id}
-                          className="py-4 w-16"
-                          label=""
-                          value={loc.warehouse.name || "-"}
-                        />
-                      </td>
-                      <td className="py-4 text-sm text-gray-700">
-                        <InfoRow
-                          className="py-4 w-16"
-                          label=""
-                          value={loc.locationType}
-                        />
-                      </td>
-                      <td className="py-4 text-sm text-gray-700">
-                        <InfoRow
-                          className="py-4 w-16"
-                          label=""
-                          value={loc.stock}
-                        />
-                      </td>
-                      <td className="py-4 text-sm text-gray-700">
-                        <InfoRow
-                          className="py-4 w-16"
-                          label=""
-                          value={loc.bookcase}
-                        />
-                      </td>
-                      <td className="py-4 text-sm text-gray-700">
-                        <InfoRow
-                          className="py-4 w-16"
-                          label=""
-                          value={loc.bookcaseFloor}
-                        />
-                      </td>
-                      <td className="py-4 text-sm text-gray-700">
-                        <InfoRow
-                          className="py-4 w-16"
-                          label=""
-                          value={loc.bookCondition || "-"}
-                        />
-                      </td>
-                      <td className="py-4 text-sm text-gray-700">
-                        <InfoRow
-                          className="py-4"
-                          label=""
-                          value={
-                            loc.lastUpdatedAt
-                              ? new Date(loc.lastUpdatedAt).toLocaleString()
-                              : "-"
-                          }
-                        />
+                      <td
+                        colSpan={7}
+                        className="py-4 text-center text-gray-500"
+                      >
+                        No existe ubicación para este libro.
                       </td>
                       <td className="flex items-center justify-center h-20">
                         <button
-                          className="px-4 py-1 bg-blue-500 text-white rounded text-sm"
-                          onClick={() => openTransferModal(book.sku, loc.id)}
+                          className="px-4 py-1 bg-green-500 text-white rounded text-sm"
+                          onClick={() => openTransferModal(book, 0)}
                         >
-                          Transferir
+                          Crear nueva ubicación
                         </button>
                       </td>
                     </tr>
-                  ))
+                  )
                 )}
-                {/*
-                  // TODO: Integrar la creación de ubicaciones para libros sin stock.
-                  // Por ahora, los libros sin ubicaciones no se muestran.
-                */}
               </tbody>
             </table>
           </div>
 
           <div className="mt-4 text-sm text-gray-500">
-            {booksWithLocations.length} libros encontrados con ubicación
-            existente
+            {booksWithLocations.length} libros encontrados
           </div>
           <PaginationBar
             currentPage={currentPage}
@@ -223,13 +228,14 @@ export function LocationManagementTab({ searchTerm }: Props) {
         </>
       )}
 
-      {/* Modal de transferencia */}
+      {/* Modal de transferencia / creación */}
       {transferData && (
         <TransferModal
           isOpen={!!transferData}
           onClose={closeTransferModal}
           fromLocationId={transferData.fromLocationId}
           book={transferData.book}
+          userId={10} // TODO: Cambiar por usuario real logueado
         />
       )}
     </div>

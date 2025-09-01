@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
-import { BookOpen, Save, Plus } from 'lucide-react';
+import { BookOpen, Save } from 'lucide-react';
 import type { BookDTO } from '@/types/BookDTO';
 
 // Secciones válidas
@@ -32,7 +32,7 @@ export const FORM_SECTIONS: ReadonlyArray<{
 }> = [
   { id: 'basic', title: 'Información Básica', icon: BookOpen },
   { id: 'pricing', title: 'Precios', icon: Save },
-  { id: 'inventory', title: 'Inventario', icon: Plus },
+  // { id: 'inventory', title: 'Inventario', icon: Plus },
 ] as const;
 
 // Campos por sección
