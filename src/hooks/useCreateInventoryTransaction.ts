@@ -16,7 +16,7 @@ export function useCreateInventoryTransaction() {
     },
     onError: (err) => {
       console.error(err);
-      toast.error("Error al realizar transferencia");
+      toast.error("Error al realizar la transacción");
     },
   });
 

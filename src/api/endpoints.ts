@@ -7,7 +7,6 @@ export const endpoints = {
   warehouses: "/warehouses",
   locations: "/book-stock-locations",
   customers: "/customers",
-  bookStockAdjustments: "/book-stock-adjustments",
   inventoryTransactions: "/inventory-transactions",
   uploadImage: "/upload/image",
   exportBooks: "books/export"

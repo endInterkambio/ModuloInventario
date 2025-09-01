@@ -136,9 +136,10 @@ export function TransferModal({
       // 2️⃣ Preparamos la nueva ubicación
       const locationToCreate: Partial<BookStockLocationDTO> = {
         ...newLocation,
+        bookId: book.id,
         bookSku: book.sku,
         stock: 0,
-        bookCondition: fromLocation.bookCondition, // heredamos la condición
+        bookCondition: newLocation.bookCondition || fromLocation.bookCondition, // Condición independiente
       };
 
       // 3️⃣ Llamamos al backend

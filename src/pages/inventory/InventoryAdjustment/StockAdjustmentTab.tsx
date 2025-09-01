@@ -3,8 +3,8 @@ import { Layers, MapPin, Warehouse, Pencil, Check, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { useBookStore } from "@/stores/useBookStore";
 import { useBooks } from "@/hooks/useBooks";
-import { useCreateStockAdjustment } from "@/hooks/useCreateStockAdjustment";
 import PaginationBar from "@components/shared/pagination/PaginationBar";
+import { useCreateInventoryTransaction } from "@/hooks/useCreateInventoryTransaction";
 
 interface Props {
   searchTerm: string;
@@ -28,8 +28,8 @@ export default function InventoryAdjustmentTab({ searchTerm }: Props) {
     searchTerm
   );
 
-  const { mutate: createStockAdjustment, isPending } =
-    useCreateStockAdjustment();
+  const { createTransaction: createStockAdjustment, isMutating: isPending } =
+    useCreateInventoryTransaction();
 
   // Sincronizar store si cambian los resultados
   useEffect(() => {
@@ -114,10 +114,14 @@ export default function InventoryAdjustmentTab({ searchTerm }: Props) {
     createStockAdjustment(
       {
         bookSku,
-        locationId,
-        adjustmentQuantity: tempStock, // puede ser negativo o positivo
+        fromLocationId: tempStock < 0 ? locationId : undefined,
+        toLocationId: tempStock > 0 ? locationId : undefined,
+        transactionType: "ADJUSTMENT",
+        quantity: Math.abs(tempStock!),
         reason: tempReason,
-        performedBy: { id: 10, name: "Admin" },
+        userId: 10, // id del usuario logueado
+        transactionDate: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
       },
       { onSuccess: () => cancelEditing() }
     );
