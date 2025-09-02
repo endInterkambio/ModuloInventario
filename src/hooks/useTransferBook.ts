@@ -5,6 +5,7 @@ import { useCreateBookLocation } from "@/hooks/useCreateBookLocation";
 import { useBookStore } from "@/stores/useBookStore";
 import { BookDTO } from "@/types/BookDTO";
 import { BookStockLocationDTO } from "@/types/BookStockLocationDTO";
+import { AxiosError } from "axios";
 
 interface UseTransferBookParams {
   book: BookDTO;
@@ -140,9 +141,17 @@ export const useTransferBook = ({
       setShowCreateLocation(false);
       toast.success("Ubicación creada con éxito");
       onClose();
-    } catch (err) {
-      console.error(err);
-      toast.error("Error al crear ubicación");
+    } catch (err: unknown) {
+      let message = "Error al crear ubicación";
+      
+      if (err instanceof AxiosError) {
+        // Show error by backend response
+        message = err.response?.data?.message ?? err.message;
+      } else if (err instanceof Error) {
+        // Error by default
+        message = err.message;
+      }
+      toast.error(message);
     }
   };
 
