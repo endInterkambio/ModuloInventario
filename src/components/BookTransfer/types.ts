@@ -6,7 +6,6 @@ export type TransferModalProps = {
   onClose: () => void;
   fromLocationId: number;
   book: BookDTO;
-  userId: number;
 };
 
 export type CreateLocationFormProps = {

@@ -235,7 +235,6 @@ export function LocationManagementTab({ searchTerm }: Props) {
           onClose={closeTransferModal}
           fromLocationId={transferData.fromLocationId}
           book={transferData.book}
-          userId={10} // TODO: Cambiar por usuario real logueado
         />
       )}
     </div>

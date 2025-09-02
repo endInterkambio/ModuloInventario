@@ -10,13 +10,11 @@ import { AxiosError } from "axios";
 interface UseTransferBookParams {
   book: BookDTO;
   fromLocationId: number | undefined;
-  userId: number;
 }
 
 export const useTransferBook = ({
   book,
   fromLocationId,
-  userId,
 }: UseTransferBookParams) => {
   const { createTransaction, isMutating } = useCreateInventoryTransaction();
   const { createLocation, isCreatingLocation } = useCreateBookLocation();
@@ -76,7 +74,6 @@ export const useTransferBook = ({
         transactionType: "TRANSFER",
         quantity,
         reason: "Traslado interno",
-        userId,
         createdAt: new Date().toISOString(),
       });
       onClose(); // 🔹 cerrar modal al finalizar

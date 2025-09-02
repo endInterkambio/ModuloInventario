@@ -8,7 +8,6 @@ export function TransferModal({
   onClose,
   fromLocationId,
   book,
-  userId,
 }: TransferModalProps) {
   const {
     toLocationId,
@@ -27,7 +26,7 @@ export function TransferModal({
     BOOKCASE_MAX,
     FLOOR_MIN,
     FLOOR_MAX,
-  } = useTransferBook({ book, fromLocationId, userId });
+  } = useTransferBook({ book, fromLocationId });
 
   if (!isOpen) return null;
 
