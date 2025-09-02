@@ -5,6 +5,10 @@ export interface LoginResponse {
   user: {
     id: number;
     username: string;
+    role: {
+      id: number,
+      name: string,
+    } | null;
   };
 }
 

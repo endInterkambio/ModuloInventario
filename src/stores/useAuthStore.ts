@@ -12,8 +12,10 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  token: localStorage.getItem("token"), // persistente si ya había login
+  user: localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user")!)
+    : null,
+  token: localStorage.getItem("token") || null, // persistente si ya había login
   loading: false,
   error: null,
 
@@ -24,6 +26,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 
       // Guardar token y usuario en estado y localStorage
       localStorage.setItem("token", res.token);
+      localStorage.setItem("user", JSON.stringify(res.user));
+      
       set({ user: res.user, token: res.token, loading: false });
     } catch (error) {
       const message = getErrorMessage(error);
@@ -34,6 +38,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   logoutUser: () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     set({ user: null, token: null, error: null });
   },
 }));

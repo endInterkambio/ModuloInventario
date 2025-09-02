@@ -5,6 +5,7 @@ import { Package, Tag, BookOpen, FileText, User } from "lucide-react";
 import { useEffect } from "react";
 import { useBookStore } from "@/stores/useBookStore";
 import { useUpdateBook } from "@/hooks/useUpdateBooks";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 interface Props {
   book: BookDTO;
@@ -18,8 +19,9 @@ const BookGeneralInfo = ({ book }: Props) => {
     setEditedBook(book);
   }, [book, setEditedBook]);
 
-  // TODO: Reemplazar esto con validación real de usuario admin
-  const isAdmin = true;
+  const userRole = useAuthStore((state) => state.user?.role?.name);
+  const isAdmin = userRole === "ADMIN";
+  //const isAdmin = true;
 
   const handleFieldUpdate = (field: keyof BookDTO, value: string | number) => {
     let normalizedValue: string | number | string[] = value;
