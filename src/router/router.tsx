@@ -12,6 +12,7 @@ import { PaymentReceivedPage } from "@/pages/sales/PaymentReceivedPage";
 import { CustomerPage } from "@/pages/sales/CustomerPage";
 import SalesOrderForm from "@components/SalesOrderForm/SalesOrderForm";
 import CustomerCreationForm from "@components/CustomerForm/CustomerCreationForm";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 export const router = createBrowserRouter(
   [
@@ -19,79 +20,56 @@ export const router = createBrowserRouter(
       path: "/",
       element: <Root />,
       children: [
-        /// Dashboard Routes
+        // Rutas privadas protegidas
         {
-          path: "dashboard",
-          element: <DashboardLayout />,
+          element: <ProtectedRoute />,
           children: [
             {
-              path: "",
-              element: <Dashboard />,
-            },
-            {
-              path: "inventory",
-              element: <BooksPage />,
+              path: "dashboard",
+              element: <DashboardLayout />,
               children: [
+                { path: "", element: <Dashboard /> },
                 {
-                  path: ":sku",
-                  element: <BookDetailPage />,
+                  path: "inventory",
+                  element: <BooksPage />,
+                  children: [
+                    { path: ":sku", element: <BookDetailPage /> }, // dinámica
+                    { path: "newBook", element: <BookCreationForm /> },
+                  ],
                 },
                 {
-                  path: "newBook",
-                  element: <BookCreationForm />,
+                  path: "inventoryAdjust",
+                  element: <InventoryManagementPage />,
                 },
-              ],
-            },
-            {
-              path: "inventoryAdjust",
-              element: <InventoryManagementPage />,
-            },
-            {
-              path: "purchase",
-              element: <PurchasePage />,
-            },
-            {
-              path: "selling",
-              element: <SaleOrdersPage />,
-              children: [
+                { path: "purchase", element: <PurchasePage /> },
                 {
-                  path: "newSaleOrder",
-                  element: <SalesOrderForm />,
+                  path: "selling",
+                  element: <SaleOrdersPage />,
+                  children: [
+                    { path: "newSaleOrder", element: <SalesOrderForm /> },
+                  ],
                 },
-              ],
-            },
-            {
-              path: "paymentReceived",
-              element: <PaymentReceivedPage />,
-            },
-            {
-              path: "customer",
-              element: <CustomerPage />,
-              children: [
+                { path: "paymentReceived", element: <PaymentReceivedPage /> },
                 {
-                  path: "newCustomer",
-                  element: <CustomerCreationForm />,
+                  path: "customer",
+                  element: <CustomerPage />,
+                  children: [
+                    { path: "newCustomer", element: <CustomerCreationForm /> },
+                  ],
                 },
               ],
             },
           ],
         },
 
-        /// Auth Routes
+        // Rutas públicas
         {
           path: "auth",
           element: <AuthLayout />,
-          children: [
-            {
-              path: "login",
-              element: <LoginPage />,
-            },
-          ],
+          children: [{ path: "login", element: <LoginPage /> }],
         },
       ],
     },
   ],
-  {
-    basename: "/app",
-  }
+  { basename: "/app" }
 );

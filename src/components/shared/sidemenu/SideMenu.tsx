@@ -2,11 +2,10 @@ import type { IconType } from "react-icons";
 import {
   IoSpeedometerOutline,
   IoPawOutline,
-  IoLogOutOutline,
 } from "react-icons/io5";
-import { NavLink } from "react-router-dom";
 import "./SideMenu.css";
 import { SideMenuItem } from "./SideMenuItem";
+import { LogoutButton } from "@components/LogoutButton";
 
 interface MenuItem {
   title: string;
@@ -117,19 +116,7 @@ export const SideMenu = () => {
         ))}
 
         {/* Logout */}
-        <NavLink to={"/auth/login"} className="mt-10">
-          <div>
-            <IoLogOutOutline />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-lg text-slate-300 font-bold leading-5">
-              Logout
-            </span>
-            <span className="text-sm text-slate-500 hidden md:block">
-              Cerrar sesión
-            </span>
-          </div>
-        </NavLink>
+        <LogoutButton />
       </nav>
     </div>
   );
