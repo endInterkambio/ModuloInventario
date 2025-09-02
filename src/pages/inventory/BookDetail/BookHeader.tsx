@@ -1,8 +1,4 @@
-import {
-  User,
-  Tag,
-  XCircle,
-} from "lucide-react";
+import { User, Tag, XCircle } from "lucide-react";
 import DOMPurify from "dompurify";
 import placeholder from "@assets/no-image.jpg";
 import { BookDTO } from "@/types/BookDTO";
@@ -10,6 +6,8 @@ import { deleteBook } from "@/api/modules/books";
 import { useBookStore } from "@/stores/useBookStore";
 import toast from "react-hot-toast";
 import { useState } from "react";
+import { getErrorMessage } from "@/utils/getErrorMessage";
+import { useIsAdmin } from "@/hooks/useAuthRole";
 
 type Props = { book: BookDTO };
 
@@ -18,6 +16,7 @@ const BookHeader = ({ book }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const removeBookLocally = useBookStore((state) => state.removeBookLocally);
+  const isAdmin = useIsAdmin();
 
   const handleDelete = async (id: number) => {
     if (!confirm("¿Estás seguro de eliminar este libro?")) return;
@@ -27,8 +26,7 @@ const BookHeader = ({ book }: Props) => {
       removeBookLocally(id);
       toast.success("Libro eliminado");
     } catch (error) {
-      console.error(error);
-      toast.error("Error al eliminar el libro");
+      toast.error(getErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -64,13 +62,15 @@ const BookHeader = ({ book }: Props) => {
             }}
           />
         </div>
-        <button
-          onClick={() => handleDelete(book.id)}
-          disabled={loading}
-          className="p-2 text-red-800 hover:text-red-600 disabled:opacity-50"
-        >
-          <XCircle size={36} />
-        </button>
+        {isAdmin && (
+          <button
+            onClick={() => handleDelete(book.id)}
+            disabled={loading}
+            className="p-2 text-red-800 hover:text-red-600 disabled:opacity-50"
+          >
+            <XCircle size={36} />
+          </button>
+        )}
       </div>
     </div>
   );

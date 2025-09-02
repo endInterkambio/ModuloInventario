@@ -5,6 +5,7 @@ import { BookDTO } from "@/types/BookDTO";
 import { useBookStore } from "@/stores/useBookStore";
 import { DollarSign } from "lucide-react";
 import { useUpdateBook } from "@/hooks/useUpdateBooks";
+import { useIsAdmin } from "@/hooks/useAuthRole";
 
 interface Props {
   book: BookDTO;
@@ -13,12 +14,11 @@ interface Props {
 const BookTransactions = ({ book }: Props) => {
   const { editedBook, setEditedBook } = useBookStore();
   const updateBookMutation = useUpdateBook();
+  const isAdmin = useIsAdmin();
 
   useEffect(() => {
     setEditedBook(book);
   }, [book, setEditedBook]);
-
-  const isAdmin = true;
 
   const handleFieldUpdate = async (
     field: keyof BookDTO,

@@ -11,6 +11,7 @@ import BookSidebar from "./BookSideBar";
 import BackButton from "@components/shared/BackButton";
 import { useBook } from "@/hooks/useBooks";
 import NewButton from "@components/NewButton";
+import { useIsAdmin } from "@/hooks/useAuthRole";
 
 const BookDetailPage = () => {
   const { sku } = useParams<{ sku: string }>();
@@ -18,6 +19,8 @@ const BookDetailPage = () => {
 
   // Obtener el libro por SKU desde el backend para persistencia de datos
   const { data: book, isLoading, error } = useBook(sku);
+
+  const isAdmin = useIsAdmin();
 
   if (isLoading) {
     return <div className="p-10 text-center">Cargando libro...</div>;
@@ -63,7 +66,9 @@ const BookDetailPage = () => {
     <div className="min-h-screen bg-gray-50">
       <div className="flex justify-between items-start px-4 pt-4">
         <BackButton />
-        <NewButton to={"/dashboard/inventory/newBook"} label={"Nuevo"} />
+        {isAdmin && (
+          <NewButton to={"/dashboard/inventory/newBook"} label={"Nuevo"} />
+        )}
       </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

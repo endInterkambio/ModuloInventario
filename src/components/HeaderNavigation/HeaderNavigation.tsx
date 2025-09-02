@@ -20,12 +20,14 @@ import FilterMenu from "./FilterMenu";
 import { useBookStore } from "@/stores/useBookStore";
 import NewButton from "@components/NewButton";
 import { DropdownMenu } from "./DropdownMenu";
+import { useIsAdmin } from "@/hooks/useAuthRole";
 
 const HeaderNavigation: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
   const { setMinStock } = useBookStore();
   const mutation = useUploadBooks();
+  const isAdmin = useIsAdmin();
 
   // inicializamos filtro por defecto
   useEffect(() => {
@@ -71,7 +73,9 @@ const HeaderNavigation: React.FC = () => {
 
       <div className="flex items-center gap-3">
         <ViewToggle />
-        <NewButton to={"/dashboard/inventory/newBook"} label={"Nuevo"} />
+        {isAdmin && (
+          <NewButton to={"/dashboard/inventory/newBook"} label={"Nuevo"} />
+        )}
 
         <div className="relative">
           <button
@@ -102,26 +106,32 @@ const HeaderNavigation: React.FC = () => {
                   />
                   {activeSubmenu === "filtrar" && <FilterMenu />}
                 </div>
-                <div className="relative">
-                  <SubmenuItem
-                    icon={<Download className="w-4 h-4 text-blue-500" />}
-                    label="Importar"
-                    isActive={activeSubmenu === "importar"}
-                    onHover={() => setActiveSubmenu("importar")}
-                  />
-                  {activeSubmenu === "importar" && (
-                    <ImportMenu handleImport={handleImport} />
-                  )}
-                </div>
-                <div className="relative">
-                  <SubmenuItem
-                    icon={<Upload className="w-4 h-4 text-blue-500" />}
-                    label="Exportar"
-                    isActive={activeSubmenu === "exportar"}
-                    onHover={() => setActiveSubmenu("exportar")}
-                  />
-                  {activeSubmenu === "exportar" && <ExportMenu />}
-                </div>
+
+                {isAdmin && (
+                  <div className="relative">
+                    <SubmenuItem
+                      icon={<Download className="w-4 h-4 text-blue-500" />}
+                      label="Importar"
+                      isActive={activeSubmenu === "importar"}
+                      onHover={() => setActiveSubmenu("importar")}
+                    />
+                    {activeSubmenu === "importar" && (
+                      <ImportMenu handleImport={handleImport} />
+                    )}
+                  </div>
+                )}
+                
+                {isAdmin && (
+                  <div className="relative">
+                    <SubmenuItem
+                      icon={<Upload className="w-4 h-4 text-blue-500" />}
+                      label="Exportar"
+                      isActive={activeSubmenu === "exportar"}
+                      onHover={() => setActiveSubmenu("exportar")}
+                    />
+                    {activeSubmenu === "exportar" && <ExportMenu />}
+                  </div>
+                )}
 
                 <div className="border-t border-gray-100 my-1"></div>
 

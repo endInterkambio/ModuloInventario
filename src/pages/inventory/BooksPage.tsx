@@ -57,7 +57,7 @@ const BooksPage = () => {
           {/* Mostrar paginación solo si no es detalle */}
           {!isDetailView && (
             <div className="container mx-auto pb-4">
-                <PaginationBar
+              <PaginationBar
                 currentPage={currentPage}
                 totalPages={data.totalPages}
                 totalElements={data.totalElements}
