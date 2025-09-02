@@ -43,9 +43,11 @@ export const CreateLocationForm = ({
       value={newLocation.locationType || "MAIN_STORAGE"}
       onChange={(e) => setNewLocation({ ...newLocation, locationType: e.target.value })}
       className="border w-full p-1 mb-2 rounded"
+      disabled={newLocation.warehouse?.id !== 1} // Show all the options just for first id
     >
       <option value="MAIN_STORAGE">MAIN_STORAGE</option>
       <option value="SHOWROOM">SHOWROOM</option>
+      <option value="FAIR_STORAGE">FAIR_STORAGE</option>
     </select>
 
     <label className="block text-sm mb-1">Condición del libro</label>
