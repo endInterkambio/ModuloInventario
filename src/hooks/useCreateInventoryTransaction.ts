@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { createTransaction } from "@/api/modules/inventoryTransactions";
 import { InventoryTransactionDTO } from "@/types/InventoryTransactionDTO";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 
 export function useCreateInventoryTransaction() {
   const queryClient = useQueryClient();
@@ -16,7 +17,7 @@ export function useCreateInventoryTransaction() {
     },
     onError: (err) => {
       console.error(err);
-      toast.error("Error al realizar la transacción");
+      toast.error(getErrorMessage(err));
     },
   });
 

@@ -156,7 +156,18 @@ export function LocationManagementTab({ searchTerm }: Props) {
                             label=""
                             value={
                               loc.lastUpdatedAt
-                                ? new Date(loc.lastUpdatedAt).toLocaleString()
+                                ? new Date(loc.lastUpdatedAt).toLocaleString(
+                                    "es-PE",
+                                    {
+                                      timeZone: "UTC",
+                                      year: "numeric",
+                                      month: "2-digit",
+                                      day: "2-digit",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                      second: "2-digit",
+                                    }
+                                  )
                                 : "-"
                             }
                           />

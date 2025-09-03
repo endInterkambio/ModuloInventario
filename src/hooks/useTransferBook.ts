@@ -126,7 +126,17 @@ export const useTransferBook = ({
 
       const createdWithTimestamp: BookStockLocationDTO = {
         ...created,
-        lastUpdatedAt: created.lastUpdatedAt || new Date().toISOString(),
+        lastUpdatedAt:
+          created.lastUpdatedAt ||
+          new Date().toLocaleString("es-PE", {
+            timeZone: "UTC",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          }),
         warehouse: {
           id: created.warehouse?.id ?? newLocation.warehouse.id,
           name: created.warehouse?.name ?? newLocation.warehouse.name,
@@ -140,7 +150,7 @@ export const useTransferBook = ({
       onClose();
     } catch (err: unknown) {
       let message = "Error al crear ubicación";
-      
+
       if (err instanceof AxiosError) {
         // Show error by backend response
         message = err.response?.data?.message ?? err.message;
