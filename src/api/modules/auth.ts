@@ -1,16 +1,18 @@
 import axiosInstance from "../axiosInstance";
 
 export interface LoginResponse {
-  token: string;
+  accessToken: string;
+  refreshToken: string;
   user: {
     id: number;
     username: string;
     role: {
-      id: number,
-      name: string,
+      id: number;
+      name: string;
     } | null;
   };
 }
+
 
 export const authApi = {
   login: async (username: string, password: string): Promise<LoginResponse> => {

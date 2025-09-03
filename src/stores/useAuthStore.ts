@@ -15,7 +15,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   user: localStorage.getItem("user")
     ? JSON.parse(localStorage.getItem("user")!)
     : null,
-  token: localStorage.getItem("token") || null, // persistente si ya había login
+  token: localStorage.getItem("accessToken") || null,
   loading: false,
   error: null,
 
@@ -24,20 +24,26 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       const res = await authApi.login(username, password);
 
-      // Guardar token y usuario en estado y localStorage
-      localStorage.setItem("token", res.token);
+      // Guardar tokens y usuario en estado y localStorage
+      localStorage.setItem("accessToken", res.accessToken);
+      localStorage.setItem("refreshToken", res.refreshToken);
       localStorage.setItem("user", JSON.stringify(res.user));
-      
-      set({ user: res.user, token: res.token, loading: false });
+
+      set({
+        user: res.user,
+        token: res.accessToken,
+        loading: false,
+      });
     } catch (error) {
       const message = getErrorMessage(error);
       set({ error: message, loading: false });
-      throw new Error(message); // permite que LoginPage capture error
+      throw new Error(message);
     }
   },
 
   logoutUser: () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     localStorage.removeItem("user");
     set({ user: null, token: null, error: null });
   },
