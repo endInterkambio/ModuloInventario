@@ -6,6 +6,8 @@ import { CiUser } from "react-icons/ci";
 import "./SideMenu.css";
 import { SideMenuItem } from "./SideMenuItem";
 import { LogoutButton } from "@components/LogoutButton";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { useIsAdmin } from "@/hooks/useAuthRole";
 
 interface MenuItem {
   title: string;
@@ -75,6 +77,9 @@ const menuItems: MenuItem[] = [
 ];
 
 export const SideMenu = () => {
+  const loginUser = useAuthStore((state) => state.user?.username);
+  const isAdmin = useIsAdmin();
+
   return (
     <div
       id="menu"
@@ -98,11 +103,15 @@ export const SideMenu = () => {
           <span>
             <img
               className="rounded-full w-8 h-8"
-              src="https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=128&q=80"
+              src={`${
+                isAdmin
+                  ? "https://avatar.iran.liara.run/public/4"
+                  : "https://avatar.iran.liara.run/public/100"
+              }`}
               alt=""
             />
           </span>
-          <span className="text-sm md:text-base font-bold">Enmanuel Nava</span>
+          <span className="text-sm md:text-base font-bold">{loginUser}</span>
         </a>
       </div>
 
