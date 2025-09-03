@@ -1,8 +1,8 @@
 import type { IconType } from "react-icons";
-import {
-  IoSpeedometerOutline,
-  IoPawOutline,
-} from "react-icons/io5";
+import { IoSpeedometerOutline, IoPawOutline } from "react-icons/io5";
+import { MdOutlineInventory, MdPointOfSale } from "react-icons/md";
+import { BiPurchaseTag } from "react-icons/bi";
+import { CiUser } from "react-icons/ci";
 import "./SideMenu.css";
 import { SideMenuItem } from "./SideMenuItem";
 import { LogoutButton } from "@components/LogoutButton";
@@ -25,7 +25,7 @@ const menuItems: MenuItem[] = [
   {
     title: "Inventario",
     subTitle: "Módulo de inventario",
-    Icon: IoPawOutline,
+    Icon: MdOutlineInventory,
     children: [
       {
         title: "Artículos",
@@ -45,18 +45,18 @@ const menuItems: MenuItem[] = [
     title: "Compras",
     subTitle: "Módulo de compras",
     href: "/dashboard/purchase",
-    Icon: IoPawOutline,
+    Icon: BiPurchaseTag,
   },
   {
     title: "Ventas",
     subTitle: "Módulo de ventas",
-    Icon: IoPawOutline,
+    Icon: MdPointOfSale,
     children: [
       {
         title: "Clientes",
         subTitle: "Registrar y consultar",
         href: "/dashboard/customer",
-        Icon: IoPawOutline,
+        Icon: CiUser,
       },
       {
         title: "Ordenes de venta",
