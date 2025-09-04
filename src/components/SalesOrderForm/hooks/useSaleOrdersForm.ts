@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Article, SalesOrder } from "../constants/types";
+import { Item, SalesOrder } from "../constants/types";
 import toast from "react-hot-toast";
 
 export const useSalesOrderForm = () => {
@@ -11,9 +11,9 @@ export const useSalesOrderForm = () => {
     deliveryDate: "",
     deliveryMethod: "Standard",
     vendor: "Juan Perez",
-    salesChannel: "Online",
+    saleChannel: "Online",
     clientNotes: "",
-    articles: [],
+    items: [],
     customer: null,
   });
 
@@ -27,33 +27,33 @@ export const useSalesOrderForm = () => {
     setSalesOrder((prev) => ({ ...prev, [field]: value }));
   };
 
-  const calculateArticleAmount = (article: Article) => {
-    const subtotal = article.quantity * article.price;
+  const calculateArticleAmount = (item: Item) => {
+    const subtotal = item.quantity * item.price;
     const discountAmount =
-      article.discountType === "%"
-        ? (subtotal * article.discount) / 100
-        : article.discount;
+      item.discountType === "%"
+        ? (subtotal * item.discount) / 100
+        : item.discount;
     return subtotal - discountAmount;
   };
 
   const updateArticle = (
     index: number,
-    field: keyof Article,
+    field: keyof Item,
     value: string | number
   ) => {
-    const updatedArticles = [...salesOrder.articles];
+    const updatedArticles = [...salesOrder.items];
     updatedArticles[index] = { ...updatedArticles[index], [field]: value };
     updatedArticles[index].amount = calculateArticleAmount(
       updatedArticles[index]
     );
-    setSalesOrder((prev) => ({ ...prev, articles: updatedArticles }));
+    setSalesOrder((prev) => ({ ...prev, items: updatedArticles }));
   };
 
   const addArticle = () => {
     setSalesOrder((prev) => ({
       ...prev,
-      articles: [
-        ...prev.articles,
+      items: [
+        ...prev.items,
         {
           id: Date.now().toString(),
           description: "",
@@ -71,12 +71,12 @@ export const useSalesOrderForm = () => {
   const removeArticle = (index: number) => {
     setSalesOrder((prev) => ({
       ...prev,
-      articles: prev.articles.filter((_, i) => i !== index),
+      items: prev.items.filter((_, i) => i !== index),
     }));
   };
 
-  const subtotal = salesOrder.articles.reduce(
-    (sum, article) => sum + article.amount,
+  const subtotal = salesOrder.items.reduce(
+    (sum, item) => sum + item.amount,
     0
   );
   const toNum = (v: number | "") => (v === "" ? 0 : Number(v));

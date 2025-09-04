@@ -1,5 +1,5 @@
 import { ClientSearchSection } from "./sections/ClientSearchSection";
-import ArticlesTable from "./sections/ArticlesTable";
+import ArticlesTable from "./sections/ItemsTable";
 import FileUploadSection from "./sections/FileUploadSection";
 import { FormField } from "./ui/FormField";
 import { Input } from "./ui/Input";
@@ -85,8 +85,8 @@ export const SalesOrderForm = () => {
         </FormField>
         <FormField label="Canal de Venta (+)">
           <Select
-            value={salesOrder.salesChannel}
-            onChange={(v) => updateSalesOrder("salesChannel", v)}
+            value={salesOrder.saleChannel}
+            onChange={(v) => updateSalesOrder("saleChannel", v)}
             options={SALES_CHANNELS}
           />
         </FormField>
@@ -94,8 +94,8 @@ export const SalesOrderForm = () => {
 
       {/* Articles Table */}
       <ArticlesTable
-        articles={salesOrder.articles}
-        onArticleUpdate={updateArticle}
+        articles={salesOrder.items}
+        onItemUpdate={updateArticle}
         onAddArticle={addArticle}
         onRemoveArticle={removeArticle}
       />

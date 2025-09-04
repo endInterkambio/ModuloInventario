@@ -1,7 +1,7 @@
 import { SimpleIdNameDTO } from "./SimpleIdNameDTO";
 
 export interface SaleOrderItemDTO {
-    id: number;
+    id?: number;
     bookStockLocation: SimpleIdNameDTO;
     quantity: number;
     discount: number;

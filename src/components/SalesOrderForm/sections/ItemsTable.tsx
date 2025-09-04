@@ -1,23 +1,23 @@
 import { Trash2, Settings, Plus } from "lucide-react";
-import { Article } from "../constants/types";
+import { Item } from "../constants/types";
 
-type ArticlesTableProps = {
-  articles: Article[];
-  onArticleUpdate: (
+type ItemTableProps = {
+  articles: Item[];
+  onItemUpdate: (
     index: number,
-    field: keyof Article,
+    field: keyof Item,
     value: string | number
   ) => void;
   onAddArticle: () => void;
   onRemoveArticle: (index: number) => void;
 };
 
-export default function ArticlesTable({
+export default function ItemTable({
   articles,
-  onArticleUpdate,
+  onItemUpdate,
   onAddArticle,
   onRemoveArticle,
-}: ArticlesTableProps) {
+}: ItemTableProps) {
   return (
     <div className="mb-6">
       <div className="flex items-center justify-between mb-3">
@@ -69,7 +69,7 @@ export default function ArticlesTable({
                   type="text"
                   value={article.description}
                   onChange={(e) =>
-                    onArticleUpdate(index, "description", e.target.value)
+                    onItemUpdate(index, "description", e.target.value)
                   }
                   placeholder="Descripción del artículo"
                   className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
@@ -82,7 +82,7 @@ export default function ArticlesTable({
                   type="number"
                   value={article.quantity}
                   onChange={(e) =>
-                    onArticleUpdate(
+                    onItemUpdate(
                       index,
                       "quantity",
                       parseFloat(e.target.value) || 0
@@ -100,7 +100,7 @@ export default function ArticlesTable({
                   type="number"
                   value={article.price}
                   onChange={(e) =>
-                    onArticleUpdate(
+                    onItemUpdate(
                       index,
                       "price",
                       parseFloat(e.target.value) || 0
@@ -118,7 +118,7 @@ export default function ArticlesTable({
                   type="number"
                   value={article.discount}
                   onChange={(e) =>
-                    onArticleUpdate(
+                    onItemUpdate(
                       index,
                       "discount",
                       parseFloat(e.target.value) || 0
@@ -131,7 +131,7 @@ export default function ArticlesTable({
                 <select
                   value={article.discountType || "%"}
                   onChange={(e) =>
-                    onArticleUpdate(index, "discountType", e.target.value)
+                    onItemUpdate(index, "discountType", e.target.value)
                   }
                   className="bg-gray-50 border-l border-gray-300 px-2 py-1 text-sm outline-none"
                 >

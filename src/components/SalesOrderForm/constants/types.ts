@@ -1,13 +1,12 @@
 import { CustomerDTO } from "@/types/CustomerDTO";
 
-export interface Article {
+export interface Item {
   id: string;
   description: string;
   quantity: number;
   price: number;
   discount: number;
   discountType: "%" | "S/.";
-  tax: number;
   amount: number;
 }
 
@@ -18,8 +17,8 @@ export interface SalesOrder {
   deliveryDate: string;
   deliveryMethod: string;
   vendor: string;
-  salesChannel: string;
+  saleChannel: string;
   clientNotes: string;
-  articles: Article[];
+  items: Item[];
   customer?: CustomerDTO | null;
 }
