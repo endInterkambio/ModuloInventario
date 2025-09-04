@@ -1,14 +1,15 @@
 export const endpoints = {
   books: "/books",
-  getBookBySku: (sku: string) => `/books/sku/${sku}`,
-  uploadBooks: "/books/upload",
-  users: "/users",
-  roles: "/roles",
-  warehouses: "/warehouses",
-  locations: "/book-stock-locations",
   customers: "/customers",
+  exportBooks: "books/export",
+  getBookBySku: (sku: string) => `/books/sku/${sku}`,
   inventoryTransactions: "/inventory-transactions",
+  locations: "/book-stock-locations",
+  roles: "/roles",
+  saleOrders: "/sale-orders",
+  uploadBooks: "/books/upload",
   uploadImage: "/upload/image",
-  exportBooks: "books/export"
+  users: "/users",
+  warehouses: "/warehouses",
   // Se agregarán más cuando estén todas las entidad construidas y asignada a la API
 };
