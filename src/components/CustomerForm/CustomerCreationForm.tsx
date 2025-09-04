@@ -7,6 +7,7 @@ import AddressSection from "./sections/AddressSection";
 import ContactsSection from "./sections/ContactsSection";
 import { useCreateCustomer } from "@/hooks/useCustomers";
 import { mapFormDataToCustomerDTO } from "./types/mapFormDataToCustomerDTO";
+import BackButton from "@components/shared/BackButton";
 
 export default function CustomerCreationForm() {
   const [activeTab, setActiveTab] = useState("address");
@@ -164,6 +165,9 @@ export default function CustomerCreationForm() {
 
   return (
     <div className="mx-auto p-6 bg-white">
+      <div className="pb-4">
+        <BackButton />
+      </div>
       <h1 className="text-2xl font-semibold text-gray-900 mb-8">
         Nuevo Cliente
       </h1>
