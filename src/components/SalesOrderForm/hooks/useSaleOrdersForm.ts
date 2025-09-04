@@ -14,47 +14,71 @@ export const useSalesOrderForm = () => {
     salesChannel: "Online",
     clientNotes: "",
     articles: [],
+    customer: null,
   });
 
   const [shippingCost, setShippingCost] = useState<number | "">("");
   const [chargeDiscountCost, setChargeDiscountCost] = useState<number | "">("");
 
-  const updateSalesOrder = (field: keyof SalesOrder, value: string) => {
-    setSalesOrder(prev => ({ ...prev, [field]: value }));
+  const updateSalesOrder = <K extends keyof SalesOrder>(
+    field: K,
+    value: SalesOrder[K] // toma el tipo correcto según la clave
+  ) => {
+    setSalesOrder((prev) => ({ ...prev, [field]: value }));
   };
 
   const calculateArticleAmount = (article: Article) => {
     const subtotal = article.quantity * article.price;
     const discountAmount =
-      article.discountType === "%" ? (subtotal * article.discount) / 100 : article.discount;
+      article.discountType === "%"
+        ? (subtotal * article.discount) / 100
+        : article.discount;
     return subtotal - discountAmount;
   };
 
-  const updateArticle = (index: number, field: keyof Article, value: string | number) => {
+  const updateArticle = (
+    index: number,
+    field: keyof Article,
+    value: string | number
+  ) => {
     const updatedArticles = [...salesOrder.articles];
     updatedArticles[index] = { ...updatedArticles[index], [field]: value };
-    updatedArticles[index].amount = calculateArticleAmount(updatedArticles[index]);
-    setSalesOrder(prev => ({ ...prev, articles: updatedArticles }));
+    updatedArticles[index].amount = calculateArticleAmount(
+      updatedArticles[index]
+    );
+    setSalesOrder((prev) => ({ ...prev, articles: updatedArticles }));
   };
 
   const addArticle = () => {
-    setSalesOrder(prev => ({
+    setSalesOrder((prev) => ({
       ...prev,
       articles: [
         ...prev.articles,
-        { id: Date.now().toString(), description: "", quantity: 1, price: 0, discount: 0, discountType: "%", tax: 0, amount: 0 }
-      ]
+        {
+          id: Date.now().toString(),
+          description: "",
+          quantity: 1,
+          price: 0,
+          discount: 0,
+          discountType: "%",
+          tax: 0,
+          amount: 0,
+        },
+      ],
     }));
   };
 
   const removeArticle = (index: number) => {
-    setSalesOrder(prev => ({
+    setSalesOrder((prev) => ({
       ...prev,
-      articles: prev.articles.filter((_, i) => i !== index)
+      articles: prev.articles.filter((_, i) => i !== index),
     }));
   };
 
-  const subtotal = salesOrder.articles.reduce((sum, article) => sum + article.amount, 0);
+  const subtotal = salesOrder.articles.reduce(
+    (sum, article) => sum + article.amount,
+    0
+  );
   const toNum = (v: number | "") => (v === "" ? 0 : Number(v));
 
   const handleShippingCostChange = (value: number | "") => {
@@ -88,6 +112,6 @@ export const useSalesOrderForm = () => {
     handleShippingCostChange,
     handleChargeDiscountChange,
     subtotal,
-    total
+    total,
   };
 };

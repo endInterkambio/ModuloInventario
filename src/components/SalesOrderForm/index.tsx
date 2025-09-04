@@ -1,4 +1,3 @@
-import React from "react";
 import { ClientSearchSection } from "./sections/ClientSearchSection";
 import ArticlesTable from "./sections/ArticlesTable";
 import FileUploadSection from "./sections/FileUploadSection";
@@ -14,7 +13,7 @@ import { useSalesOrderForm } from "./hooks/useSaleOrdersForm";
 import BackButton from "@components/shared/BackButton";
 import { SummarySection } from "./sections/SummarySection";
 
-export const SalesOrderForm: React.FC = () => {
+export const SalesOrderForm = () => {
   const {
     salesOrder,
     searchTerm,
@@ -46,6 +45,8 @@ export const SalesOrderForm: React.FC = () => {
       <ClientSearchSection
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
+        selectedCustomer={salesOrder.customer || null} // ahora existe en SalesOrder
+        onCustomerSelect={(customer) => updateSalesOrder("customer", customer)}
       />
 
       {/* Form Fields */}

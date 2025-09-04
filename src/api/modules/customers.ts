@@ -5,12 +5,13 @@ import { endpoints } from "../endpoints";
 
 export const fetchCustomers = async (
   page: number = 0,
-  size: number = 12
+  size: number = 12,
+  searchTerm: string = ""
 ): Promise<Page<CustomerDTO>> => {
   const response = await axiosInstance.get<Page<CustomerDTO>>(
-    endpoints.customers,
+    endpoints.customers + "/search",
     {
-      params: { page, size },
+      params: { page, size, name: searchTerm },
     }
   );
   return response.data;

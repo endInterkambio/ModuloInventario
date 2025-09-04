@@ -1,3 +1,5 @@
+import { CustomerDTO } from "@/types/CustomerDTO";
+
 export interface Article {
   id: string;
   description: string;
@@ -19,4 +21,5 @@ export interface SalesOrder {
   salesChannel: string;
   clientNotes: string;
   articles: Article[];
+  customer?: CustomerDTO | null;
 }

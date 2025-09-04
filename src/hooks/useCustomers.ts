@@ -10,10 +10,10 @@ import { useEntityMutation } from "@/hooks/useEntityMutation";
 import { UseMutationOptions } from "@tanstack/react-query";
 
 // Hook para obtener clientes con paginación
-export const useCustomers = (page = 0, size = 12) => {
+export const useCustomers = (page = 0, size = 12, searchTerm: string = "") => {
   return useQuery<Page<CustomerDTO>>({
-    queryKey: ["customers", page, size],
-    queryFn: () => fetchCustomers(page, size),
+    queryKey: ["customers", page, size, searchTerm],
+    queryFn: () => fetchCustomers(page, size, searchTerm),
   });
 };
 

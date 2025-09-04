@@ -5,9 +5,9 @@ import { InfoRow } from "../inventory/BookDetail/InfoRow";
 import NewButton from "@components/NewButton";
 import { DropdownMenu } from "@components/HeaderNavigation/DropdownMenu";
 import PaginationBar from "@components/shared/pagination/PaginationBar";
-import SalesOrderForm from "@components/SalesOrderForm/SalesOrderForm";
 import { useSaleOrders } from "@/hooks/useSaleOrders";
 import { format } from "date-fns";
+import { SalesOrderForm } from "@components/SalesOrderForm";
 
 export function SaleOrdersPage() {
   const location = useLocation();

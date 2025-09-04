@@ -10,9 +10,9 @@ import { BookCreationForm } from "@components/BookForm/BookCreationForm";
 import { SaleOrdersPage } from "@/pages/sales/SaleOrders";
 import { PaymentReceivedPage } from "@/pages/sales/PaymentReceivedPage";
 import { CustomerPage } from "@/pages/sales/CustomerPage";
-import SalesOrderForm from "@components/SalesOrderForm/SalesOrderForm";
 import CustomerCreationForm from "@components/CustomerForm/CustomerCreationForm";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { SalesOrderForm } from "@components/SalesOrderForm";
 
 export const router = createBrowserRouter(
   [
