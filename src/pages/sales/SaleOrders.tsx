@@ -1,10 +1,11 @@
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { SearchBar } from "@components/SearchBar/SearchBar";
 import { InfoRow } from "../inventory/BookDetail/InfoRow";
 import NewButton from "@components/NewButton";
 import { DropdownMenu } from "@components/HeaderNavigation/DropdownMenu";
-import { useLocation } from "react-router-dom";
+import PaginationBar from "@components/shared/pagination/PaginationBar";
 import SalesOrderForm from "@components/SalesOrderForm/SalesOrderForm";
-import { useState } from "react";
 import { useSaleOrders } from "@/hooks/useSaleOrders";
 import { format } from "date-fns";
 
@@ -13,10 +14,21 @@ export function SaleOrdersPage() {
   const isNewSaleOrder = location.pathname.endsWith("/newSaleOrder");
   const isSaleOrderView = location.pathname.match(/^\/dashboard\/selling\/.+$/);
 
-  const [page, setPage] = useState(0);
-  const size = 12;
+  // Estado local de paginación
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
 
-  const { data, isLoading, isError } = useSaleOrders(page, size);
+  // Hook para obtener ordenes de venta paginadas
+  const { data: saleOrdersPage, isLoading, isError } = useSaleOrders(
+    currentPage - 1,
+    itemsPerPage
+  );
+  const saleOrders = saleOrdersPage?.content || [];
+
+  // Resetear página si cambia itemsPerPage
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [itemsPerPage]);
 
   if (isNewSaleOrder) return <SalesOrderForm />;
 
@@ -34,16 +46,10 @@ export function SaleOrdersPage() {
       <div className="flex justify-between items-start px-4 pt-4">
         <DropdownMenu
           label="Todas las ordenes de venta"
-          options={[
-            "Todas las ordenes de venta",
-            "Pendiente",
-            "Confirmado",
-            "Enviado",
-            "Facturado",
-          ]}
+          options={["Todas", "Pendiente", "Confirmado", "Enviado", "Facturado"]}
         />
         <SearchBar placeholder="Buscar ordenes de venta" />
-        <NewButton to={"/dashboard/selling/newSaleOrder"} label={"Nueva"} />
+        <NewButton to={"/dashboard/selling/newSaleOrder"} label="Nueva" />
       </div>
 
       <div className="overflow-x-auto py-5">
@@ -53,6 +59,8 @@ export function SaleOrdersPage() {
           <div className="text-center py-10 text-red-500">
             Error al cargar las ordenes de venta
           </div>
+        ) : saleOrders.length === 0 ? (
+          <div className="text-center py-10 text-gray-500">No hay ordenes de venta</div>
         ) : (
           <table className="min-w-full text-sm">
             <thead>
@@ -71,12 +79,12 @@ export function SaleOrdersPage() {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {data?.content.map((order) => (
+              {saleOrders.map((order) => (
                 <tr key={order.id}>
                   <td className="py-2 px-4">
                     <InfoRow
-                      className="py-2"
                       label=""
+                      className="py-2"
                       value={
                         order.createdAt
                           ? format(new Date(order.createdAt), "dd/MM/yyyy")
@@ -85,23 +93,15 @@ export function SaleOrdersPage() {
                     />
                   </td>
                   <td className="py-2 px-4">
-                    <InfoRow
-                      className="py-2"
-                      label=""
-                      value={order.orderNumber}
-                    />
+                    <InfoRow label="" className="py-2" value={order.orderNumber} />
+                  </td>
+                  <td className="py-2 px-4">
+                    <InfoRow label="" className="py-2" value={order.customer?.name ?? "-"} />
                   </td>
                   <td className="py-2 px-4">
                     <InfoRow
-                      className="py-2"
                       label=""
-                      value={order.customer.name || "-"}
-                    />
-                  </td>
-                  <td className="py-2 px-4">
-                    <InfoRow
                       className="py-2"
-                      label=""
                       value={
                         order.customer?.customerType === "PERSON"
                           ? order.customer?.name ?? "-"
@@ -109,35 +109,27 @@ export function SaleOrdersPage() {
                       }
                     />
                   </td>
-                  {/*TODO: Estado del pedido*/}
+                  {/* TODO: campos pendientes */}
                   <td className="py-2 px-4">
-                    <InfoRow className="py-2" label="" value={"-"} />
-                  </td>
-                  {/*TODO: Facturada?*/}
-                  <td className="py-2 px-4">
-                    <InfoRow className="py-2" label="" value={"-"} />
-                  </td>
-                  {/*TODO: Pago recibido SI o NO*/}
-                  <td className="py-2 px-4">
-                    <InfoRow className="py-2" label="" value={"-"} />
-                  </td>
-                  {/*TODO: Status de envío*/}
-                  <td className="py-2 px-4">
-                    <InfoRow className="py-2" label="" value={"-"} />
+                    <InfoRow label="" className="py-2" value="-" />
                   </td>
                   <td className="py-2 px-4">
-                    <InfoRow
-                      className="py-2"
-                      label=""
-                      value={order.amount ?? "-"}
-                    />
-                  </td>
-                  {/*TODO: Monto facturado*/}
-                  <td className="py-2 px-4">
-                    <InfoRow className="py-2" label="" value={"-"} />
+                    <InfoRow label="" className="py-2" value="-" />
                   </td>
                   <td className="py-2 px-4">
-                    <InfoRow className="py-2" label="" value={order.saleChannel} />
+                    <InfoRow label="" className="py-2" value="-" />
+                  </td>
+                  <td className="py-2 px-4">
+                    <InfoRow label="" className="py-2" value="-" />
+                  </td>
+                  <td className="py-2 px-4">
+                    <InfoRow label="" className="py-2" value={order.amount ?? "-"} />
+                  </td>
+                  <td className="py-2 px-4">
+                    <InfoRow label="" className="py-2" value="-" />
+                  </td>
+                  <td className="py-2 px-4">
+                    <InfoRow label="" className="py-2" value={order.saleChannel ?? "-"} />
                   </td>
                 </tr>
               ))}
@@ -146,26 +138,17 @@ export function SaleOrdersPage() {
         )}
       </div>
 
-      <div className="mt-4 text-sm text-gray-500">
-        {"Cantidad: "} {data?.totalElements ?? 0} ordenes de venta
-      </div>
-
-      <div className="flex justify-end gap-2 mt-4">
-        <button
-          className="px-3 py-1 border rounded disabled:opacity-50"
-          disabled={page === 0}
-          onClick={() => setPage((p) => p - 1)}
-        >
-          Anterior
-        </button>
-        <button
-          className="px-3 py-1 border rounded disabled:opacity-50"
-          disabled={page + 1 >= (data?.totalPages ?? 1)}
-          onClick={() => setPage((p) => p + 1)}
-        >
-          Siguiente
-        </button>
-      </div>
+      {/* Paginación abajo */}
+      {saleOrdersPage && (
+        <PaginationBar
+          currentPage={currentPage}
+          totalPages={saleOrdersPage.totalPages}
+          totalElements={saleOrdersPage.totalElements}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+          onItemsPerPageChange={setItemsPerPage}
+        />
+      )}
     </div>
   );
 }
