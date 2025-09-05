@@ -59,8 +59,8 @@ export const SalesOrderForm = () => {
         </FormField>
         <FormField label="N° de referencia">
           <Input
-            value={salesOrder.reference}
-            onChange={(v) => updateSalesOrder("reference", v)}
+            value={salesOrder.referenceNumber}
+            onChange={(v) => updateSalesOrder("referenceNumber", v)}
           />
         </FormField>
         <FormField label="Fecha de orden de venta">
@@ -78,8 +78,8 @@ export const SalesOrderForm = () => {
         </FormField>
         <FormField label="Vendedor">
           <Select
-            value={salesOrder.vendor}
-            onChange={(v) => updateSalesOrder("vendor", v)}
+            value={salesOrder.createdBy}
+            onChange={(v) => updateSalesOrder("createdBy", v)}
             options={VENDORS}
           />
         </FormField>

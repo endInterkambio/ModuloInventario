@@ -12,11 +12,11 @@ export interface Item {
 
 export interface SalesOrder {
   orderNumber: string;
-  reference: string;
+  referenceNumber: string;
   orderDate: string;
-  deliveryDate: string;
-  deliveryMethod: string;
-  vendor: string;
+  shipmentDate: string;
+  deliveryMethod: string; // TODO
+  createdBy: string; //  Relacion a listado de vendedores
   saleChannel: string;
   clientNotes: string;
   items: Item[];

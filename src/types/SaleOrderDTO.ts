@@ -12,6 +12,10 @@ export interface SaleOrderDTO {
     amount: number;
     amountShipment?: number;
     additionalFee?: number;
+    totalAmount: number,
+    totalPaid?: number;
+    status: string;
+    paymentStatus: string;
     customer: SaleOrderCustomerDTO;
     items: SaleOrderItemDTO[];
 }

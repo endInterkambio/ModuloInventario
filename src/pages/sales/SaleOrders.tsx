@@ -19,10 +19,11 @@ export function SaleOrdersPage() {
   const [itemsPerPage, setItemsPerPage] = useState(12);
 
   // Hook para obtener ordenes de venta paginadas
-  const { data: saleOrdersPage, isLoading, isError } = useSaleOrders(
-    currentPage - 1,
-    itemsPerPage
-  );
+  const {
+    data: saleOrdersPage,
+    isLoading,
+    isError,
+  } = useSaleOrders(currentPage - 1, itemsPerPage);
   const saleOrders = saleOrdersPage?.content || [];
 
   // Resetear página si cambia itemsPerPage
@@ -60,7 +61,9 @@ export function SaleOrdersPage() {
             Error al cargar las ordenes de venta
           </div>
         ) : saleOrders.length === 0 ? (
-          <div className="text-center py-10 text-gray-500">No hay ordenes de venta</div>
+          <div className="text-center py-10 text-gray-500">
+            No hay ordenes de venta
+          </div>
         ) : (
           <table className="min-w-full text-sm">
             <thead>
@@ -70,12 +73,12 @@ export function SaleOrdersPage() {
                 <th className="py-2 px-4">Nombre del cliente</th>
                 <th className="py-2 px-4">Tipo de cliente</th>
                 <th className="py-2 px-4">Estado del pedido</th>
-                <th className="py-2 px-4">Facturada</th>
                 <th className="py-2 px-4">Pago</th>
                 <th className="py-2 px-4">Enviado</th>
-                <th className="py-2 px-4">Monto</th>
-                <th className="py-2 px-4">Monto facturado</th>
+                <th className="py-2 px-4">Monto total</th>
+                <th className="py-2 px-4">Monto pagado</th>
                 <th className="py-2 px-4">Canal de venta</th>
+                <th className="py-2 px-4">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y">
@@ -93,10 +96,11 @@ export function SaleOrdersPage() {
                     />
                   </td>
                   <td className="py-2 px-4">
-                    <InfoRow label="" className="py-2" value={order.orderNumber} />
-                  </td>
-                  <td className="py-2 px-4">
-                    <InfoRow label="" className="py-2" value={order.customer?.name ?? "-"} />
+                    <InfoRow
+                      label=""
+                      className="py-2"
+                      value={order.orderNumber}
+                    />
                   </td>
                   <td className="py-2 px-4">
                     <InfoRow
@@ -109,27 +113,57 @@ export function SaleOrdersPage() {
                       }
                     />
                   </td>
+                  <td className="py-2 px-4">
+                    <InfoRow
+                      label=""
+                      className="py-2"
+                      value={order.customer?.customerType ?? "-"}
+                    />
+                  </td>
+
                   {/* TODO: campos pendientes */}
                   <td className="py-2 px-4">
-                    <InfoRow label="" className="py-2" value="-" />
+                    <InfoRow
+                      label=""
+                      className="py-2"
+                      value={order.status ?? "-"}
+                    />
+                  </td>
+                  <td className="py-2 px-4">
+                    <InfoRow
+                      label=""
+                      className="py-2"
+                      value={order.paymentStatus ?? "-"}
+                    />
                   </td>
                   <td className="py-2 px-4">
                     <InfoRow label="" className="py-2" value="-" />
                   </td>
                   <td className="py-2 px-4">
-                    <InfoRow label="" className="py-2" value="-" />
+                    <InfoRow
+                      label=""
+                      className="py-2"
+                      value={order.totalAmount ?? "-"}
+                    />
                   </td>
                   <td className="py-2 px-4">
-                    <InfoRow label="" className="py-2" value="-" />
+                    <InfoRow
+                      label=""
+                      className="py-2"
+                      value={order.totalPaid ?? "-"}
+                    />
                   </td>
                   <td className="py-2 px-4">
-                    <InfoRow label="" className="py-2" value={order.amount ?? "-"} />
+                    <InfoRow
+                      label=""
+                      className="py-2"
+                      value={order.saleChannel ?? "-"}
+                    />
                   </td>
-                  <td className="py-2 px-4">
-                    <InfoRow label="" className="py-2" value="-" />
-                  </td>
-                  <td className="py-2 px-4">
-                    <InfoRow label="" className="py-2" value={order.saleChannel ?? "-"} />
+                  <td className="flex items-center justify-center h-20">
+                    <button className="px-4 py-1 bg-blue-500 text-white rounded text-sm">
+                      Descargar PDF
+                    </button>
                   </td>
                 </tr>
               ))}
