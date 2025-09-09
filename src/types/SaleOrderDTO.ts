@@ -1,6 +1,6 @@
 import { SaleOrderCustomerDTO } from "./SaleOrderCustomerDTO";
 import { SaleOrderItemDTO } from "./SaleOrderItemDTO";
-import { ShipmentMethodDTO } from "./ShipmentMethodDTO";
+import { ShipmentDTO } from "./ShipmentDTO";
 import { SimpleIdNameDTO } from "./SimpleIdNameDTO";
 
 export type OrderStatus =
@@ -28,5 +28,5 @@ export interface SaleOrderDTO {
   customer: SaleOrderCustomerDTO | null;
   items: SaleOrderItemDTO[];
   clientNotes: string;
-  shipmentMethod?: ShipmentMethodDTO | null;
+  shipment?: ShipmentDTO | null;
 }

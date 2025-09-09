@@ -9,6 +9,7 @@ export const endpoints = {
   roles: "/roles",
   saleOrders: "/sale-orders",
   shipments: "/shipments",
+  shipmentMethods: "/shipment-methods",
   uploadBooks: "/books/upload",
   uploadImage: "/upload/image",
   users: "/users",

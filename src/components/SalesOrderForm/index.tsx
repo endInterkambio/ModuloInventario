@@ -4,16 +4,13 @@ import FileUploadSection from "./sections/FileUploadSection";
 import { FormField } from "./ui/FormField";
 import { Input } from "./ui/Input";
 import { Select } from "./ui/Select";
-import {
-  //DELIVERY_METHODS,
-  SALES_CHANNELS,
-  // VENDORS,
-} from "./constants/SaleOrderOptions";
 import { useSalesOrderForm } from "./hooks/useSaleOrdersForm";
 import BackButton from "@components/shared/BackButton";
 import { SummarySection } from "./sections/SummarySection";
+import { useShipmentMethods } from "@/hooks/useShipmentMethod";
 import { mapSaleOrderCustomerToCustomer } from "@/mappers/mapSaleOrderCustomerToCustomer";
 import { mapCustomerToSaleOrderCustomer } from "@/mappers/mapCustomerToSaleOrderCustomer";
+import { SALES_CHANNELS } from "./constants/SaleOrderOptions";
 
 export const SalesOrderForm = () => {
   const {
@@ -31,6 +28,14 @@ export const SalesOrderForm = () => {
     subtotal,
     total,
   } = useSalesOrderForm();
+
+  const { data: shipmentMethods } = useShipmentMethods();
+
+  const shipmentMethodOptions =
+    shipmentMethods?.map((method) => ({
+      label: method.name,
+      value: method.id.toString(),
+    })) ?? [];
 
   return (
     <div className="mx-auto p-6 bg-white min-h-screen">
@@ -79,13 +84,28 @@ export const SalesOrderForm = () => {
             onChange={(v) => updateSalesOrder("orderDate", v)}
           />
         </FormField>
-        {/* <FormField label="Método de entrega">
+        {/* Shipment Method */}
+        <FormField label="Método de envío">
           <Select
-            value={salesOrder.deliveryMethod}
-            onChange={(v) => updateSalesOrder("deliveryMethod", v)}
-            options={DELIVERY_METHODS}
+            value={salesOrder.shipment?.shipmentMethod?.id?.toString() ?? ""}
+            onChange={(v) =>
+              updateSalesOrder("shipment", {
+                ...(salesOrder.shipment ?? {}),
+                orderId: salesOrder.id, // obligatorio para ShipmentDTO
+                shipmentMethod: v
+                  ? {
+                      id: Number(v),
+                      name:
+                        shipmentMethodOptions.find((o) => o.value === v)
+                          ?.label ?? "",
+                    }
+                  : undefined, // SimpleIdNameDTO | undefined
+              })
+            }
+            options={shipmentMethodOptions} // [{ label, value }] compatible con Select
           />
-        </FormField> */}
+        </FormField>
+
         {/* <FormField label="Vendedor">
           <Select
             value={salesOrder.createdBy}
@@ -95,9 +115,12 @@ export const SalesOrderForm = () => {
         </FormField> */}
         <FormField label="Canal de Venta (+)">
           <Select
-            value={salesOrder.saleChannel}
+            value={salesOrder.saleChannel ?? ""}
             onChange={(v) => updateSalesOrder("saleChannel", v)}
-            options={SALES_CHANNELS}
+            options={SALES_CHANNELS.map((channel) => ({
+              label: channel,
+              value: channel,
+            }))}
           />
         </FormField>
       </div>
