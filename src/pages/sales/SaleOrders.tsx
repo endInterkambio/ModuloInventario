@@ -1,32 +1,28 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { SearchBar } from "@components/SearchBar/SearchBar";
-import { InfoRow } from "../inventory/BookDetail/InfoRow";
 import NewButton from "@components/NewButton";
 import { DropdownMenu } from "@components/HeaderNavigation/DropdownMenu";
 import PaginationBar from "@components/shared/pagination/PaginationBar";
 import { useSaleOrders } from "@/hooks/useSaleOrders";
-import { format } from "date-fns";
 import { SalesOrderForm } from "@components/SalesOrderForm";
+import { SaleOrdersTable } from "@components/SalesOrders/SaleOrdersTable";
+import { SaleOrdersCards } from "@components/SalesOrders/SaleOrdersCards";
 
 export function SaleOrdersPage() {
   const location = useLocation();
   const isNewSaleOrder = location.pathname.endsWith("/newSaleOrder");
   const isSaleOrderView = location.pathname.match(/^\/dashboard\/selling\/.+$/);
 
-  // Estado local de paginación
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
 
-  // Hook para obtener ordenes de venta paginadas
-  const {
-    data: saleOrdersPage,
-    isLoading,
-    isError,
-  } = useSaleOrders(currentPage - 1, itemsPerPage);
-  const saleOrders = saleOrdersPage?.content || [];
+  const { data: saleOrdersPage, isLoading, isError } = useSaleOrders(
+    currentPage - 1,
+    itemsPerPage
+  );
+  const saleOrders = saleOrdersPage?.content ?? [];
 
-  // Resetear página si cambia itemsPerPage
   useEffect(() => {
     setCurrentPage(1);
   }, [itemsPerPage]);
@@ -37,7 +33,6 @@ export function SaleOrdersPage() {
     return (
       <div className="bg-white border rounded-lg shadow-sm p-6">
         <h2 className="text-xl font-semibold">Detalle de orden de venta</h2>
-        {/* Aquí iría el detalle de una orden específica */}
       </div>
     );
   }
@@ -65,114 +60,13 @@ export function SaleOrdersPage() {
             No hay ordenes de venta
           </div>
         ) : (
-          <table className="min-w-full text-sm">
-            <thead>
-              <tr className="text-left text-gray-700">
-                <th className="py-2 px-4">Fecha</th>
-                <th className="py-2 px-4">Orden de venta N°</th>
-                <th className="py-2 px-4">Nombre del cliente</th>
-                <th className="py-2 px-4">Tipo de cliente</th>
-                <th className="py-2 px-4">Estado del pedido</th>
-                <th className="py-2 px-4">Pago</th>
-                <th className="py-2 px-4">Enviado</th>
-                <th className="py-2 px-4">Monto total</th>
-                <th className="py-2 px-4">Monto pagado</th>
-                <th className="py-2 px-4">Canal de venta</th>
-                <th className="py-2 px-4">Acciones</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {saleOrders.map((order) => (
-                <tr key={order.id}>
-                  <td className="py-2 px-4">
-                    <InfoRow
-                      label=""
-                      className="py-2"
-                      value={
-                        order.createdAt
-                          ? format(new Date(order.createdAt), "dd/MM/yyyy")
-                          : "-"
-                      }
-                    />
-                  </td>
-                  <td className="py-2 px-4">
-                    <InfoRow
-                      label=""
-                      className="py-2"
-                      value={order.orderNumber}
-                    />
-                  </td>
-                  <td className="py-2 px-4">
-                    <InfoRow
-                      label=""
-                      className="py-2"
-                      value={
-                        order.customer?.customerType === "PERSON"
-                          ? order.customer?.name ?? "-"
-                          : order.customer?.companyName ?? "-"
-                      }
-                    />
-                  </td>
-                  <td className="py-2 px-4">
-                    <InfoRow
-                      label=""
-                      className="py-2"
-                      value={order.customer?.customerType ?? "-"}
-                    />
-                  </td>
-
-                  {/* TODO: campos pendientes */}
-                  <td className="py-2 px-4">
-                    <InfoRow
-                      label=""
-                      className="py-2"
-                      value={order.status ?? "-"}
-                    />
-                  </td>
-                  <td className="py-2 px-4">
-                    <InfoRow
-                      label=""
-                      className="py-2"
-                      value={order.paymentStatus ?? "-"}
-                    />
-                  </td>
-                  <td className="py-2 px-4">
-                    <InfoRow label="" className="py-2" value="-" />
-                  </td>
-                  <td className="py-2 px-4">
-                    <InfoRow
-                      label=""
-                      className="py-2"
-                      value={order.totalAmount ?? "-"}
-                    />
-                  </td>
-                  <td className="py-2 px-4">
-                    <InfoRow
-                      label=""
-                      className="py-2"
-                      value={order.totalPaid ?? "-"}
-                    />
-                  </td>
-                  <td className="py-2 px-4">
-                    <InfoRow
-                      label=""
-                      className="py-2"
-                      value={order.saleChannel ?? "-"}
-                    />
-                  </td>
-                  <td className="flex items-center justify-center h-20">
-                    <button className="px-4 py-1 bg-blue-500 text-white rounded text-sm">
-                      Descargar PDF
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <>
+            <SaleOrdersTable saleOrders={saleOrders} />
+            <SaleOrdersCards saleOrders={saleOrders} />
+          </>
         )}
       </div>
 
-      {/* Paginación abajo */}
       {saleOrdersPage && (
         <PaginationBar
           currentPage={currentPage}

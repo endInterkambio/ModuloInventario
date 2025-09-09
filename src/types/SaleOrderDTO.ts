@@ -2,20 +2,28 @@ import { SaleOrderCustomerDTO } from "./SaleOrderCustomerDTO";
 import { SaleOrderItemDTO } from "./SaleOrderItemDTO";
 import { SimpleIdNameDTO } from "./SimpleIdNameDTO";
 
+export type OrderStatus =
+  | "PENDING"
+  | "IN_PROGRESS"
+  | "SHIPPED"
+  | "COMPLETED"
+  | "CANCELLED";
+export type OrderPaymentStatus = "UNPAID" | "PARTIALLY_PAID" | "PAID" | "INVOICED";
+
 export interface SaleOrderDTO {
-    id: number;
-    orderNumber: string;
-    orderDate: string;
-    createdAt: string;
-    createdBy: SimpleIdNameDTO;
-    saleChannel: string;
-    amount: number;
-    amountShipment?: number;
-    additionalFee?: number;
-    totalAmount: number,
-    totalPaid?: number;
-    status: string;
-    paymentStatus: string;
-    customer: SaleOrderCustomerDTO;
-    items: SaleOrderItemDTO[];
+  id: number;
+  orderNumber: string;
+  orderDate: string;
+  createdAt: string;
+  createdBy: SimpleIdNameDTO;
+  saleChannel: string;
+  amount: number;
+  amountShipment?: number;
+  additionalFee?: number;
+  totalAmount: number;
+  totalPaid?: number;
+  status: OrderStatus;
+  paymentStatus: OrderPaymentStatus;
+  customer: SaleOrderCustomerDTO;
+  items: SaleOrderItemDTO[];
 }
