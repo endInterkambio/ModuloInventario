@@ -1,6 +1,5 @@
 import { ClientSearchSection } from "./sections/ClientSearchSection";
 import ArticlesTable from "./sections/ItemsTable";
-import FileUploadSection from "./sections/FileUploadSection";
 import { FormField } from "./ui/FormField";
 import { Input } from "./ui/Input";
 import { Select } from "./ui/Select";
@@ -11,7 +10,10 @@ import { useShipmentMethods } from "@/hooks/useShipmentMethod";
 import { mapSaleOrderCustomerToCustomer } from "@/mappers/mapSaleOrderCustomerToCustomer";
 import { mapCustomerToSaleOrderCustomer } from "@/mappers/mapCustomerToSaleOrderCustomer";
 import { SALES_CHANNELS } from "./constants/SaleOrderOptions";
-import { useCreateSaleOrder } from "@/hooks/useSaleOrders";
+import {
+  useCreateSaleOrder,
+  useNextSaleOrderNumber,
+} from "@/hooks/useSaleOrders";
 
 export const SalesOrderForm = () => {
   const {
@@ -32,6 +34,7 @@ export const SalesOrderForm = () => {
   } = useSalesOrderForm();
 
   const { data: shipmentMethods } = useShipmentMethods();
+  const { data: nextOrderNumber, isLoading } = useNextSaleOrderNumber();
 
   const shipmentMethodOptions =
     shipmentMethods?.map((method) => ({
@@ -98,9 +101,14 @@ export const SalesOrderForm = () => {
 
       {/* Form Fields */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <FormField label="Orden de venta n°" required>
+        <FormField label="Orden de venta n°">
           <Input
-            value={salesOrder.orderNumber}
+            value={
+              isLoading
+                ? "Cargando..."
+                : salesOrder.orderNumber || nextOrderNumber || ""
+            }
+            readonly
             onChange={(v) => updateSalesOrder("orderNumber", v)}
           />
         </FormField>

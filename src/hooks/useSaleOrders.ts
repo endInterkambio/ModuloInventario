@@ -2,6 +2,7 @@ import {
   createSaleOrder,
   deleteSaleOrder,
   getSaleOrders,
+  getNextSaleOrderNumber
 } from "@/api/modules/saleOrders";
 import { UseMutationOptions, useQuery } from "@tanstack/react-query";
 import { Page } from "@/types/Pagination";
@@ -13,6 +14,14 @@ export const useSaleOrders = (page = 0, size = 12) => {
   return useQuery<Page<SaleOrderDTO>>({
     queryKey: ["saleOrders", page, size],
     queryFn: () => getSaleOrders(page, size),
+  });
+};
+
+// Hook for getting the next sale order number
+export const useNextSaleOrderNumber = () => {
+  return useQuery<string>({
+    queryKey: ["nextSaleOrderNumber"],
+    queryFn: getNextSaleOrderNumber,
   });
 };
 

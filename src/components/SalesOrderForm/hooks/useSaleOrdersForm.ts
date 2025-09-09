@@ -13,7 +13,7 @@ export const useSalesOrderForm = () => {
 
   const [salesOrder, setSalesOrder] = useState<SaleOrderDTO>({
     id: 0, // nuevo → lo defines vacío hasta que lo cree backend
-    orderNumber: "SO-1310",
+    orderNumber: "",
     orderDate: new Date().toISOString().split("T")[0], // yyyy-MM-dd
     createdAt: new Date().toISOString(),
     createdBy: { id: 1, name: "Admin" } as SimpleIdNameDTO,
@@ -32,7 +32,7 @@ export const useSalesOrderForm = () => {
     amountShipment: 0,
     additionalFee: 0,
     totalPaid: 0,
-    customerNotes: "Nuevas notas",
+    customerNotes: "",
   });
 
   const [shippingCost, setShippingCost] = useState<number | "">("");

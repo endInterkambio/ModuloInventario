@@ -17,6 +17,15 @@ export const getSaleOrders = async (
   return response.data;
 };
 
+// Get next sale order number
+export const getNextSaleOrderNumber = async (): Promise<string> => {
+  const response = await axiosInstance.get<string>(
+    `${endpoints.saleOrders}/next-order-number`
+  );
+  return response.data;
+};
+
+
 // Create new sale order
 export const createSaleOrder = async (
   saleOrder: Omit<SaleOrderDTO, "id">
