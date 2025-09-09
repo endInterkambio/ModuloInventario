@@ -27,6 +27,6 @@ export interface SaleOrderDTO {
   paymentStatus: OrderPaymentStatus;
   customer: SaleOrderCustomerDTO | null;
   items: SaleOrderItemDTO[];
-  clientNotes: string;
+  customerNotes: string;
   shipment?: ShipmentDTO | null;
 }

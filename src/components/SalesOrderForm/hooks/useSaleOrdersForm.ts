@@ -32,7 +32,7 @@ export const useSalesOrderForm = () => {
     amountShipment: 0,
     additionalFee: 0,
     totalPaid: 0,
-    clientNotes: "",
+    customerNotes: "Nuevas notas",
   });
 
   const [shippingCost, setShippingCost] = useState<number | "">("");
@@ -139,5 +139,6 @@ export const useSalesOrderForm = () => {
     handleChargeDiscountChange,
     subtotal,
     total,
+    toNum,
   };
 };

@@ -11,6 +11,7 @@ import { useShipmentMethods } from "@/hooks/useShipmentMethod";
 import { mapSaleOrderCustomerToCustomer } from "@/mappers/mapSaleOrderCustomerToCustomer";
 import { mapCustomerToSaleOrderCustomer } from "@/mappers/mapCustomerToSaleOrderCustomer";
 import { SALES_CHANNELS } from "./constants/SaleOrderOptions";
+import { useCreateSaleOrder } from "@/hooks/useSaleOrders";
 
 export const SalesOrderForm = () => {
   const {
@@ -27,6 +28,7 @@ export const SalesOrderForm = () => {
     handleChargeDiscountChange,
     subtotal,
     total,
+    toNum,
   } = useSalesOrderForm();
 
   const { data: shipmentMethods } = useShipmentMethods();
@@ -36,6 +38,36 @@ export const SalesOrderForm = () => {
       label: method.name,
       value: method.id.toString(),
     })) ?? [];
+
+  const createSaleOrder = useCreateSaleOrder({
+    onSuccess: () => {
+      alert("✅ Orden creada correctamente");
+      // TODO: redirigir a la lista de órdenes, limpiar el form, etc.
+    },
+    onError: (error) => {
+      console.error(error);
+      alert("❌ Error al crear la orden");
+    },
+  });
+
+  const handleSubmit = (sendNow: boolean) => {
+    const now = new Date();
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, ...orderWithoutId } = salesOrder; //
+
+    createSaleOrder.mutate({
+      ...orderWithoutId,
+      orderDate: new Date(salesOrder.orderDate).toISOString(),
+      createdAt: now.toISOString(),
+      amount: subtotal,
+      amountShipment: toNum(shippingCost),
+      additionalFee: toNum(chargeDiscountCost),
+      totalAmount: subtotal + toNum(shippingCost) + toNum(chargeDiscountCost),
+      status: sendNow ? "PENDING" : "PENDING",
+      paymentStatus: "UNPAID",
+    });
+  };
 
   return (
     <div className="mx-auto p-6 bg-white min-h-screen">
@@ -106,13 +138,6 @@ export const SalesOrderForm = () => {
           />
         </FormField>
 
-        {/* <FormField label="Vendedor">
-          <Select
-            value={salesOrder.createdBy}
-            onChange={(v) => updateSalesOrder("createdBy", v)}
-            options={VENDORS}
-          />
-        </FormField> */}
         <FormField label="Canal de Venta (+)">
           <Select
             value={salesOrder.saleChannel ?? ""}
@@ -146,22 +171,26 @@ export const SalesOrderForm = () => {
       {/* Client Notes */}
       <FormField label="Notas del cliente">
         <textarea
-          value={salesOrder.clientNotes}
-          onChange={(e) => updateSalesOrder("clientNotes", e.target.value)}
+          value={salesOrder.customerNotes}
+          onChange={(e) => updateSalesOrder("customerNotes", e.target.value)}
           rows={3}
           className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
         />
       </FormField>
 
       {/* File Upload Section */}
-      <FileUploadSection />
+      {/* <FileUploadSection /> */}
 
       {/* Action Buttons */}
       <div className="flex gap-3 mt-4">
-        <button className="px-6 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+        {/* <button className="px-6 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
           Guardar como borrador
-        </button>
-        <button className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+        </button> */}
+        <button
+          type="button"
+          onClick={() => handleSubmit(true)}
+          className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        >
           Guardar y enviar
         </button>
         <button className="px-6 py-2 text-gray-600 hover:text-gray-800">
