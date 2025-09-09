@@ -1,14 +1,14 @@
+import { useEffect, useRef, useState } from "react";
 import { Trash2, Settings, Plus } from "lucide-react";
 import { SaleOrderItemDTO } from "@/types/SaleOrderItemDTO";
-import { SimpleIdNameDTO } from "@/types/SimpleIdNameDTO";
+import { useBooks } from "@/hooks/useBooks";
+import { BookDTO } from "@/types/BookDTO";
+import { BookStockLocationDTO } from "@/types/BookStockLocationDTO";
 
 type ItemTableProps = {
   articles: SaleOrderItemDTO[];
-  onItemUpdate: (
-    index: number,
-    field: keyof SaleOrderItemDTO,
-    value: string | number | SimpleIdNameDTO
-  ) => void;
+  onItemUpdate: (index: number, patch: Partial<SaleOrderItemDTO>) => void;
+
   onAddArticle: () => void;
   onRemoveArticle: (index: number) => void;
 };
@@ -19,7 +19,7 @@ export default function ItemTable({
   onAddArticle,
   onRemoveArticle,
 }: ItemTableProps) {
-  // calculamos el importe de cada fila
+  // calcular importe
   const calculateAmount = (item: SaleOrderItemDTO) => {
     const subtotal = (item.quantity ?? 0) * (item.customPrice ?? 0);
     const discountAmount = item.discount ? (subtotal * item.discount) / 100 : 0;
@@ -38,7 +38,7 @@ export default function ItemTable({
         </button>
       </div>
 
-      <div className="border border-gray-300 rounded overflow-hidden">
+      <div className="border border-gray-300 rounded">
         {/* Header */}
         <div className="bg-gray-50 grid grid-cols-12 gap-2 p-3 text-xs font-medium text-gray-600 uppercase">
           <div className="col-span-1"></div>
@@ -57,85 +57,14 @@ export default function ItemTable({
           </div>
         ) : (
           articles.map((article, index) => (
-            <div
+            <ItemRow
               key={article.id ?? index}
-              className="grid grid-cols-12 gap-2 p-3 border-t border-gray-200 items-center"
-            >
-              {/* Remove */}
-              <div className="col-span-1">
-                <button
-                  onClick={() => onRemoveArticle(index)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-
-              {/* BookStockLocation (ahora lo pongo como texto simple, luego podemos cambiar a select) */}
-              <div className="col-span-4">
-                <input
-                  type="text"
-                  value={article.bookStockLocation?.name ?? ""}
-                  onChange={(e) =>
-                    onItemUpdate(index, "bookStockLocation", {
-                      id: article.bookStockLocation?.id ?? 0,
-                      name: e.target.value,
-                    })
-                  }
-                  placeholder="Ubicación o nombre del artículo"
-                  className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
-                />
-              </div>
-
-              {/* Quantity */}
-              <div className="col-span-2">
-                <input
-                  type="number"
-                  value={article.quantity ?? 0}
-                  onChange={(e) =>
-                    onItemUpdate(index, "quantity", parseFloat(e.target.value) || 0)
-                  }
-                  className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
-                  min="0"
-                  step="1"
-                />
-              </div>
-
-              {/* Custom Price */}
-              <div className="col-span-2">
-                <input
-                  type="number"
-                  value={article.customPrice ?? 0}
-                  onChange={(e) =>
-                    onItemUpdate(index, "customPrice", parseFloat(e.target.value) || 0)
-                  }
-                  className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
-                  min="0"
-                  step="0.01"
-                />
-              </div>
-
-              {/* Discount (solo %) */}
-              <div className="col-span-1">
-                <input
-                  type="number"
-                  value={article.discount ?? 0}
-                  onChange={(e) =>
-                    onItemUpdate(index, "discount", parseFloat(e.target.value) || 0)
-                  }
-                  className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
-                  min="0"
-                  step="0.01"
-                />
-              </div>
-
-              {/* Amount */}
-              <div className="col-span-2">
-                <span className="text-sm font-medium">
-                  {calculateAmount(article).toFixed(2)}
-                </span>
-              </div>
-            </div>
+              article={article}
+              index={index}
+              onItemUpdate={onItemUpdate}
+              onRemoveArticle={onRemoveArticle}
+              calculateAmount={calculateAmount}
+            />
           ))
         )}
       </div>
@@ -153,6 +82,213 @@ export default function ItemTable({
           <Plus className="h-4 w-4" />
           Agregar artículos a granel
         </button>
+      </div>
+    </div>
+  );
+}
+
+// Subcomponente ItemRow
+function ItemRow({
+  article,
+  index,
+  onItemUpdate,
+  onRemoveArticle,
+  calculateAmount,
+}: {
+  article: SaleOrderItemDTO;
+  index: number;
+  onItemUpdate: ItemTableProps["onItemUpdate"];
+  onRemoveArticle: ItemTableProps["onRemoveArticle"];
+  calculateAmount: (item: SaleOrderItemDTO) => number;
+}) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [debouncedTerm, setDebouncedTerm] = useState("");
+
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // debounce para búsqueda
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedTerm(searchTerm), 300);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // obtener libros desde backend
+  const { data: booksPage } = useBooks(0, 10, undefined, debouncedTerm, 1);
+  const books = booksPage?.content || [];
+
+  const handleSelect = (
+    book: BookDTO,
+    location: BookStockLocationDTO | null
+  ) => {
+    onItemUpdate(index, {
+      bookStockLocation: {
+        id: location?.id ?? 0,
+        name: book.title,
+        stock: location?.stock ?? 0,
+        warehouse: location?.warehouse,
+        bookcase: location?.bookcase,
+        bookcaseFloor: location?.bookcaseFloor,
+      },
+      customPrice: book.sellingPrice ?? 0,
+    });
+
+    setSearchTerm("");
+    setShowDropdown(false);
+  };
+
+  // clic fuera para cerrar dropdown
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div
+      className="grid grid-cols-12 gap-2 p-3 border-t border-gray-200 items-center"
+      ref={wrapperRef}
+    >
+      {/* Remove */}
+      <div className="col-span-1">
+        <button
+          onClick={() => onRemoveArticle(index)}
+          className="text-red-500 hover:text-red-700"
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
+      </div>
+
+      {/* Book / Autocomplete */}
+      <div className="col-span-4 relative z-50">
+        <input
+          type="text"
+          value={searchTerm || article.bookStockLocation?.name || ""}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setShowDropdown(true);
+          }}
+          onFocus={() => setShowDropdown(true)}
+          placeholder="Buscar artículo"
+          className="w-full border truncate border-gray-300 rounded px-2 py-1 text-sm pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        />
+
+        {/* Botón para limpiar selección */}
+        {article.bookStockLocation && (
+          <button
+            type="button"
+            onClick={() => {
+              onItemUpdate(index, {
+                bookStockLocation: null,
+                customPrice: 0,
+              });
+
+              setSearchTerm("");
+              setShowDropdown(false);
+            }}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-red-700 hover:text-gray-600 font-bold"
+          >
+            X
+          </button>
+        )}
+
+        {/* Dropdown */}
+        {showDropdown && (
+          <ul className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded mt-1 max-h-60 overflow-y-auto shadow-lg">
+            {books.length > 0 ? (
+              books.flatMap((book: BookDTO) => {
+                const availableLocations = book.locations.filter(
+                  (loc) => loc.stock > 0
+                );
+
+                return availableLocations.length > 0
+                  ? availableLocations.map((loc) => (
+                      <li
+                        key={`${book.id}-${loc.id}`}
+                        onClick={() => handleSelect(book, loc)}
+                        className="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm flex flex-col"
+                      >
+                        <span className="font-medium truncate">
+                          {book.title}
+                        </span>
+                        <span className="text-gray-500 text-xs">
+                          {loc.warehouse.name} — Est: {loc.bookcase} / Piso:{" "}
+                          {loc.bookcaseFloor} — Stock: {loc.stock} — Condición:{" "}
+                          {loc.bookCondition} - Precio: {book.sellingPrice}
+                        </span>
+                      </li>
+                    ))
+                  : null; // no mostrar libros sin stock en ninguna ubicación
+              })
+            ) : (
+              <li className="px-3 py-2 text-gray-500 text-sm italic">
+                No se encontraron resultados
+              </li>
+            )}
+          </ul>
+        )}
+      </div>
+
+      {/* Quantity */}
+      <div className="col-span-2">
+        <input
+          type="number"
+          value={article.quantity ?? 0}
+          onChange={(e) =>
+            onItemUpdate(index, {
+              quantity: parseFloat(e.target.value) || 1,
+            })
+          }
+          className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
+          min="0"
+          step="1"
+        />
+      </div>
+
+      {/* Custom Price */}
+      <div className="col-span-2">
+        <input
+          type="number"
+          value={article.customPrice ?? 0}
+          onChange={(e) =>
+            onItemUpdate(index, {
+              customPrice: parseFloat(e.target.value) || 0,
+            })
+          }
+          className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
+          min="0"
+          step=""
+        />
+      </div>
+
+      {/* Discount */}
+      <div className="col-span-1">
+        <input
+          type="number"
+          value={article.discount ?? 0}
+          onChange={(e) =>
+            onItemUpdate(index, {
+              discount: parseFloat(e.target.value) || 0,
+            })
+          }
+          className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
+          min="0"
+          step="0.01"
+        />
+      </div>
+
+      {/* Amount */}
+      <div className="col-span-2">
+        <span className="text-sm font-medium">
+          {calculateAmount(article).toFixed(2)}
+        </span>
       </div>
     </div>
   );

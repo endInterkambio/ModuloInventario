@@ -46,29 +46,26 @@ export const useSalesOrderForm = () => {
   };
 
   const calculateArticleAmount = (item: SaleOrderItemDTO) => {
-    const subtotal = item.quantity * item.customPrice;
-    const discountAmount =
-      item.discount > 0 ? (subtotal * item.discount) / 100 : 0;
+    const quantity = item.quantity ?? 0;
+    const price = item.customPrice ?? 0;
+    const subtotal = quantity * price;
+    const discountAmount = item.discount ? (subtotal * item.discount) / 100 : 0;
     return subtotal - discountAmount;
   };
 
-  const updateArticle = (
-    index: number,
-    field: keyof SaleOrderItemDTO,
-    value: string | number | SimpleIdNameDTO
-  ) => {
-    const updatedArticles = [...salesOrder.items];
-    updatedArticles[index] = { ...updatedArticles[index], [field]: value };
-    const newAmount = calculateArticleAmount(updatedArticles[index]);
-    setSalesOrder((prev) => ({
-      ...prev,
-      items: updatedArticles,
-      amount: prev.items.reduce(
-        (sum, it, i) =>
-          sum + (i === index ? newAmount : calculateArticleAmount(it)),
+  const updateArticle = (index: number, patch: Partial<SaleOrderItemDTO>) => {
+    setSalesOrder((prev) => {
+      const updatedItems = prev.items.map((it, i) =>
+        i === index ? { ...it, ...patch } : it
+      );
+
+      const newAmount = updatedItems.reduce(
+        (sum, it) => sum + calculateArticleAmount(it),
         0
-      ),
-    }));
+      );
+
+      return { ...prev, items: updatedItems, amount: newAmount };
+    });
   };
 
   const addArticle = () => {
@@ -78,7 +75,14 @@ export const useSalesOrderForm = () => {
         ...prev.items,
         {
           id: undefined,
-          bookStockLocation: { id: 0, name: "" },
+          bookStockLocation: {
+            id: 0,
+            name: "",
+            stock: 0,
+            warehouse: undefined,
+            bookcase: undefined,
+            bookcaseFloor: undefined,
+          },
           quantity: 1,
           discount: 0,
           customPrice: 0,
