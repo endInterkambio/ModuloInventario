@@ -1,52 +1,74 @@
 import { useState } from "react";
-import { Item, SalesOrder } from "../constants/types";
 import toast from "react-hot-toast";
+import {
+  SaleOrderDTO,
+  OrderStatus,
+  OrderPaymentStatus,
+} from "@/types/SaleOrderDTO"; // importa desde donde tienes el DTO real
+import { SimpleIdNameDTO } from "@/types/SimpleIdNameDTO";
+import { SaleOrderItemDTO } from "@/types/SaleOrderItemDTO";
 
 export const useSalesOrderForm = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [salesOrder, setSalesOrder] = useState<SalesOrder>({
+
+  const [salesOrder, setSalesOrder] = useState<SaleOrderDTO>({
+    id: 0, // nuevo → lo defines vacío hasta que lo cree backend
     orderNumber: "SO-1310",
-    reference: "",
-    orderDate: "27 Apr 2025",
-    deliveryDate: "",
-    deliveryMethod: "Standard",
-    vendor: "Juan Perez",
+    orderDate: new Date().toISOString().split("T")[0], // yyyy-MM-dd
+    createdAt: new Date().toISOString(),
+    createdBy: { id: 1, name: "Admin" } as SimpleIdNameDTO,
     saleChannel: "Online",
-    clientNotes: "",
+    amount: 0,
+    totalAmount: 0,
+    status: "PENDING" as OrderStatus,
+    paymentStatus: "UNPAID" as OrderPaymentStatus,
+    customer: {
+      id: 0,
+      name: "",
+      customerType: "PERSON",
+      companyName: "",
+    },
     items: [],
-    customer: null,
+    amountShipment: 0,
+    additionalFee: 0,
+    totalPaid: 0,
+    clientNotes: "",
   });
 
   const [shippingCost, setShippingCost] = useState<number | "">("");
   const [chargeDiscountCost, setChargeDiscountCost] = useState<number | "">("");
 
-  const updateSalesOrder = <K extends keyof SalesOrder>(
+  const updateSalesOrder = <K extends keyof SaleOrderDTO>(
     field: K,
-    value: SalesOrder[K] // toma el tipo correcto según la clave
+    value: SaleOrderDTO[K]
   ) => {
     setSalesOrder((prev) => ({ ...prev, [field]: value }));
   };
 
-  const calculateArticleAmount = (item: Item) => {
-    const subtotal = item.quantity * item.price;
+  const calculateArticleAmount = (item: SaleOrderItemDTO) => {
+    const subtotal = item.quantity * item.customPrice;
     const discountAmount =
-      item.discountType === "%"
-        ? (subtotal * item.discount) / 100
-        : item.discount;
+      item.discount > 0 ? (subtotal * item.discount) / 100 : 0;
     return subtotal - discountAmount;
   };
 
   const updateArticle = (
     index: number,
-    field: keyof Item,
-    value: string | number
+    field: keyof SaleOrderItemDTO,
+    value: string | number | SimpleIdNameDTO
   ) => {
     const updatedArticles = [...salesOrder.items];
     updatedArticles[index] = { ...updatedArticles[index], [field]: value };
-    updatedArticles[index].amount = calculateArticleAmount(
-      updatedArticles[index]
-    );
-    setSalesOrder((prev) => ({ ...prev, items: updatedArticles }));
+    const newAmount = calculateArticleAmount(updatedArticles[index]);
+    setSalesOrder((prev) => ({
+      ...prev,
+      items: updatedArticles,
+      amount: prev.items.reduce(
+        (sum, it, i) =>
+          sum + (i === index ? newAmount : calculateArticleAmount(it)),
+        0
+      ),
+    }));
   };
 
   const addArticle = () => {
@@ -55,30 +77,30 @@ export const useSalesOrderForm = () => {
       items: [
         ...prev.items,
         {
-          id: Date.now().toString(),
-          description: "",
+          id: undefined,
+          bookStockLocation: { id: 0, name: "" },
           quantity: 1,
-          price: 0,
           discount: 0,
-          discountType: "%",
-          tax: 0,
-          amount: 0,
+          customPrice: 0,
         },
       ],
     }));
   };
 
   const removeArticle = (index: number) => {
+    const updated = salesOrder.items.filter((_, i) => i !== index);
     setSalesOrder((prev) => ({
       ...prev,
-      items: prev.items.filter((_, i) => i !== index),
+      items: updated,
+      amount: updated.reduce((sum, it) => sum + calculateArticleAmount(it), 0),
     }));
   };
 
   const subtotal = salesOrder.items.reduce(
-    (sum, item) => sum + item.amount,
+    (sum, item) => sum + calculateArticleAmount(item),
     0
   );
+
   const toNum = (v: number | "") => (v === "" ? 0 : Number(v));
 
   const handleShippingCostChange = (value: number | "") => {

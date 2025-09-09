@@ -35,7 +35,7 @@ export function ClientSearchSection({
   const handleSelect = (customer: CustomerDTO) => {
     onCustomerSelect(customer);
     setShowDropdown(false);
-    onSearchChange(""); // opcional: resetear búsqueda
+    onSearchChange("");
   };
 
   const handleClear = () => {

@@ -5,13 +5,15 @@ import { FormField } from "./ui/FormField";
 import { Input } from "./ui/Input";
 import { Select } from "./ui/Select";
 import {
-  DELIVERY_METHODS,
+  //DELIVERY_METHODS,
   SALES_CHANNELS,
-  VENDORS,
+  // VENDORS,
 } from "./constants/SaleOrderOptions";
 import { useSalesOrderForm } from "./hooks/useSaleOrdersForm";
 import BackButton from "@components/shared/BackButton";
 import { SummarySection } from "./sections/SummarySection";
+import { mapSaleOrderCustomerToCustomer } from "@/mappers/mapSaleOrderCustomerToCustomer";
+import { mapCustomerToSaleOrderCustomer } from "@/mappers/mapCustomerToSaleOrderCustomer";
 
 export const SalesOrderForm = () => {
   const {
@@ -41,12 +43,20 @@ export const SalesOrderForm = () => {
         </h1>
       </div>
 
-      {/* Client Search */}
       <ClientSearchSection
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
-        selectedCustomer={salesOrder.customer || null} // ahora existe en SalesOrder
-        onCustomerSelect={(customer) => updateSalesOrder("customer", customer)}
+        selectedCustomer={
+          salesOrder.customer
+            ? mapSaleOrderCustomerToCustomer(salesOrder.customer)
+            : null
+        }
+        onCustomerSelect={(customer) =>
+          updateSalesOrder(
+            "customer",
+            customer ? mapCustomerToSaleOrderCustomer(customer) : null
+          )
+        }
       />
 
       {/* Form Fields */}
@@ -57,32 +67,32 @@ export const SalesOrderForm = () => {
             onChange={(v) => updateSalesOrder("orderNumber", v)}
           />
         </FormField>
-        <FormField label="N° de referencia">
+        {/* <FormField label="N° de referencia">
           <Input
             value={salesOrder.referenceNumber}
             onChange={(v) => updateSalesOrder("referenceNumber", v)}
           />
-        </FormField>
+        </FormField> */}
         <FormField label="Fecha de orden de venta">
           <Input
             value={salesOrder.orderDate}
             onChange={(v) => updateSalesOrder("orderDate", v)}
           />
         </FormField>
-        <FormField label="Método de entrega">
+        {/* <FormField label="Método de entrega">
           <Select
             value={salesOrder.deliveryMethod}
             onChange={(v) => updateSalesOrder("deliveryMethod", v)}
             options={DELIVERY_METHODS}
           />
-        </FormField>
-        <FormField label="Vendedor">
+        </FormField> */}
+        {/* <FormField label="Vendedor">
           <Select
             value={salesOrder.createdBy}
             onChange={(v) => updateSalesOrder("createdBy", v)}
             options={VENDORS}
           />
-        </FormField>
+        </FormField> */}
         <FormField label="Canal de Venta (+)">
           <Select
             value={salesOrder.saleChannel}
@@ -103,10 +113,10 @@ export const SalesOrderForm = () => {
       {/* Summary */}
       <SummarySection
         subtotal={subtotal}
-        shippingCost={shippingCost}
+        shippingFee={shippingCost}
         chargeDiscountCost={chargeDiscountCost}
         total={total}
-        onShippingCostChange={handleShippingCostChange}
+        onShippingFeeChange={handleShippingCostChange}
         onChargeDiscountChange={handleChargeDiscountChange}
       />
 

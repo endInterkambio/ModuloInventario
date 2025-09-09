@@ -1,10 +1,13 @@
-import { ShipmentItemDTO } from "./ShipmentItemDTO";
+import { SaleOrderItemDTO } from "./SaleOrderItemDTO";
+import { ShipmentMethodDTO } from "./ShipmentMethodDTO";
 
 export interface ShipmentDTO {
-    id: number;
-    shipmentDate: string;
-    trackingNumber: string;
-    address: string;
-    shippingFree: string;
-    items: ShipmentItemDTO[];
+  id: number;
+  orderId: number;
+  shipmentDate: string; // ISO date
+  trackingNumber: string;
+  address: string;
+  shippingFee: number;
+  shipmentMethod?: ShipmentMethodDTO;
+  items?: SaleOrderItemDTO[];
 }
