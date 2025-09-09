@@ -6,6 +6,7 @@ import {
   OrderPaymentStatus,
 } from "@components/SalesOrderForm/constants/orderStatusConfig";
 import { SaleOrderDTO } from "@/types/SaleOrderDTO";
+import { downloadPDF } from "@/utils/downloadPDF";
 
 interface Props {
   saleOrders: SaleOrderDTO[];
@@ -86,7 +87,10 @@ export function SaleOrdersTable({ saleOrders }: Props) {
             <td className="py-2 px-4">{order.totalPaid ?? "-"}</td>
             <td className="py-2 px-4">{order.saleChannel ?? "-"}</td>
             <td className="py-2 px-4">
-              <button className="px-4 py-1 bg-blue-500 text-white rounded text-sm">
+              <button
+                onClick={() => downloadPDF(order)}
+                className="px-4 py-1 bg-blue-500 text-white rounded text-sm"
+              >
                 PDF
               </button>
             </td>
