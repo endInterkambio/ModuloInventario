@@ -94,6 +94,11 @@ export async function downloadPDF(order: SaleOrderDTO) {
   // Tabla de items
   autoTable(doc, {
     startY: 95,
+    headStyles: {
+      fillColor: "#00ab55", // 
+      textColor: 255, // texto blanco
+      fontStyle: "bold", // negrita
+    },
     head: [["#", "Artículo & Descripción", "Cant."]],
     body: [
       ...order.items.map((item, i) => [
