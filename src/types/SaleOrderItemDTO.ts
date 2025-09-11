@@ -9,11 +9,11 @@ export interface SaleOrderItemDTO {
   bookStockLocation?: {
     id: number;
     bookSku: string;
+    bookCondition?: string;
     warehouse?: SimpleIdNameDTO;
+    locationType?: string;
     bookcase?: number;
     bookcaseFloor?: number;
-    bookCondition?: string;
-    locationType?: string;
     stock: number;
   } | null;
 }

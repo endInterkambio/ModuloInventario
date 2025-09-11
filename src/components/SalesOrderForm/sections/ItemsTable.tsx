@@ -122,6 +122,7 @@ function ItemRow({
     location: BookStockLocationDTO | null
   ) => {
     onItemUpdate(index, {
+      bookTitle: book.title,
       bookStockLocation: {
         id: location?.id ?? 0,
         bookSku: location?.bookSku ?? "",
@@ -167,7 +168,7 @@ function ItemRow({
       </div>
 
       {/* Book / Autocomplete */}
-      <div className="col-span-4 relative z-50">
+      <div className="col-span-4 relative">
         <input
           type="text"
           value={searchTerm || article.bookTitle || ""}
@@ -186,6 +187,7 @@ function ItemRow({
             type="button"
             onClick={() => {
               onItemUpdate(index, {
+                bookTitle: undefined,
                 bookStockLocation: null,
                 customPrice: 0,
               });
@@ -201,7 +203,7 @@ function ItemRow({
 
         {/* Dropdown */}
         {showDropdown && (
-          <ul className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded mt-1 max-h-60 overflow-y-auto shadow-lg">
+          <ul className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded mt-1 max-h-60 overflow-y-auto shadow-lg z-50">
             {books.length > 0 ? (
               books.flatMap((book: BookDTO) => {
                 const availableLocations = book.locations.filter(

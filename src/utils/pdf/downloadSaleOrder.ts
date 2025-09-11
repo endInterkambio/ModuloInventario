@@ -104,7 +104,9 @@ export async function downloadSaleOrder(order: SaleOrderDTO) {
       ...order.items.map((item, i) => [
         String(i + 1), // número
         `${item.bookTitle ?? ""} - ${item.bookStockLocation?.bookSku ?? ""}${
-          item.bookStockLocation?.bookCondition ?? ""
+          item.bookStockLocation?.bookSku?.match(/[ABCDXU]$/)
+            ? ""
+            : item.bookStockLocation?.bookCondition ?? ""
         }`, // descripción
         {
           content: String(item.quantity ?? 0),
