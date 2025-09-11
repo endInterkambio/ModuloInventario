@@ -124,7 +124,7 @@ function ItemRow({
     onItemUpdate(index, {
       bookStockLocation: {
         id: location?.id ?? 0,
-        name: book.title,
+        bookSku: location?.bookSku ?? "",
         stock: location?.stock ?? 0,
         warehouse: location?.warehouse,
         bookcase: location?.bookcase,
@@ -170,7 +170,7 @@ function ItemRow({
       <div className="col-span-4 relative z-50">
         <input
           type="text"
-          value={searchTerm || article.bookStockLocation?.name || ""}
+          value={searchTerm || article.bookTitle || ""}
           onChange={(e) => {
             setSearchTerm(e.target.value);
             setShowDropdown(true);

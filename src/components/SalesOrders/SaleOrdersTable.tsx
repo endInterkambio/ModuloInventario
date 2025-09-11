@@ -6,8 +6,8 @@ import {
   OrderPaymentStatus,
 } from "@components/SalesOrderForm/constants/orderStatusConfig";
 import { SaleOrderDTO } from "@/types/SaleOrderDTO";
-import { downloadSaleOrderPDF } from "@/utils/pdf/downloadSaleOrderPDF";
-import { downloadPDF } from "@/utils/pdf/downloadPDF";
+import { downloadSaleOrder } from "@/utils/pdf/downloadSaleOrder";
+import { downloadPDF } from "@/utils/downloadPDFDeprecated";
 
 interface Props {
   saleOrders: SaleOrderDTO[];
@@ -95,7 +95,7 @@ export function SaleOrdersTable({ saleOrders }: Props) {
                 Guía
               </button>
               <button
-                onClick={() => downloadSaleOrderPDF(order)} // Orden de venta
+                onClick={() => downloadSaleOrder(order)} // Orden de venta
                 className="px-4 py-1 bg-green-500 text-white rounded text-sm"
               >
                 Orden
