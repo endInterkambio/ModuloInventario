@@ -89,23 +89,33 @@ export function SaleOrdersTable({ saleOrders }: Props) {
             <td className="py-2 px-4">{order.totalPaid ?? "-"}</td>
             <td className="py-2 px-4">{order.saleChannel ?? "-"}</td>
             <td className="py-2 px-4">
+              {/* Botón Guía: solo si no está cancelada */}
+              {order.shipment != null && (
+                <button
+                  onClick={() => downloadPDF(order)}
+                  className="px-4 py-1 bg-blue-500 text-white font-medium rounded-md text-sm mr-2 w-20"
+                >
+                  Guía
+                </button>
+              )}
+
+              {/* Botón Orden */}
+
               <button
-                onClick={() => downloadPDF(order)} // Guía de remisión
-                className="px-4 py-1 bg-blue-500 text-white font-medium rounded-md text-sm mr-2"
-              >
-                Guía
-              </button>
-              <button
-                onClick={() => downloadSaleOrder(order)} // Orden de venta
-                className="px-4 py-1 bg-[--color-primary] text-white font-medium rounded-md text-sm mr-2"
+                onClick={() => downloadSaleOrder(order)}
+                className="px-4 py-1 bg-[--color-primary] text-white font-medium rounded-md text-sm mr-2 w-20"
               >
                 Orden
               </button>
-              <NavButton
-                to={`/dashboard/paymentReceived/newPaymentReceived?orderId=${order.id}`}
-                label={"Pago"}
-                className="px-4 py-1 bg-[--color-secondary]"
-              />
+
+              {/* Botón Pago: solo si no está pagada */}
+              {order.paymentStatus !== "PAID" && (
+                <NavButton
+                  to={`/dashboard/paymentReceived/newPaymentReceived?orderId=${order.id}`}
+                  label="Pago"
+                  className="px-4 py-1 bg-[--color-secondary] w-20"
+                />
+              )}
             </td>
           </tr>
         ))}

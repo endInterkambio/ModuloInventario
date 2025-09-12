@@ -1,5 +1,5 @@
 import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import autoTable, { CellInput } from "jspdf-autotable";
 import { SaleOrderDTO } from "@/types/SaleOrderDTO";
 import logo from "@assets/LOGO-GUSANITO-LECTOR.png";
 import { format } from "date-fns";
@@ -60,7 +60,46 @@ export async function downloadSaleOrder(order: SaleOrderDTO) {
     infoStartY
   );
 
-  // Info general con tabla invisible
+  // Construir body dinámicamente con tipos correctos
+  const infoBody: CellInput[][] = [];
+
+  // Fila 1: "Enviar a" y fecha del pedido
+  if (order.shipment) {
+    infoBody.push([
+      { content: "Enviar a:", styles: { fontStyle: "bold" } },
+      order.orderDate
+        ? `Fecha del pedido: ${format(new Date(order.orderDate), "dd/MM/yyyy")}`
+        : "",
+    ]);
+
+    // Fila 2: dirección de envío y método de entrega
+    infoBody.push([
+      order.shipment.address ?? "",
+      order.shipment.shipmentMethod?.name
+        ? `Método de entrega: ${order.shipment.shipmentMethod.name}`
+        : "",
+    ]);
+
+    // Fila 3: columna vacía + canal de venta si existe
+    infoBody.push([
+      "",
+      order.saleChannel ? `Canal de venta: ${order.saleChannel}` : "",
+    ]);
+  } else {
+    // No hay envío: solo mostrar fecha y canal de venta si existen
+    infoBody.push([
+      "",
+      order.orderDate
+        ? `Fecha del pedido: ${format(new Date(order.orderDate), "dd/MM/yyyy")}`
+        : "",
+    ]);
+
+    if (order.saleChannel) {
+      infoBody.push(["", `Canal de venta: ${order.saleChannel}`]);
+    }
+  }
+
+  // Llamada a autoTable
   autoTable(doc, {
     startY: infoStartY + 5,
     theme: "plain",
@@ -69,27 +108,7 @@ export async function downloadSaleOrder(order: SaleOrderDTO) {
       0: { cellWidth: 60 },
       1: { cellWidth: 100 },
     },
-    body: [
-      [
-        { content: "Enviar a:", styles: { fontStyle: "bold" } },
-        order.orderDate
-          ? `Fecha del pedido: ${format(
-              new Date(order.orderDate),
-              "dd/MM/yyyy"
-            )}`
-          : "",
-      ],
-      [
-        order.shipment?.address ?? "", // dirección de envío
-        order.shipment?.shipmentMethod?.name
-          ? `Método de entrega: ${order.shipment.shipmentMethod.name}`
-          : "",
-      ],
-      [
-        "", // columna izquierda vacía para alinear con la 3ra fila de la derecha
-        order.saleChannel ? `Canal de venta: ${order.saleChannel}` : "",
-      ],
-    ],
+    body: infoBody,
   });
 
   autoTable(doc, {
