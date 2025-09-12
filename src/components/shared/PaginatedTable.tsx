@@ -18,8 +18,12 @@ interface PaginatedTableProps<T> {
   searchPlaceholder?: string;
   newButtonLabel?: string;
   newButtonTo?: string;
+  newButtonClassName?: string;
   columns: Column<T>[];
-  usePaginatedHook: (page: number, size: number) => {
+  usePaginatedHook: (
+    page: number,
+    size: number
+  ) => {
     data?: { content: T[]; totalPages: number; totalElements: number };
     isLoading: boolean;
     isError: boolean;
@@ -35,6 +39,7 @@ export function PaginatedTable<T>({
   searchPlaceholder = "Buscar...",
   newButtonLabel,
   newButtonTo,
+  newButtonClassName,
   columns,
   usePaginatedHook,
   itemsPerPageDefault = 12,
@@ -57,14 +62,26 @@ export function PaginatedTable<T>({
 
   return (
     <div className="bg-white border rounded-lg shadow-sm p-4">
-      {(title || dropdownOptions || showSearch || newButtonTo) && (
+      {(title ||
+        dropdownOptions ||
+        showSearch ||
+        (newButtonTo && newButtonLabel)) && (
         <div className="flex justify-between items-start px-4 pt-4 gap-2">
           {dropdownOptions && (
-            <DropdownMenu label={dropdownLabel || ""} options={dropdownOptions} />
+            <DropdownMenu
+              label={dropdownLabel || ""}
+              options={dropdownOptions}
+            />
           )}
+
           {showSearch && <SearchBar placeholder={searchPlaceholder} />}
+
           {newButtonTo && newButtonLabel && (
-            <NewButton to={newButtonTo} label={newButtonLabel} />
+            <NewButton
+              to={newButtonTo}
+              label={newButtonLabel}
+              className={newButtonClassName}
+            />
           )}
         </div>
       )}

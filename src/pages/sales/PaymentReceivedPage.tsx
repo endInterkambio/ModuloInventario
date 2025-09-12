@@ -21,8 +21,6 @@ export function PaymentReceivedPage() {
       dropdownOptions={["Todos", "Efectivo", "Transferencia", "Tarjeta"]}
       dropdownLabel="Filtrar por método"
       searchPlaceholder="Buscar pagos"
-      newButtonLabel="Nuevo pago"
-      newButtonTo="/dashboard/paymentReceived/newPaymentReceived"
       usePaginatedHook={usePaymentReceived}
       columns={[
         {

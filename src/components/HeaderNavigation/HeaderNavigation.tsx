@@ -74,7 +74,7 @@ const HeaderNavigation: React.FC = () => {
       <div className="flex items-center gap-3">
         <ViewToggle />
         {isAdmin && (
-          <NewButton to={"/dashboard/inventory/newBook"} label={"Nuevo"} />
+          <NewButton to={"/dashboard/inventory/newBook"} label={"Nuevo"} className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2"/>
         )}
 
         <div className="relative">

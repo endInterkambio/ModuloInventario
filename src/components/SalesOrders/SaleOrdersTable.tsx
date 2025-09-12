@@ -8,6 +8,7 @@ import {
 import { SaleOrderDTO } from "@/types/SaleOrderDTO";
 import { downloadSaleOrder } from "@/utils/pdf/downloadSaleOrder";
 import { downloadPDF } from "@/utils/downloadPDFDeprecated";
+import NavButton from "@components/NewButton";
 
 interface Props {
   saleOrders: SaleOrderDTO[];
@@ -90,16 +91,17 @@ export function SaleOrdersTable({ saleOrders }: Props) {
             <td className="py-2 px-4">
               <button
                 onClick={() => downloadPDF(order)} // Guía de remisión
-                className="px-4 py-1 bg-blue-500 text-white rounded text-sm mr-2"
+                className="px-4 py-1 bg-blue-500 text-white font-medium rounded-md text-sm mr-2"
               >
                 Guía
               </button>
               <button
                 onClick={() => downloadSaleOrder(order)} // Orden de venta
-                className="px-4 py-1 bg-green-500 text-white rounded text-sm"
+                className="px-4 py-1 bg-[--color-primary] text-white font-medium rounded-md text-sm mr-2"
               >
                 Orden
               </button>
+              <NavButton to={"/dashboard/paymentReceived/newPaymentReceived"} label={"Pago"} className="px-4 py-1 bg-[--color-secondary]"/>
             </td>
           </tr>
         ))}

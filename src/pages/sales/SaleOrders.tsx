@@ -45,7 +45,7 @@ export function SaleOrdersPage() {
           options={["Todas", "Pendiente", "Confirmado", "Enviado", "Facturado"]}
         />
         <SearchBar placeholder="Buscar ordenes de venta" />
-        <NewButton to={"/dashboard/selling/newSaleOrder"} label="Nueva" />
+        <NewButton to={"/dashboard/selling/newSaleOrder"} label="Nueva" className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition-colors" />
       </div>
 
       <div className="overflow-x-auto py-5">

@@ -14,7 +14,7 @@ const NavButton = ({ to, label, icon: Icon, className = "" }: NavButtonProps) =>
   return (
     <button
       onClick={() => navigate(to)}
-      className={`flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition-colors ${className}`}
+      className={`rounded-md font-medium transition-colors ${className}`}
     >
       {Icon && <Icon className="w-4 h-4" />}
       {label}
