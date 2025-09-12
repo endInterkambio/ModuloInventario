@@ -1,7 +1,15 @@
 export interface PaymentReceivedDTO {
+  id: number;
+  saleOrderId: number;
+  saleOrderNumber: string;
+  customer: {
     id: number;
-    saleOrderId: number;
-    paymentDate: string;
-    amount: number;
-    referenceNumber: string;
+    name: string;
+    companyName: string;
+    customerType: string;
+  };
+  paymentDate: string;
+  paymentMethod: string;
+  amount: number;
+  referenceNumber: string;
 }

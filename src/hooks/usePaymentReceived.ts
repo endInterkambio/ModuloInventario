@@ -10,7 +10,7 @@ import { Page } from "@/types/Pagination";
 
 export const usePaymentReceived = (page = 0, size = 12, searchTerm: string = "") => {
   return useQuery<Page<PaymentReceivedDTO>>({
-    queryKey: ["paymentReceived", page, size, searchTerm],
+    queryKey: ["payment-received", page, size, searchTerm],
     queryFn: () => fetchPaymentReceived(page, size, searchTerm),
   });
 };
@@ -24,7 +24,7 @@ export const useCreatePaymentReceived = (
 ) => {
   return useEntityMutation<PaymentReceivedDTO, Omit<PaymentReceivedDTO, "id">>({
     mutationFn: createPaymentReceived,
-    queryKeyToInvalidate: ["paymentReceived"],
+    queryKeyToInvalidate: ["payment-received"],
     options,
   });
 };
@@ -34,7 +34,7 @@ export const useDeletePaymentReceived = (
 ) => {
   return useEntityMutation<void, number>({
     mutationFn: deletePaymentReceived,
-    queryKeyToInvalidate: ["paymentReceived"],
+    queryKeyToInvalidate: ["payment-received"],
     options,
   });
 };
