@@ -4,6 +4,7 @@ import { SaleOrderItemDTO } from "@/types/SaleOrderItemDTO";
 import { useBooks } from "@/hooks/useBooks";
 import { BookDTO } from "@/types/BookDTO";
 import { BookStockLocationDTO } from "@/types/BookStockLocationDTO";
+import toast from "react-hot-toast";
 
 type ItemTableProps = {
   articles: SaleOrderItemDTO[];
@@ -61,6 +62,7 @@ export default function ItemTable({
               key={article.id ?? index}
               article={article}
               index={index}
+              articles={articles}
               onItemUpdate={onItemUpdate}
               onRemoveArticle={onRemoveArticle}
               calculateAmount={calculateAmount}
@@ -91,12 +93,14 @@ export default function ItemTable({
 function ItemRow({
   article,
   index,
+  articles,
   onItemUpdate,
   onRemoveArticle,
   calculateAmount,
 }: {
   article: SaleOrderItemDTO;
   index: number;
+  articles: SaleOrderItemDTO[];
   onItemUpdate: ItemTableProps["onItemUpdate"];
   onRemoveArticle: ItemTableProps["onRemoveArticle"];
   calculateAmount: (item: SaleOrderItemDTO) => number;
@@ -121,15 +125,28 @@ function ItemRow({
     book: BookDTO,
     location: BookStockLocationDTO | null
   ) => {
+    if (!location) return;
+
+    // Verificar si ese location ya fue agregado en otra fila
+    const alreadyExists = articles.some(
+      (item, idx) => idx !== index && item.bookStockLocation?.id === location.id
+    );
+
+    if (alreadyExists) {
+      toast.error("⚠️ Este artículo ya fue agregado en otra fila.");
+      return;
+    }
+
+    // Si no existe, lo actualizamos normalmente
     onItemUpdate(index, {
       bookTitle: book.title,
       bookStockLocation: {
-        id: location?.id ?? 0,
-        bookSku: location?.bookSku ?? "",
-        stock: location?.stock ?? 0,
-        warehouse: location?.warehouse,
-        bookcase: location?.bookcase,
-        bookcaseFloor: location?.bookcaseFloor,
+        id: location.id,
+        bookSku: location.bookSku,
+        stock: location.stock,
+        warehouse: location.warehouse,
+        bookcase: location.bookcase,
+        bookcaseFloor: location.bookcaseFloor,
       },
       customPrice: book.sellingPrice ?? 0,
     });
