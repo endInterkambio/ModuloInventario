@@ -260,14 +260,23 @@ function ItemRow({
         <input
           type="number"
           value={article.quantity ?? 0}
-          onChange={(e) =>
-            onItemUpdate(index, {
-              quantity: parseFloat(e.target.value) || 1,
-            })
-          }
+          onChange={(e) => {
+            const newQty = parseFloat(e.target.value) || 0;
+            const maxStock = article.bookStockLocation?.stock ?? Infinity;
+
+            if (newQty > maxStock) {
+              toast.error(
+                `⚠️ Stock insuficiente. Solo quedan ${maxStock} unidades.`
+              );
+              onItemUpdate(index, { quantity: maxStock }); // fuerza el máximo permitido
+            } else {
+              onItemUpdate(index, { quantity: newQty });
+            }
+          }}
           className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
-          min="0"
+          min="1"
           step="1"
+          max={article.bookStockLocation?.stock ?? undefined} // también ayuda al control nativo del input
         />
       </div>
 

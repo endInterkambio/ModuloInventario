@@ -14,6 +14,8 @@ import {
   useCreateSaleOrder,
   useNextSaleOrderNumber,
 } from "@/hooks/useSaleOrders";
+import toast from "react-hot-toast";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 
 export const SalesOrderForm = () => {
   const {
@@ -44,12 +46,11 @@ export const SalesOrderForm = () => {
 
   const createSaleOrder = useCreateSaleOrder({
     onSuccess: () => {
-      alert("✅ Orden creada correctamente");
+      toast.success("Orden creada correctamente");
       // TODO: redirigir a la lista de órdenes, limpiar el form, etc.
     },
     onError: (error) => {
-      console.error(error);
-      alert("❌ Error al crear la orden");
+      toast.error(getErrorMessage(error));
     },
   });
 
@@ -128,21 +129,29 @@ export const SalesOrderForm = () => {
         <FormField label="Método de envío">
           <Select
             value={salesOrder.shipment?.shipmentMethod?.id?.toString() ?? ""}
-            onChange={(v) =>
+            onChange={(v) => {
+              if (!v) {
+                // ❌ Si el usuario limpia selección, eliminamos shipment
+                updateSalesOrder("shipment", undefined);
+                return;
+              }
+
+              // ✅ Solo si selecciona algo, armamos el objeto
+              const selected = shipmentMethodOptions.find((o) => o.value === v);
+
               updateSalesOrder("shipment", {
                 ...(salesOrder.shipment ?? {}),
                 orderId: salesOrder.id, // obligatorio para ShipmentDTO
-                shipmentMethod: v
-                  ? {
-                      id: Number(v),
-                      name:
-                        shipmentMethodOptions.find((o) => o.value === v)
-                          ?.label ?? "",
-                    }
-                  : undefined, // SimpleIdNameDTO | undefined
-              })
-            }
-            options={shipmentMethodOptions} // [{ label, value }] compatible con Select
+                shipmentMethod: {
+                  id: Number(v),
+                  name: selected?.label ?? "",
+                },
+              });
+            }}
+            options={[
+              { label: "Seleccionar método", value: "" }, // opción vacía
+              ...shipmentMethodOptions,
+            ]}
           />
         </FormField>
 
