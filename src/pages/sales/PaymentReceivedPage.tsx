@@ -2,8 +2,19 @@ import { PaginatedTable } from "@components/shared/PaginatedTable";
 import { usePaymentReceived } from "@/hooks/usePaymentReceived"; // <-- deberías crearlo igual que useCustomers
 import { InfoRow } from "../inventory/BookDetail/InfoRow";
 import { format } from "date-fns";
+import { useLocation } from "react-router-dom";
+import { PaymentReceivedCreationForm } from "@components/PaymentReceivedCreationForm";
 
 export function PaymentReceivedPage() {
+  const location = useLocation();
+  const isNewPaymentReceived = location.pathname.endsWith(
+    "/newPaymentReceived"
+  );
+
+  if (isNewPaymentReceived) {
+    return <PaymentReceivedCreationForm />;
+  }
+
   return (
     <PaginatedTable
       title="Pagos recibidos"
@@ -11,7 +22,7 @@ export function PaymentReceivedPage() {
       dropdownLabel="Filtrar por método"
       searchPlaceholder="Buscar pagos"
       newButtonLabel="Nuevo pago"
-      newButtonTo="/dashboard/payments/newPayment"
+      newButtonTo="/dashboard/paymentReceived/newPaymentReceived"
       usePaginatedHook={usePaymentReceived}
       columns={[
         {
