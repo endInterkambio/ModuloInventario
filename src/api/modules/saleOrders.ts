@@ -17,6 +17,13 @@ export const getSaleOrders = async (
   return response.data;
 };
 
+export const fetchSaleOrderById = async (id: number): Promise<SaleOrderDTO> => {
+  const response = await axiosInstance.get<SaleOrderDTO>(
+    `${endpoints.saleOrders}/${id}`
+  );
+  return response.data;
+};
+
 // Get next sale order number
 export const getNextSaleOrderNumber = async (): Promise<string> => {
   const response = await axiosInstance.get<string>(
@@ -24,7 +31,6 @@ export const getNextSaleOrderNumber = async (): Promise<string> => {
   );
   return response.data;
 };
-
 
 // Create new sale order
 export const createSaleOrder = async (

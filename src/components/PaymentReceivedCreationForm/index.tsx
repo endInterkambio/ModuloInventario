@@ -5,21 +5,30 @@ import { PaymentFormFields } from "./sections/PaymentFormFields";
 import { useCreatePaymentReceived } from "@/hooks/usePaymentReceived";
 import toast from "react-hot-toast";
 import { getErrorMessage } from "@/utils/getErrorMessage";
+import BackButton from "@components/shared/BackButton";
+import { useSaleOrder } from "@/hooks/useSaleOrders";
 
 export const PaymentReceivedCreationForm = () => {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get("orderId");
   const saleOrderNumber = searchParams.get("saleOrderNumber");
 
-  const { form, updateField, getPayloadForBackend } = usePaymentForm({
-    saleOrderId: orderId ? Number(orderId) : undefined,
-    saleOrderNumber: saleOrderNumber ?? "",
-  });
+  const { data: saleOrder } = useSaleOrder(
+    orderId ? Number(orderId) : undefined
+  );
+
+  const { form, updateField, getPayloadForBackend, resetForm } = usePaymentForm(
+    {
+      saleOrderId: orderId ? Number(orderId) : undefined,
+      saleOrderNumber: saleOrderNumber ?? "",
+    }
+  );
 
   // Hook mutation
   const createPayment = useCreatePaymentReceived({
     onSuccess: (data) => {
       toast.success(`Pago creado correctamente: ${data.referenceNumber}`);
+      resetForm();
     },
     onError: (error) => {
       toast.error(getErrorMessage(error));
@@ -40,17 +49,24 @@ export const PaymentReceivedCreationForm = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-lg mx-auto p-6 bg-white rounded-xl shadow-md"
-    >
-      <h1 className="text-xl font-semibold mb-6">Registrar Pago</h1>
+    <>
+      <BackButton />
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-lg mx-auto p-6 bg-white rounded-xl shadow-md"
+      >
+        <h1 className="text-xl font-semibold mb-6">Registrar Pago</h1>
 
-      {/* Campos del formulario */}
-      <PaymentFormFields form={form} updateField={updateField} />
+        {/* Campos del formulario */}
+        <PaymentFormFields
+          form={form}
+          updateField={updateField}
+          saleOrder={saleOrder}
+        />
 
-      {/* Acciones */}
-      <PaymentFormActions onSubmit={handleSubmit} onCancel={handleCancel} />
-    </form>
+        {/* Acciones */}
+        <PaymentFormActions onSubmit={handleSubmit} onCancel={handleCancel} />
+      </form>
+    </>
   );
 };

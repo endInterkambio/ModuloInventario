@@ -1,5 +1,7 @@
+import { SaleOrderDTO } from "@/types/SaleOrderDTO";
 import { PAYMENT_METHODS, PaymentMethod } from "../constants/paymentMethods";
 import { PaymentFormState } from "../hooks/usePaymentForm";
+import { InfoTooltip } from "@components/CustomerForm/ui/InfoToolTip";
 
 interface PaymentFormFieldsProps {
   form: PaymentFormState;
@@ -7,10 +9,12 @@ interface PaymentFormFieldsProps {
     key: K,
     value: PaymentFormState[K]
   ) => void;
+  saleOrder?: SaleOrderDTO;
 }
 
 export function PaymentFormFields({
   form,
+  saleOrder,
   updateField,
 }: PaymentFormFieldsProps) {
   const handlePaymentMethodChange = (
@@ -19,6 +23,9 @@ export function PaymentFormFields({
     updateField("paymentMethod", e.target.value as PaymentMethod);
   };
 
+  const remainingAmount =
+    (saleOrder?.totalAmount ?? 0) - (saleOrder?.totalPaid ?? 0);
+
   return (
     <div className="grid gap-4">
       {/* Sale order number (solo referencia) */}
@@ -26,7 +33,7 @@ export function PaymentFormFields({
         <label className="block text-sm font-medium mb-1">N° de Orden</label>
         <input
           type="text"
-          value={form.saleOrderNumber}
+          value={saleOrder?.orderNumber}
           disabled
           className="w-full rounded-lg border border-gray-300 p-2 bg-gray-100 text-gray-600"
         />
@@ -60,8 +67,14 @@ export function PaymentFormFields({
       </div>
 
       {/* Monto */}
-      <div>
-        <label className="block text-sm font-medium mb-1">Monto</label>
+      <div className="relative group">
+        <div className="flex gap-1">
+          <label className="text-sm font-medium mb-1 flex items-center">
+            Monto
+          </label>
+          <InfoTooltip text={`Monto restante a pagar: ${remainingAmount}`} />
+        </div>
+
         <input
           type="number"
           value={form.amount}

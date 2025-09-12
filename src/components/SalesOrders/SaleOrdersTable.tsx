@@ -102,7 +102,7 @@ export function SaleOrdersTable({ saleOrders }: Props) {
                 Orden
               </button>
               <NavButton
-                to={`/dashboard/paymentReceived/newPaymentReceived?orderId=${order.id}&saleOrderNumber=${order.orderNumber}`}
+                to={`/dashboard/paymentReceived/newPaymentReceived?orderId=${order.id}`}
                 label={"Pago"}
                 className="px-4 py-1 bg-[--color-secondary]"
               />

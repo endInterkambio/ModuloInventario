@@ -47,5 +47,16 @@ export function usePaymentForm(initial?: Partial<PaymentFormState>) {
     };
   };
 
-  return { form, updateField, getPayloadForBackend };
+  const resetForm = () => {
+    setForm((prev) => ({
+      saleOrderId: prev.saleOrderId,
+      saleOrderNumber: prev.saleOrderNumber,
+      paymentDate: new Date().toISOString().slice(0, 10),
+      paymentMethod: "CASH",
+      amount: 0,
+      referenceNumber: "",
+    }));
+  };
+
+  return { form, updateField, getPayloadForBackend, resetForm };
 }

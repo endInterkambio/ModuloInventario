@@ -2,7 +2,8 @@ import {
   createSaleOrder,
   deleteSaleOrder,
   getSaleOrders,
-  getNextSaleOrderNumber
+  getNextSaleOrderNumber,
+  fetchSaleOrderById,
 } from "@/api/modules/saleOrders";
 import { UseMutationOptions, useQuery } from "@tanstack/react-query";
 import { Page } from "@/types/Pagination";
@@ -12,8 +13,16 @@ import { useEntityMutation } from "./useEntityMutation";
 // Hook for obtaining orders with pagination
 export const useSaleOrders = (page = 0, size = 12) => {
   return useQuery<Page<SaleOrderDTO>>({
-    queryKey: ["saleOrders", page, size],
+    queryKey: ["sale-orders", page, size],
     queryFn: () => getSaleOrders(page, size),
+  });
+};
+
+export const useSaleOrder = (id?: number) => {
+  return useQuery<SaleOrderDTO>({
+    queryKey: ["sale-orders", id],
+    queryFn: () => fetchSaleOrderById(id!),
+    enabled: !!id, // solo hace fetch si hay ID
   });
 };
 

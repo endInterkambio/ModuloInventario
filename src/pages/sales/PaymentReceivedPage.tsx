@@ -59,9 +59,9 @@ export function PaymentReceivedPage() {
             <InfoRow
               label=""
               value={
-                p.customer.customerType == "PERSON"
-                  ? p.customer.name
-                  : p.customer.companyName || "-"
+                p.customer?.customerType == "PERSON"
+                  ? p.customer?.name
+                  : p.customer?.companyName || "-"
               }
             />
           ),
