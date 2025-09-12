@@ -2,13 +2,7 @@ import { PAYMENT_METHODS, PaymentMethod } from "../constants/paymentMethods";
 import { PaymentFormState } from "../hooks/usePaymentForm";
 
 interface PaymentFormFieldsProps {
-  form: {
-    saleOrderId: number;
-    paymentDate: string;
-    paymentMethod: string;
-    amount: number;
-    referenceNumber: string;
-  };
+  form: PaymentFormState;
   updateField: <K extends keyof PaymentFormState>(
     key: K,
     value: PaymentFormState[K]
@@ -27,14 +21,14 @@ export function PaymentFormFields({
 
   return (
     <div className="grid gap-4">
-      {/* Sale Order ID */}
+      {/* Sale order number (solo referencia) */}
       <div>
-        <label className="block text-sm font-medium mb-1">ID Orden</label>
+        <label className="block text-sm font-medium mb-1">N° de Orden</label>
         <input
-          type="number"
-          value={form.saleOrderId}
-          onChange={(e) => updateField("saleOrderId", Number(e.target.value))}
-          className="w-full rounded-lg border border-gray-300 p-2"
+          type="text"
+          value={form.saleOrderNumber}
+          disabled
+          className="w-full rounded-lg border border-gray-300 p-2 bg-gray-100 text-gray-600"
         />
       </div>
 
@@ -71,6 +65,7 @@ export function PaymentFormFields({
         <input
           type="number"
           value={form.amount}
+          min={1}
           onChange={(e) => updateField("amount", Number(e.target.value))}
           className="w-full rounded-lg border border-gray-300 p-2"
         />

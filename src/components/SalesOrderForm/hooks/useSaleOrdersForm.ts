@@ -75,9 +75,10 @@ export const useSalesOrderForm = () => {
         ...prev.items,
         {
           id: undefined,
+          bookTitle: "",
           bookStockLocation: {
             id: 0,
-            name: "",
+            bookSku: "",
             stock: 0,
             warehouse: undefined,
             bookcase: undefined,
