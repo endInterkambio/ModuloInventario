@@ -45,11 +45,13 @@ export const useSalesOrderForm = () => {
     setSalesOrder((prev) => ({ ...prev, [field]: value }));
   };
 
+  // TODO: manejar descuento como porcentaje si se decide soportarlo
+
   const calculateArticleAmount = (item: SaleOrderItemDTO) => {
     const quantity = item.quantity ?? 0;
     const price = item.customPrice ?? 0;
     const subtotal = quantity * price;
-    const discountAmount = item.discount ? (subtotal * item.discount) / 100 : 0;
+    const discountAmount = item.discount ?? 0; // ahora es monto fijo
     return subtotal - discountAmount;
   };
 
@@ -85,7 +87,7 @@ export const useSalesOrderForm = () => {
             bookcaseFloor: undefined,
           },
           quantity: 1,
-          discount: 0,
+          discount: 0, // monto fijo
           customPrice: 0,
         },
       ],

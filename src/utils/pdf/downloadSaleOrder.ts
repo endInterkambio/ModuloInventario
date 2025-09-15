@@ -118,7 +118,16 @@ export async function downloadSaleOrder(order: SaleOrderDTO) {
       textColor: 255,
       fontStyle: "bold",
     },
-    head: [["#", "Artículo & Descripción", "Cant.", "Precio", "Subtotal"]],
+    head: [
+      [
+        "#",
+        "Artículo & Descripción",
+        "Cant.",
+        "Precio",
+        "Descuento",
+        "Subtotal",
+      ],
+    ],
     body: [
       ...order.items.map((item, i) => [
         String(i + 1), // número
@@ -138,10 +147,18 @@ export async function downloadSaleOrder(order: SaleOrderDTO) {
           styles: { halign: "left" as const },
         }, // precio
         {
+          content: item.discount ? `(-S/.${item.discount.toFixed(2)})` : "-",
+          styles: { halign: "left" as const },
+        }, // descuento
+        {
+          // Subtotal = (customPrice * quantity) - discount
           content:
             item.customPrice && item.quantity
-              ? `S/.${(item.customPrice * item.quantity).toFixed(2)}`
-              : "S/.",
+              ? `S/.${(
+                  item.customPrice * item.quantity -
+                  (item.discount ?? 0)
+                ).toFixed(2)}`
+              : "S/.0.00",
           styles: { halign: "left" as const },
         }, // subtotal
       ]),
@@ -166,10 +183,24 @@ export async function downloadSaleOrder(order: SaleOrderDTO) {
         }, // total cantidad
         { content: "", styles: { lineWidth: 0 } }, // precio unitario total no se muestra
         {
+          // Total descuento
+          content: `-S/.${order.items
+            .reduce((sum, item) => sum + (item.discount ?? 0), 0)
+            .toFixed(2)}`,
+          styles: {
+            halign: "left" as const,
+            fontStyle: "bold",
+            textColor: "#ff0000",
+          },
+        }, // total descuento
+        {
+          // Total subtotal = suma de (customPrice * quantity - discount)
           content: `S/.${order.items
             .reduce(
               (sum, item) =>
-                sum + (item.customPrice ?? 0) * (item.quantity ?? 0),
+                sum +
+                ((item.customPrice ?? 0) * (item.quantity ?? 0) -
+                  (item.discount ?? 0)),
               0
             )
             .toFixed(2)}`,

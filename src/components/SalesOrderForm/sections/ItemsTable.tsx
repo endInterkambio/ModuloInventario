@@ -21,9 +21,10 @@ export default function ItemTable({
   onRemoveArticle,
 }: ItemTableProps) {
   // calcular importe
+  // TODO: soportar modo porcentaje si en el futuro se requiere
   const calculateAmount = (item: SaleOrderItemDTO) => {
     const subtotal = (item.quantity ?? 0) * (item.customPrice ?? 0);
-    const discountAmount = item.discount ? (subtotal * item.discount) / 100 : 0;
+    const discountAmount = item.discount ?? 0;
     return subtotal - discountAmount;
   };
 
@@ -46,7 +47,7 @@ export default function ItemTable({
           <div className="col-span-4">UBICACIÓN / ARTÍCULO</div>
           <div className="col-span-2">CANTIDAD</div>
           <div className="col-span-2">PRECIO UNITARIO</div>
-          <div className="col-span-1">DESC %</div>
+          <div className="col-span-1">MONTO DESC</div>
           <div className="col-span-2">IMPORTE TOTAL</div>
         </div>
 
@@ -301,11 +302,18 @@ function ItemRow({
         <input
           type="number"
           value={article.discount ?? 0}
-          onChange={(e) =>
-            onItemUpdate(index, {
-              discount: parseFloat(e.target.value) || 0,
-            })
-          }
+          onChange={(e) => {
+            const rawValue = parseFloat(e.target.value) || 0;
+            const subtotal =
+              (article.quantity ?? 0) * (article.customPrice ?? 0);
+
+            if (rawValue > subtotal) {
+              toast.error("⚠️ El descuento no puede ser mayor que el subtotal");
+              onItemUpdate(index, { discount: subtotal });
+            } else {
+              onItemUpdate(index, { discount: rawValue });
+            }
+          }}
           className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
           min="0"
           step="0.01"

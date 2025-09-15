@@ -113,12 +113,6 @@ export const SalesOrderForm = () => {
             onChange={(v) => updateSalesOrder("orderNumber", v)}
           />
         </FormField>
-        {/* <FormField label="N° de referencia">
-          <Input
-            value={salesOrder.referenceNumber}
-            onChange={(v) => updateSalesOrder("referenceNumber", v)}
-          />
-        </FormField> */}
         <FormField label="Fecha de orden de venta">
           <Input
             value={salesOrder.orderDate}
