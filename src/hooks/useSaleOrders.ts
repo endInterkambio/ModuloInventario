@@ -11,10 +11,15 @@ import { SaleOrderDTO } from "@/types/SaleOrderDTO";
 import { useEntityMutation } from "./useEntityMutation";
 
 // Hook for obtaining orders with pagination
-export const useSaleOrders = (page = 0, size = 12) => {
+export const useSaleOrders = (
+  page = 0,
+  size = 12,
+  sortBy: string = "createdAt",
+  sortDirection: "asc" | "desc" = "desc"
+) => {
   return useQuery<Page<SaleOrderDTO>>({
-    queryKey: ["sale-orders", page, size],
-    queryFn: () => getSaleOrders(page, size),
+    queryKey: ["sale-orders", page, size, sortBy, sortDirection],
+    queryFn: () => getSaleOrders(page, size, sortBy, sortDirection),
   });
 };
 

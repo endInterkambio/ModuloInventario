@@ -6,12 +6,18 @@ import { endpoints } from "../endpoints";
 // Fetching all sale orders paginated
 export const getSaleOrders = async (
   page: number = 0,
-  size: number = 12
+  size: number = 12,
+  sortBy: string = "createdAt",
+  sortDirection: "asc" | "desc" = "desc"
 ): Promise<Page<SaleOrderDTO>> => {
   const response = await axiosInstance.get<Page<SaleOrderDTO>>(
     endpoints.saleOrders,
     {
-      params: { page, size },
+      params: { 
+        page, 
+        size, 
+        sort: `${sortBy},${sortDirection}`
+      },
     }
   );
   return response.data;
