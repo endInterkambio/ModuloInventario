@@ -21,7 +21,7 @@ export function SaleOrdersTable({ saleOrders }: Props) {
   const handleMenuToggle = (orderId: number) => {
     setOpenMenuId(openMenuId === orderId ? null : orderId);
   };
-  
+
   return (
     <table className="hidden lg:table min-w-full text-sm">
       <thead>
@@ -35,7 +35,7 @@ export function SaleOrdersTable({ saleOrders }: Props) {
           <th className="py-2 px-4">Total</th>
           <th className="py-2 px-4">Pagado</th>
           <th className="py-2 px-4">Canal</th>
-          <th className="py-2 px-4">Acciones</th>
+          <th className="py-2 px-4"></th>
         </tr>
       </thead>
       <tbody className="divide-y">
@@ -95,45 +95,66 @@ export function SaleOrdersTable({ saleOrders }: Props) {
             <td className="py-2 px-4">{order.totalAmount ?? "-"}</td>
             <td className="py-2 px-4">{order.totalPaid ?? "-"}</td>
             <td className="py-2 px-4">{order.saleChannel ?? "-"}</td>
-            <td className="py-2 px-4">
-              {/* Botón Guía: solo si no está cancelada */}
-              {order.shipment != null && (
-                <button
-                  onClick={() => downloadPDF(order)}
-                  className="px-4 py-1 bg-blue-500 text-white font-medium rounded-md text-sm mr-2 w-20"
-                >
-                  Guía
-                </button>
-              )}
-
-              {/* Botón Orden */}
-
+            <td className="py-2 px-4 relative">
               <button
-                onClick={() => downloadSaleOrder(order)}
-                className="px-4 py-1 bg-primary text-white font-medium rounded-md text-sm mr-2 w-20"
+                onClick={() => handleMenuToggle(order.id)}
+                className="px-4 py-1 bg-secondary font-medium rounded-md text-sm w-20"
               >
-                Orden
+                Acciones
               </button>
-
-              {/* Botón Pago: solo si no está pagada */}
-              {order.paymentStatus !== "PAID" && (
-                <NavButton
-                  to={`/dashboard/paymentReceived/newPaymentReceived?orderId=${order.id}`}
-                  label="Pago"
-                  className="px-4 py-1 bg-secondary w-20 mr-2"
-                />
-              )}
-              {/* Botón Envío: solo si no está cancelada, en proceso o sin envío asociado */}
-              {Boolean(
-                order.amountShipment &&
-                  order.amountShipment > 0 &&
-                  order.status == "PENDING"
-              ) && (
-                <NavButton
-                  to={`/dashboard/shipments/newShipment?orderId=${order.id}&orderNumber=${order.orderNumber}`}
-                  label="Envío"
-                  className="px-4 py-1 bg-red-400 w-20 mr-2"
-                />
+              {openMenuId === order.id && (
+                <div className="absolute z-10 bg-slate-300 border rounded shadow-lg mt-2 right-0 min-w-[120px]">
+                  <ul className="flex flex-col">
+                    {order.shipment != null && (
+                      <li>
+                        <button
+                          onClick={() => {
+                            downloadPDF(order);
+                            setOpenMenuId(null);
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                        >
+                          Descargar Guía
+                        </button>
+                      </li>
+                    )}
+                    <li>
+                      <button
+                        onClick={() => {
+                          downloadSaleOrder(order);
+                          setOpenMenuId(null);
+                        }}
+                        className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                      >
+                        Descargar Orden
+                      </button>
+                    </li>
+                    {order.paymentStatus !== "PAID" && (
+                      <li>
+                        <NavButton
+                          to={`/dashboard/paymentReceived/newPaymentReceived?orderId=${order.id}`}
+                          label="Realizar Pago"
+                          className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                          onClick={() => setOpenMenuId(null)}
+                        />
+                      </li>
+                    )}
+                    {Boolean(
+                      order.amountShipment &&
+                        order.amountShipment > 0 &&
+                        order.status == "PENDING"
+                    ) && (
+                      <li>
+                        <NavButton
+                          to={`/dashboard/shipments/newShipment?orderId=${order.id}&orderNumber=${order.orderNumber}`}
+                          label="Asignar Envío"
+                          className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                          onClick={() => setOpenMenuId(null)}
+                        />
+                      </li>
+                    )}
+                  </ul>
+                </div>
               )}
             </td>
           </tr>
