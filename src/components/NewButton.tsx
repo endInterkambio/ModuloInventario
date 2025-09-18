@@ -6,6 +6,7 @@ interface NavButtonProps {
   label: string; // texto a mostrar
   icon?: LucideIcon; // ícono opcional (de lucide-react)
   className?: string; // estilos adicionales opcionales
+  onClick?: () => void; // función opcional al hacer clic
 }
 
 const NavButton = ({ to, label, icon: Icon, className = "" }: NavButtonProps) => {

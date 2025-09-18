@@ -9,12 +9,19 @@ import { SaleOrderDTO } from "@/types/SaleOrderDTO";
 import { downloadSaleOrder } from "@/utils/pdf/downloadSaleOrder";
 import { downloadPDF } from "@/utils/downloadPDFDeprecated";
 import NavButton from "@components/NewButton";
+import { useState } from "react";
 
 interface Props {
   saleOrders: SaleOrderDTO[];
 }
 
 export function SaleOrdersTable({ saleOrders }: Props) {
+  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+
+  const handleMenuToggle = (orderId: number) => {
+    setOpenMenuId(openMenuId === orderId ? null : orderId);
+  };
+  
   return (
     <table className="hidden lg:table min-w-full text-sm">
       <thead>
@@ -103,7 +110,7 @@ export function SaleOrdersTable({ saleOrders }: Props) {
 
               <button
                 onClick={() => downloadSaleOrder(order)}
-                className="px-4 py-1 bg-[--color-primary] text-white font-medium rounded-md text-sm mr-2 w-20"
+                className="px-4 py-1 bg-primary text-white font-medium rounded-md text-sm mr-2 w-20"
               >
                 Orden
               </button>
@@ -113,7 +120,19 @@ export function SaleOrdersTable({ saleOrders }: Props) {
                 <NavButton
                   to={`/dashboard/paymentReceived/newPaymentReceived?orderId=${order.id}`}
                   label="Pago"
-                  className="px-4 py-1 bg-[--color-secondary] w-20"
+                  className="px-4 py-1 bg-secondary w-20 mr-2"
+                />
+              )}
+              {/* Botón Envío: solo si no está cancelada, en proceso o sin envío asociado */}
+              {Boolean(
+                order.amountShipment &&
+                  order.amountShipment > 0 &&
+                  order.status == "PENDING"
+              ) && (
+                <NavButton
+                  to={`/dashboard/shipments/newShipment?orderId=${order.id}&orderNumber=${order.orderNumber}`}
+                  label="Envío"
+                  className="px-4 py-1 bg-red-400 w-20 mr-2"
                 />
               )}
             </td>

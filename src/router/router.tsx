@@ -14,6 +14,8 @@ import CustomerCreationForm from "@components/CustomerForm/CustomerCreationForm"
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { SalesOrderForm } from "@components/SalesOrderForm";
 import { PaymentReceivedCreationForm } from "@components/PaymentReceivedCreationForm";
+import { ShipmentPage } from "@/pages/sales/Shipments";
+import { ShipmentCreationForm } from "@components/ShipmentForm";
 
 export const router = createBrowserRouter(
   [
@@ -65,6 +67,16 @@ export const router = createBrowserRouter(
                   element: <CustomerPage />,
                   children: [
                     { path: "newCustomer", element: <CustomerCreationForm /> },
+                  ],
+                },
+                {
+                  path: "shipments",
+                  element: <ShipmentPage />,
+                  children: [
+                    {
+                      path: "newShipment",
+                      element: <ShipmentCreationForm />,
+                    },
                   ],
                 },
               ],

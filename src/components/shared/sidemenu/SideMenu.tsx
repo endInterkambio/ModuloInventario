@@ -72,6 +72,12 @@ const menuItems: MenuItem[] = [
         href: "/dashboard/paymentReceived",
         Icon: IoPawOutline,
       },
+      {
+        title: "Envíos",
+        subTitle: "Seguimiento de envíos",
+        href: "/dashboard/shipments",
+        Icon: IoPawOutline,
+      },
     ],
   },
 ];

@@ -11,7 +11,7 @@ import { Page } from "@/types/Pagination";
 export const useShipments = (page = 0, size = 12, searchTerm: string = "") => {
   return useQuery<Page<ShipmentDTO>>({
     queryKey: ["shipments", page, size, searchTerm],
-    queryFn: () => fetchShipments(page, size, searchTerm),
+    queryFn: () => fetchShipments(page, size, searchTerm || undefined),
   });
 };
 
