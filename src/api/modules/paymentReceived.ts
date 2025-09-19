@@ -3,15 +3,22 @@ import axiosInstance from "../axiosInstance";
 import { endpoints } from "../endpoints";
 import { Page } from "@/types/Pagination";
 
-export const fetchPaymentReceived = async (
+export const getPaymentReceived = async (
   page: number = 0,
   size: number = 12,
-  searchTerm: string = ""
+  sortBy: string = "paymentDate",
+  sortDirection: "asc" | "desc" = "desc",
+  filters?: Record<string, string>
 ): Promise<Page<PaymentReceivedDTO>> => {
   const response = await axiosInstance.get<Page<PaymentReceivedDTO>>(
-    endpoints.paymentReceived + "/search",
+    endpoints.paymentReceived,
     {
-      params: { page, size, name: searchTerm },
+      params: {
+        page,
+        size,
+        sort: `${sortBy},${sortDirection}`,
+        ...filters,
+      },
     }
   );
   return response.data;

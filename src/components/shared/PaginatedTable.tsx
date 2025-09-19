@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { SearchBar } from "@components/SearchBar/SearchBar";
 import { DropdownMenu } from "@components/HeaderNavigation/DropdownMenu";
 import NewButton from "@components/NewButton";
@@ -14,52 +13,51 @@ interface PaginatedTableProps<T> {
   title?: string;
   dropdownOptions?: string[];
   dropdownLabel?: string;
+  dropdownValue?: string;
+  onDropdownSelect?: (value: string) => void;
   showSearch?: boolean;
   searchPlaceholder?: string;
+  searchTerm?: string;
+  setSearchTerm?: (term: string) => void;
   newButtonLabel?: string;
   newButtonTo?: string;
   newButtonClassName?: string;
   columns: Column<T>[];
-  usePaginatedHook: (
-    page: number,
-    size: number
-  ) => {
-    data?: { content: T[]; totalPages: number; totalElements: number };
-    isLoading: boolean;
-    isError: boolean;
-  };
-  itemsPerPageDefault?: number;
+  items: T[];
+  isLoading: boolean;
+  isError: boolean;
+  currentPage: number;
+  itemsPerPage: number;
+  totalPages: number;
+  totalElements: number;
+  onPageChange: (page: number) => void;
+  onItemsPerPageChange: (size: number) => void;
 }
 
 export function PaginatedTable<T>({
   title,
   dropdownOptions,
   dropdownLabel,
+  dropdownValue,
+  onDropdownSelect,
   showSearch = true,
   searchPlaceholder = "Buscar...",
+  searchTerm,
+  setSearchTerm,
   newButtonLabel,
   newButtonTo,
   newButtonClassName,
   columns,
-  usePaginatedHook,
-  itemsPerPageDefault = 12,
+  items,
+  isLoading,
+  isError,
+  currentPage,
+  itemsPerPage,
+  totalPages,
+  totalElements,
+  onPageChange,
+  onItemsPerPageChange,
 }: PaginatedTableProps<T>) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(itemsPerPageDefault);
-
-  const {
-    data: pageData,
-    isLoading,
-    isError,
-  } = usePaginatedHook(currentPage - 1, itemsPerPage);
-
-  const items = pageData?.content || [];
-
-  // Resetear página al cambiar itemsPerPage
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [itemsPerPage]);
-
   return (
     <div className="bg-white border rounded-lg shadow-sm p-4">
       {(title ||
@@ -69,12 +67,19 @@ export function PaginatedTable<T>({
         <div className="flex justify-between items-start px-4 pt-4 gap-2">
           {dropdownOptions && (
             <DropdownMenu
-              label={dropdownLabel || ""}
+              label={dropdownValue || dropdownLabel || ""}
               options={dropdownOptions}
+              onSelect={onDropdownSelect}
             />
           )}
 
-          {showSearch && <SearchBar placeholder={searchPlaceholder} />}
+          {showSearch && setSearchTerm && (
+            <SearchBar
+              placeholder={searchPlaceholder}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+            />
+          )}
 
           {newButtonTo && newButtonLabel && (
             <NewButton
@@ -121,16 +126,14 @@ export function PaginatedTable<T>({
         )}
       </div>
 
-      {pageData && (
-        <PaginationBar
-          currentPage={currentPage}
-          totalPages={pageData.totalPages}
-          totalElements={pageData.totalElements}
-          itemsPerPage={itemsPerPage}
-          onPageChange={setCurrentPage}
-          onItemsPerPageChange={setItemsPerPage}
-        />
-      )}
+      <PaginationBar
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalElements={totalElements}
+        itemsPerPage={itemsPerPage}
+        onPageChange={onPageChange}
+        onItemsPerPageChange={onItemsPerPageChange}
+      />
     </div>
   );
 }

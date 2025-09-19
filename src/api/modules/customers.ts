@@ -3,17 +3,21 @@ import { CustomerDTO } from "@/types/CustomerDTO";
 import axiosInstance from "../axiosInstance";
 import { endpoints } from "../endpoints";
 
-export const fetchCustomers = async (
+export const getCustomers = async (
   page: number = 0,
   size: number = 12,
-  searchTerm: string = ""
+  sortBy: string = "name",
+  sortDirection: "asc" | "desc" = "asc",
+  filters?: Record<string, string>
 ): Promise<Page<CustomerDTO>> => {
-  const response = await axiosInstance.get<Page<CustomerDTO>>(
-    endpoints.customers + "/search",
-    {
-      params: { page, size, name: searchTerm },
-    }
-  );
+  const response = await axiosInstance.get<Page<CustomerDTO>>(endpoints.customers, {
+    params: {
+      page,
+      size,
+      sort: `${sortBy},${sortDirection}`,
+      ...filters,
+    },
+  });
   return response.data;
 };
 
