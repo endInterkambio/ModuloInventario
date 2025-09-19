@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 interface DropdownMenuProps {
@@ -14,6 +14,7 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(label);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const handleSelect = (option: string) => {
     setSelected(option);
@@ -21,8 +22,25 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
     onSelect?.(option);
   };
 
+  // Cerrar menú al hacer clic fuera
+    useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+          setIsOpen(false);
+        }
+      };
+  
+      if (isOpen) {
+        document.addEventListener("mousedown", handleClickOutside);
+      }
+  
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [isOpen]); 
+
   return (
-    <div className="relative">
+    <div className="relative" ref={menuRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 text-gray-700 hover:text-gray-900 font-medium"
@@ -38,7 +56,7 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
               <button
                 key={item}
                 onClick={() => handleSelect(item)}
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-slate-300"
               >
                 {item}
               </button>
