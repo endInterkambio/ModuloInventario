@@ -66,9 +66,8 @@ export function SaleOrdersPage() {
           </>
         )}
       </div>
-
       {saleOrdersPage && (
-        <PaginationBar
+        <PaginationBar  
           currentPage={currentPage}
           totalPages={saleOrdersPage.totalPages}
           totalElements={saleOrdersPage.totalElements}

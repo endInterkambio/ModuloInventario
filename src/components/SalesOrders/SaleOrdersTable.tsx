@@ -9,7 +9,7 @@ import { SaleOrderDTO } from "@/types/SaleOrderDTO";
 import { downloadSaleOrder } from "@/utils/pdf/downloadSaleOrder";
 import { downloadPDF } from "@/utils/downloadPDFDeprecated";
 import NavButton from "@components/NewButton";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface Props {
   saleOrders: SaleOrderDTO[];
@@ -17,10 +17,28 @@ interface Props {
 
 export function SaleOrdersTable({ saleOrders }: Props) {
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const handleMenuToggle = (orderId: number) => {
     setOpenMenuId(openMenuId === orderId ? null : orderId);
   };
+
+  // Cerrar menú al hacer clic fuera
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setOpenMenuId(null);
+      }
+    };
+
+    if (openMenuId) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [openMenuId]);
 
   return (
     <table className="hidden lg:table min-w-full text-sm">
@@ -103,7 +121,10 @@ export function SaleOrdersTable({ saleOrders }: Props) {
                 Acciones
               </button>
               {openMenuId === order.id && (
-                <div className="absolute z-10 bg-slate-300 border rounded shadow-lg mt-2 right-0 min-w-[120px]">
+                <div
+                  ref={menuRef}
+                  className="absolute z-50 bg-white border rounded shadow-lg mt-2 left-0 min-w-[120px]"
+                >
                   <ul className="flex flex-col">
                     {order.shipment != null && (
                       <li>
@@ -112,7 +133,7 @@ export function SaleOrdersTable({ saleOrders }: Props) {
                             downloadPDF(order);
                             setOpenMenuId(null);
                           }}
-                          className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                          className="w-full text-left px-4 py-2 hover:bg-primary hover:text-white"
                         >
                           Descargar Guía
                         </button>
@@ -124,7 +145,7 @@ export function SaleOrdersTable({ saleOrders }: Props) {
                           downloadSaleOrder(order);
                           setOpenMenuId(null);
                         }}
-                        className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                        className="w-full text-left px-4 py-2 hover:bg-secondary"
                       >
                         Descargar Orden
                       </button>
@@ -134,7 +155,7 @@ export function SaleOrdersTable({ saleOrders }: Props) {
                         <NavButton
                           to={`/dashboard/paymentReceived/newPaymentReceived?orderId=${order.id}`}
                           label="Realizar Pago"
-                          className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                          className="w-full text-left px-4 py-2 hover:bg-blue-500 hover:text-white"
                           onClick={() => setOpenMenuId(null)}
                         />
                       </li>
@@ -148,7 +169,7 @@ export function SaleOrdersTable({ saleOrders }: Props) {
                         <NavButton
                           to={`/dashboard/shipments/newShipment?orderId=${order.id}&orderNumber=${order.orderNumber}`}
                           label="Asignar Envío"
-                          className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                          className="w-full text-left px-4 py-2 hover:bg-red-500 hover:text-white"
                           onClick={() => setOpenMenuId(null)}
                         />
                       </li>
