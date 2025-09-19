@@ -3,24 +3,21 @@ import axiosInstance from "../axiosInstance";
 import { endpoints } from "../endpoints";
 import { Page } from "@/types/Pagination";
 
-export const fetchShipments = async (
+export const getShipments = async (
   page: number = 0,
   size: number = 12,
-  searchTerm: string = ""
+  sortBy: string = "shipmentDate",
+  sortDirection: "asc" | "desc" = "desc",
+  filters?: Record<string, string>
 ): Promise<Page<ShipmentDTO>> => {
-  const url =
-    searchTerm && searchTerm.trim().length > 0
-      ? endpoints.shipments + "/search"
-      : endpoints.shipments;
-
-  const response = await axiosInstance.get<Page<ShipmentDTO>>(url, {
+  const response = await axiosInstance.get<Page<ShipmentDTO>>(endpoints.shipments, {
     params: {
       page,
       size,
-      ...(searchTerm ? { name: searchTerm } : {}),
+      sort: `${sortBy},${sortDirection}`,
+      ...filters,
     },
   });
-
   return response.data;
 };
 
