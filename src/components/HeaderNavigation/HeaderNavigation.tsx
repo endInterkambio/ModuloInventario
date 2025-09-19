@@ -22,7 +22,7 @@ import NewButton from "@components/NewButton";
 import { DropdownMenu } from "./DropdownMenu";
 import { useIsAdmin } from "@/hooks/useAuthRole";
 
-const HeaderNavigation: React.FC = () => {
+const HeaderNavigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
   const { setMinStock } = useBookStore();

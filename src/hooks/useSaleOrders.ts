@@ -9,18 +9,31 @@ import { UseMutationOptions, useQuery } from "@tanstack/react-query";
 import { Page } from "@/types/Pagination";
 import { SaleOrderDTO } from "@/types/SaleOrderDTO";
 import { useEntityMutation } from "./useEntityMutation";
+import { useSaleOrdersStore } from "@/stores/useSaleOrderStore";
 
 // Hook for obtaining orders with pagination
 export const useSaleOrders = (
   page = 0,
   size = 12,
   sortBy: string = "createdAt",
-  sortDirection: "asc" | "desc" = "desc"
+  sortDirection: "asc" | "desc" = "desc",
+  filters?: Record<string, string>
 ) => {
   return useQuery<Page<SaleOrderDTO>>({
-    queryKey: ["sale-orders", page, size, sortBy, sortDirection],
-    queryFn: () => getSaleOrders(page, size, sortBy, sortDirection),
+    queryKey: ["sale-orders", page, size, sortBy, sortDirection, filters],
+    queryFn: () => getSaleOrders(page, size, sortBy, sortDirection, filters),
   });
+};
+
+export const useSaleOrdersWithStore = () => {
+  const { currentPage, itemsPerPage, filters } = useSaleOrdersStore();
+  return useSaleOrders(
+    currentPage - 1,
+    itemsPerPage,
+    "createdAt",
+    "desc",
+    filters
+  );
 };
 
 export const useSaleOrder = (id?: number) => {

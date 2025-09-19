@@ -8,15 +8,17 @@ export const getSaleOrders = async (
   page: number = 0,
   size: number = 12,
   sortBy: string = "createdAt",
-  sortDirection: "asc" | "desc" = "desc"
+  sortDirection: "asc" | "desc" = "desc",
+  filters?: Record<string, string>
 ): Promise<Page<SaleOrderDTO>> => {
   const response = await axiosInstance.get<Page<SaleOrderDTO>>(
     endpoints.saleOrders,
     {
-      params: { 
-        page, 
-        size, 
-        sort: `${sortBy},${sortDirection}`
+      params: {
+        page,
+        size,
+        sort: `${sortBy},${sortDirection}`,
+        ...filters,
       },
     }
   );
