@@ -3,7 +3,7 @@ import { SimpleIdNameDTO } from "./SimpleIdNameDTO";
 
 export interface ShipmentDTO {
   id?: number;
-  orderId: number;
+  order: SimpleIdNameDTO;
   shipmentDate?: string;
   trackingNumber?: string;
   address?: string;

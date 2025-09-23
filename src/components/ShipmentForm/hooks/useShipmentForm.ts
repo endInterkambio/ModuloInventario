@@ -1,15 +1,23 @@
 import { useState } from "react";
 import type { ShipmentFormState } from "../types/ShipmentFormState";
+import { SimpleIdNameDTO } from "@/types/SimpleIdNameDTO";
 
-export function useShipmentForm(initial?: Partial<ShipmentFormState>) {
+export function useShipmentForm(
+  initial: { order: SimpleIdNameDTO } & Partial<
+    Omit<ShipmentFormState, "order">
+  >
+) {
   const [form, setForm] = useState<ShipmentFormState>({
-    orderId: initial?.orderId ?? 0,
-    orderNumber: initial?.orderNumber ?? "",
-    shipmentDate: initial?.shipmentDate ?? new Date().toISOString().slice(0, 10),
-    trackingNumber: initial?.trackingNumber ?? "",
-    address: initial?.address ?? "",
-    shippingFee: initial?.shippingFee ?? 0,
-    shipmentMethod: initial?.shipmentMethod,
+    order: initial.order, // ✅ ya no puede ser undefined
+    shipmentDate: initial.shipmentDate ?? new Date().toISOString().slice(0, 10),
+    trackingNumber: initial.trackingNumber ?? "",
+    addressLine: initial.addressLine ?? "",
+    department: initial.department ?? "",
+    province: initial.province ?? "",
+    district: initial.district ?? "",
+    postalCode: initial.postalCode ?? "",
+    shippingFee: initial.shippingFee ?? 0,
+    shipmentMethod: initial.shipmentMethod,
   });
 
   const updateField = <K extends keyof ShipmentFormState>(
@@ -21,13 +29,29 @@ export function useShipmentForm(initial?: Partial<ShipmentFormState>) {
 
   const getPayloadForBackend = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { orderNumber: _ref, ...payload } = form;
+    const {
+      addressLine,
+      department,
+      province,
+      district,
+      postalCode,
+      ...payload
+    } = form;
+
+    const addressParts = [
+      addressLine,
+      department,
+      province,
+      district,
+      postalCode,
+    ].filter(Boolean);
 
     const now = new Date();
     const timePart = now.toTimeString().slice(0, 8); // HH:MM:SS
 
     return {
       ...payload,
+      address: addressParts.join(", "),
       shipmentDate: `${payload.shipmentDate}T${timePart}`,
     };
   };
@@ -37,9 +61,14 @@ export function useShipmentForm(initial?: Partial<ShipmentFormState>) {
       ...prev,
       shipmentDate: new Date().toISOString().slice(0, 10),
       trackingNumber: "",
-      address: "",
+      addressLine: "",
+      department: "",
+      province: "",
+      district: "",
+      postalCode: "",
       shippingFee: 0,
       shipmentMethod: undefined,
+      order: prev.order,
     }));
   };
 

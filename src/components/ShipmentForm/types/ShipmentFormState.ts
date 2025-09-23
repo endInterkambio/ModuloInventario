@@ -1,11 +1,14 @@
 import type { SimpleIdNameDTO } from "@/types/SimpleIdNameDTO";
 
 export interface ShipmentFormState {
-  orderId: number;
-  orderNumber: string; // solo referencia
+  order: SimpleIdNameDTO;
   shipmentDate: string; // YYYY-MM-DD
   trackingNumber: string;
-  address: string;
+  addressLine: string;
+  department: string;
+  province: string;
+  district: string;
+  postalCode: string;
   shippingFee: number;
   shipmentMethod?: SimpleIdNameDTO;
 }

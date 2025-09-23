@@ -12,12 +12,10 @@ export const ShipmentCreationForm = () => {
   const orderId = searchParams.get("orderId");
   const orderNumber = searchParams.get("orderNumber");
 
-  const { form, updateField, getPayloadForBackend, resetForm } = useShipmentForm(
-    {
-      orderId: orderId ? Number(orderId) : undefined,
-      orderNumber: orderNumber ?? "",
-    }
-  );
+  const { form, updateField, getPayloadForBackend, resetForm } =
+    useShipmentForm({
+      order: { id: Number(orderId!), name: orderNumber ?? "" },
+    });
 
   const createShipment = useCreateShipment({
     onSuccess: (data) => {
@@ -29,8 +27,16 @@ export const ShipmentCreationForm = () => {
     },
   });
 
-  const handleSubmit = (e?: React.FormEvent) => {
-    e?.preventDefault();
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formElement = e.currentTarget;
+    // Aquí validamos los required
+    if (!formElement.checkValidity()) {
+      formElement.reportValidity(); // muestra mensajes nativos
+      return; // detenemos el submit
+    }
+
     const payload = getPayloadForBackend();
     console.log("Payload enviado al backend:", payload);
     createShipment.mutate(payload);
@@ -53,7 +59,7 @@ export const ShipmentCreationForm = () => {
         <ShipmentFormFields form={form} updateField={updateField} />
 
         {/* Acciones */}
-        <ShipmentFormActions onSubmit={handleSubmit} onCancel={handleCancel} />
+        <ShipmentFormActions onCancel={handleCancel} resetForm={resetForm} />
       </form>
     </>
   );

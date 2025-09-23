@@ -9,7 +9,10 @@ interface Props {
   ) => void;
 }
 
-export function ShipmentFormFields({ form, updateField }: Props) {
+export function ShipmentFormFields({
+  form,
+  updateField,
+}: Props) {
   const { data: shipmentMethods, isLoading } = useShipmentMethods();
 
   return (
@@ -19,7 +22,7 @@ export function ShipmentFormFields({ form, updateField }: Props) {
         <label className="block text-sm font-medium mb-1">N° de Orden</label>
         <input
           type="text"
-          value={form.orderNumber}
+          value={form.order?.name || ""}
           disabled
           className="w-full rounded-lg border border-gray-300 p-2 bg-gray-100 text-gray-600"
         />
@@ -44,6 +47,7 @@ export function ShipmentFormFields({ form, updateField }: Props) {
         <input
           type="text"
           value={form.trackingNumber}
+          required
           onChange={(e) => updateField("trackingNumber", e.target.value)}
           className="w-full rounded-lg border border-gray-300 p-2"
         />
@@ -51,13 +55,81 @@ export function ShipmentFormFields({ form, updateField }: Props) {
 
       {/* Dirección */}
       <div>
-        <label className="block text-sm font-medium mb-1">Dirección</label>
-        <textarea
-          value={form.address}
-          onChange={(e) => updateField("address", e.target.value)}
-          className="w-full rounded-lg border border-gray-300 p-2"
-          rows={3}
-        />
+        <label className="block text-base font-medium mb-4 ">Dirección</label>
+
+        {/* Línea de dirección */}
+        <div>
+          <label className="block text-sm font-medium mt-2 mb-1">
+            Avenida / Calle + N° + Dpto / Interior / Mz
+          </label>
+          <input
+            type="text"
+            value={form.addressLine || ""}
+            required
+            placeholder="Avenida Siempre Viva 123 Dpto 456"
+            className="w-full rounded-lg border border-gray-300 p-2"
+            onChange={(e) => updateField("addressLine", e.target.value)}
+          ></input>
+        </div>
+
+        {/* Departamento */}
+        <div>
+          <label className="block text-sm font-medium mt-2 mb-1">
+            Departamento
+          </label>
+          <input
+            type="text"
+            value={form.department || ""}
+            required
+            placeholder="Lima"
+            className="w-full rounded-lg border border-gray-300 p-2"
+            onChange={(e) => updateField("department", e.target.value)}
+          ></input>
+        </div>
+
+        {/* Provincia */}
+        <div>
+          <label className="block text-sm font-medium mt-2 mb-1">
+            Provincia
+          </label>
+          <input
+            type="text"
+            value={form.province || ""}
+            required
+            placeholder="Lima metropolitana"
+            className="w-full rounded-lg border border-gray-300 p-2"
+            onChange={(e) => updateField("province", e.target.value)}
+          ></input>
+        </div>
+
+        {/* Distrito */}
+        <div>
+          <label className="block text-sm font-medium mt-2 mb-1">
+            Distrito
+          </label>
+          <input
+            type="text"
+            value={form.district || ""}
+            required
+            placeholder="ATE - Salamanca"
+            className="w-full rounded-lg border border-gray-300 p-2"
+            onChange={(e) => updateField("district", e.target.value)}
+          ></input>
+        </div>
+
+        {/* Código Postal */}
+        <div>
+          <label className="block text-sm font-medium mt-2 mb-1">
+            Código postal
+          </label>
+          <input
+            type="text"
+            value={form.postalCode || ""}
+            placeholder="15023"
+            className="w-full rounded-lg border border-gray-300 p-2"
+            onChange={(e) => updateField("postalCode", e.target.value)}
+          ></input>
+        </div>
       </div>
 
       {/* Costo */}
@@ -78,6 +150,7 @@ export function ShipmentFormFields({ form, updateField }: Props) {
         </label>
         <select
           value={form.shipmentMethod?.id ?? ""}
+          required
           onChange={(e) =>
             updateField(
               "shipmentMethod",
