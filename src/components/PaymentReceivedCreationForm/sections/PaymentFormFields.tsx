@@ -72,7 +72,7 @@ export function PaymentFormFields({
           <label className="text-sm font-medium mb-1 flex items-center">
             Monto
           </label>
-          <InfoTooltip text={`Monto restante a pagar: ${remainingAmount}`} />
+          <InfoTooltip text={`Monto restante a pagar: ${remainingAmount.toFixed(2)}`} />
         </div>
 
         <input

@@ -1,4 +1,8 @@
-import { useMutation, useQueryClient, UseMutationOptions } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQueryClient,
+  UseMutationOptions,
+} from "@tanstack/react-query";
 
 type MutationFn<TData, TVariables> = (vars: TVariables) => Promise<TData>;
 
@@ -8,16 +12,23 @@ export function useEntityMutation<TData = unknown, TVariables = void>({
   options,
 }: {
   mutationFn: MutationFn<TData, TVariables>;
-  queryKeyToInvalidate: readonly unknown[]; // por ejemplo ['warehouses']
+  queryKeyToInvalidate: readonly unknown[];
   options?: UseMutationOptions<TData, Error, TVariables>;
 }) {
   const queryClient = useQueryClient();
 
-  return useMutation<TData, Error, TVariables>({
+  return useMutation({
     mutationFn,
-    onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: queryKeyToInvalidate });
-      options?.onSuccess?.(data, variables, context);
+    onSuccess: (data, variables, context, mutateResult) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeyToInvalidate,
+        exact: false,
+        refetchType: "all",
+      });
+
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context, mutateResult);
+      }
     },
     ...options,
   });

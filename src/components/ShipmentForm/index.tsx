@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useShipmentForm } from "./hooks/useShipmentForm";
 import { ShipmentFormFields } from "./sections/ShipmentFormFields";
 import { ShipmentFormActions } from "./sections/ShipmentFormActions";
@@ -9,6 +9,7 @@ import BackButton from "@components/shared/BackButton";
 
 export const ShipmentCreationForm = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const orderId = searchParams.get("orderId");
   const orderNumber = searchParams.get("orderNumber");
 
@@ -19,8 +20,9 @@ export const ShipmentCreationForm = () => {
 
   const createShipment = useCreateShipment({
     onSuccess: (data) => {
-      toast.success(`Envío creado correctamente: ${data.trackingNumber}`);
+      toast.success(`Envío creado correctamente (ID: ${data.id})`);
       resetForm();
+      navigate("/dashboard/shipments");
     },
     onError: (error) => {
       toast.error(getErrorMessage(error));

@@ -65,7 +65,7 @@ export const PaymentReceivedCreationForm = () => {
         />
 
         {/* Acciones */}
-        <PaymentFormActions onSubmit={handleSubmit} onCancel={handleCancel} />
+        <PaymentFormActions onCancel={handleCancel} resetForm={resetForm} />
       </form>
     </>
   );

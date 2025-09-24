@@ -19,8 +19,10 @@ export const useSaleOrders = (
   sortDirection: "asc" | "desc" = "desc",
   filters?: Record<string, string>
 ) => {
+  const filtersKey = JSON.stringify(filters ?? {});
+
   return useQuery<Page<SaleOrderDTO>>({
-    queryKey: ["sale-orders", page, size, sortBy, sortDirection, filters],
+    queryKey: ["sale-orders", page, size, sortBy, sortDirection, filtersKey],
     queryFn: () => getSaleOrders(page, size, sortBy, sortDirection, filters),
   });
 };
@@ -47,7 +49,7 @@ export const useSaleOrder = (id?: number) => {
 // Hook for getting the next sale order number
 export const useNextSaleOrderNumber = () => {
   return useQuery<string>({
-    queryKey: ["nextSaleOrderNumber"],
+    queryKey: ["sale-orders", "next-number"],
     queryFn: getNextSaleOrderNumber,
   });
 };
@@ -58,7 +60,9 @@ export const useCreateSaleOrder = (
 ) => {
   return useEntityMutation<SaleOrderDTO, Omit<SaleOrderDTO, "id">>({
     mutationFn: createSaleOrder,
-    queryKeyToInvalidate: ["saleOrders"],
+    queryKeyToInvalidate: [
+      { queryKey: ["sale-orders"], exact: false, refetchType: "all" },
+    ],
     options,
   });
 };
@@ -69,7 +73,9 @@ export const useDeleteSaleOrder = (
 ) => {
   return useEntityMutation<void, number>({
     mutationFn: deleteSaleOrder,
-    queryKeyToInvalidate: ["saleOrders"],
+    queryKeyToInvalidate: [
+      { queryKey: ["sale-orders"], exact: false, refetchType: "all" },
+    ],
     options,
   });
 };

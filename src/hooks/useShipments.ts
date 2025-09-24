@@ -16,14 +16,19 @@ export const useShipments = (
   sortDirection: "asc" | "desc" = "desc",
   filters?: Record<string, string>
 ) => {
+  // Convert filters to a stable string for query key
+  const filtersKey = JSON.stringify(filters ?? {});
+
   return useQuery<Page<ShipmentDTO>>({
-    queryKey: ["shipments", page, size, sortBy, sortDirection, filters],
+    queryKey: ["shipments", page, size, sortBy, sortDirection, filtersKey],
     queryFn: () => getShipments(page, size, sortBy, sortDirection, filters),
   });
+  
 };
 
 export const useShipmentsWithStore = () => {
-  const { currentPage, itemsPerPage, sortBy, sortDirection, filters } = useShipmentStore();
+  const { currentPage, itemsPerPage, sortBy, sortDirection, filters } =
+    useShipmentStore();
   return useShipments(
     Math.max(0, currentPage - 1), // backend base 0
     itemsPerPage,
