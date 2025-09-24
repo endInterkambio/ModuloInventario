@@ -81,10 +81,6 @@ export default function ItemTable({
           <Plus className="h-4 w-4" />
           Añadir nueva fila
         </button>
-        <button className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800">
-          <Plus className="h-4 w-4" />
-          Agregar artículos a granel
-        </button>
       </div>
     </div>
   );

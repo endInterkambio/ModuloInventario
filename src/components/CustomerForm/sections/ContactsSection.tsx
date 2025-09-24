@@ -3,40 +3,60 @@ import { Input } from "../ui/Input";
 export default function ContactsSection() {
   return (
     <div className="space-y-6">
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
-        {/* Header de la tabla */}
-        <div className="bg-gray-50 px-6 py-3 border-b border-gray-200">
-          <div className="grid grid-cols-6 gap-4 text-sm font-medium text-gray-700">
-            <div>NOMBRE</div>
-            <div>APELLIDO</div>
-            <div>DIRECCIÓN DE CORREO ELECTRÓNICO</div>
-            <div>TELÉFONO LABORAL</div>
-            <div>MÓVIL</div>
-          </div>
+      {/* Datos de contacto */}
+      <div>
+          <h3 className="py-4 pb-4 text-lg font-medium text-gray-900">Datos de contacto</h3>
         </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Nombre
+          </label>
+          <Input value="" onChange={() => {}} placeholder="Ingrese nombre" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Apellido
+          </label>
+          <Input value="" onChange={() => {}} placeholder="Ingrese apellido" />
+        </div>
+      </div>
 
-        {/* Fila de entrada */}
-        <div className="px-6 py-4 border-b border-gray-200">
-          <div className="grid grid-cols-6 gap-4">
-            <Input value="" onChange={() => {}} placeholder="" />
-            <Input value="" onChange={() => {}} placeholder="" />
-            <Input type="email" value="" onChange={() => {}} placeholder="" />
-            <Input value="" onChange={() => {}} placeholder="" />
-            <div className="flex items-center space-x-2">
-              <Input
-                value=""
-                onChange={() => {}}
-                placeholder=""
-                className="flex-1"
-              />
-              <button
-                type="button"
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <span className="text-lg">⋯</span>
-              </button>
-            </div>
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Dirección de correo electrónico
+          </label>
+          <Input
+            type="email"
+            value=""
+            onChange={() => {}}
+            placeholder="correo@ejemplo.com"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Teléfono laboral
+          </label>
+          <Input value="" onChange={() => {}} placeholder="000-000-000" />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Móvil</label>
+        <div className="flex items-center space-x-2">
+          <Input
+            value=""
+            onChange={() => {}}
+            placeholder="Ingrese móvil"
+            className="flex-1"
+          />
+          <button
+            type="button"
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <span className="text-lg">⋯</span>
+          </button>
         </div>
       </div>
 

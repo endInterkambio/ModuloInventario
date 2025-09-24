@@ -50,7 +50,7 @@ export default function CustomerCreationForm() {
   ];
 
   return (
-    <div className="mx-auto p-6 bg-white">
+    <div className="mx-auto p-6 bg-white rounded-lg shadow-md max-w-7xl">
       <div className="pb-4">
         <BackButton />
       </div>
@@ -59,40 +59,50 @@ export default function CustomerCreationForm() {
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <GeneralInfoSection
-          formData={form}
-          updateFormData={updateField}
-          updateNestedFormData={updateNestedField}
-          formErrors={errors}
-        />
+        {/* Layout de dos columnas */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          {/* Primera columna - Información General */}
+          <div className="space-y-6">
+            <GeneralInfoSection
+              formData={form}
+              updateFormData={updateField}
+              updateNestedFormData={updateNestedField}
+              formErrors={errors}
+            />
+          </div>
 
-        <div className="border-b border-gray-200">
-          <nav className="flex space-x-0">
-            {tabs.map((tab) => (
-              <TabButton
-                key={tab.id}
-                label={tab.label}
-                active={activeTab === tab.id}
-                onClick={() => setActiveTab(tab.id)}
-              />
-            ))}
-          </nav>
+          {/* Segunda columna - Pestañas y contenido */}
+          <div className="space-y-6">
+            <div className="border-b border-gray-200">
+              <nav className="flex space-x-0">
+                {tabs.map((tab) => (
+                  <TabButton
+                    key={tab.id}
+                    label={tab.label}
+                    active={activeTab === tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                  />
+                ))}
+              </nav>
+            </div>
+
+            {activeTab === "address" && (
+              <AddressSection formData={form} updateFormData={updateField} />
+            )}
+
+            {activeTab === "contacts" &&
+              (form.customerType === "COMPANY" ? (
+                <ContactsSection />
+              ) : (
+                <div className="py-8 text-center text-gray-500">
+                  Disponible solo para clientes empresariales
+                </div>
+              ))}
+          </div>
         </div>
 
-        {activeTab === "address" && (
-          <AddressSection formData={form} updateFormData={updateField} />
-        )}
-
-        {activeTab === "contacts" &&
-          (form.customerType === "COMPANY" ? (
-            <ContactsSection />
-          ) : (
-            <div className="py-8 text-center text-gray-500">
-              Disponible solo para clientes empresariales
-            </div>
-          ))}
-
-        <div className="flex justify-end space-x-4 pt-6">
+        {/* Botones de acción - ocupan todo el ancho */}
+        <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200 mt-8">
           <button
             type="button"
             onClick={() => {
@@ -105,7 +115,7 @@ export default function CustomerCreationForm() {
           <button
             type="submit"
             disabled={createCustomer.isPending}
-            className="px-6 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 disabled:opacity-50"
+            className="px-6 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-green-700 disabled:opacity-50"
           >
             {createCustomer.isPending ? "Guardando..." : "Guardar"}
           </button>

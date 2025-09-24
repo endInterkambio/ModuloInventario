@@ -5,20 +5,28 @@ import { FormData } from "../types/FormData";
 
 interface Props {
   formData: FormData;
-  updateFormData: <K extends keyof FormData>(field: K, value: FormData[K]) => void;
+  updateFormData: <K extends keyof FormData>(
+    field: K,
+    value: FormData[K]
+  ) => void;
 }
 
 export default function AddressSection({ formData, updateFormData }: Props) {
   // Función para actualizar solo un subcampo del objeto address
-  const handleAddressChange = (field: keyof FormData["address"], value: string) => {
+  const handleAddressChange = (
+    field: keyof FormData["address"],
+    value: string
+  ) => {
     updateFormData("address", { ...formData.address, [field]: value });
   };
 
   return (
     <div className="space-y-8">
       {/* Solo una columna por simplicidad */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Dirección</h3>
+      <div className="space-y-6">
+        <div>
+          <h3 className="py-4 pb-2 text-lg font-medium text-gray-900">Dirección</h3>
+        </div>
 
         <FormField label="Avenida / Calle + N° / Interior / Mz">
           <Input
@@ -52,12 +60,10 @@ export default function AddressSection({ formData, updateFormData }: Props) {
           />
         </FormField>
 
-        
-
         <FormField label="Código postal">
           <Input
             value={formData.address.postalCode}
-            onChange={(value) => 
+            onChange={(value) =>
               // Asegurarse de que solo se ingresen números
               value === "" || /^\d+$/.test(value)
                 ? handleAddressChange("postalCode", value)
