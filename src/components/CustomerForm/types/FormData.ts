@@ -18,6 +18,7 @@ export interface FormData {
   };
 
   contacts?: {
+    id?: number; // optional, only for existing contacts
     name: string;
     email: string;
     phoneNumber: string;

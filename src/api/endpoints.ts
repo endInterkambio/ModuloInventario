@@ -1,6 +1,7 @@
 export const endpoints = {
   books: "/books",
   customers: "/customers",
+  customerContacts: "/customer-contacts",
   exportBooks: "books/export",
   getBookBySku: (sku: string) => `/books/sku/${sku}`,
   inventoryTransactions: "/inventory-transactions",

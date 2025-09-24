@@ -22,11 +22,14 @@ export function useCustomerForm(initial?: Partial<FormData>) {
     contacts: initial?.contacts ?? [],
   });
 
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof FormData, string>>
-  >({});
+  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>(
+    {}
+  );
 
-  const updateField = <K extends keyof FormData>(key: K, value: FormData[K]) => {
+  const updateField = <K extends keyof FormData>(
+    key: K,
+    value: FormData[K]
+  ) => {
     setForm((prev) => ({ ...prev, [key]: value }));
     setErrors((prev) => ({ ...prev, [key]: "" }));
   };
@@ -115,6 +118,35 @@ export function useCustomerForm(initial?: Partial<FormData>) {
     setErrors({});
   };
 
+  const addContact = () => {
+    setForm((prev) => ({
+      ...prev,
+      contacts: [
+        ...(prev.contacts ?? []),
+        { name: "", email: "", phoneNumber: "" },
+      ],
+    }));
+  };
+
+  const updateContact = (
+    index: number,
+    updated: Partial<{ name: string; email: string; phoneNumber: string }>
+  ) => {
+    setForm((prev) => ({
+      ...prev,
+      contacts: prev.contacts?.map((c, i) =>
+        i === index ? { ...c, ...updated } : c
+      ),
+    }));
+  };
+
+  const removeContact = (index: number) => {
+    setForm((prev) => ({
+      ...prev,
+      contacts: prev.contacts?.filter((_, i) => i !== index),
+    }));
+  };
+
   return {
     form,
     errors,
@@ -123,5 +155,8 @@ export function useCustomerForm(initial?: Partial<FormData>) {
     validateForm,
     getPayloadForBackend,
     resetForm,
+    addContact,
+    updateContact,
+    removeContact,
   };
 }

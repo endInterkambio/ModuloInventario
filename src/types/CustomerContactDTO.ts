@@ -1,5 +1,5 @@
 export interface CustomerContactDTO {
-    id: number;
+    id?: number;
     name: string;
     email: string;
     phoneNumber: string;

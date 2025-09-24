@@ -20,6 +20,9 @@ export default function CustomerCreationForm() {
     validateForm,
     getPayloadForBackend,
     resetForm,
+    addContact,
+    updateContact,
+    removeContact,
   } = useCustomerForm();
 
   const createCustomer = useCreateCustomer({
@@ -92,7 +95,12 @@ export default function CustomerCreationForm() {
 
             {activeTab === "contacts" &&
               (form.customerType === "COMPANY" ? (
-                <ContactsSection />
+                <ContactsSection
+                  contacts={form.contacts}
+                  addContact={addContact}
+                  updateContact={updateContact}
+                  removeContact={removeContact}
+                />
               ) : (
                 <div className="py-8 text-center text-gray-500">
                   Disponible solo para clientes empresariales
