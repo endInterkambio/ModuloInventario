@@ -4,6 +4,7 @@ export function Input({
   onChange,
   placeholder = "",
   className = "",
+  minLength,
   maxLength,
   icon,
   error,
@@ -14,6 +15,7 @@ export function Input({
   placeholder?: string;
   className?: string;
   icon?: React.ReactNode;
+  minLength?: number;
   maxLength?: number;
   error?: string;
 }) {
@@ -29,6 +31,7 @@ export function Input({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
+        minLength={minLength}
         maxLength={maxLength}
         className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
           icon ? "pl-10" : ""

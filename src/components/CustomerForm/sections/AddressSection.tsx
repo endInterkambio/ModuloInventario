@@ -20,11 +20,11 @@ export default function AddressSection({ formData, updateFormData }: Props) {
       <div className="space-y-4">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Dirección</h3>
 
-        <FormField label="Dirección">
+        <FormField label="Avenida / Calle + N° / Interior / Mz">
           <Input
             value={formData.address.street1}
             onChange={(value) => handleAddressChange("street1", value)}
-            placeholder="Calle 1"
+            placeholder="Avenida Siempre Viva 742 Dpto 101"
           />
         </FormField>
 
@@ -33,15 +33,6 @@ export default function AddressSection({ formData, updateFormData }: Props) {
             value={formData.address.department}
             onChange={(value) => handleAddressChange("department", value)}
             options={["Lima", "Arequipa", "Cusco", "Trujillo"]}
-            placeholder="Seleccione o escriba para agregar"
-          />
-        </FormField>
-
-        <FormField label="Distrito">
-          <Input
-            value={formData.address.district}
-            onChange={(value) => handleAddressChange("district", value)}
-            placeholder=""
           />
         </FormField>
 
@@ -49,15 +40,32 @@ export default function AddressSection({ formData, updateFormData }: Props) {
           <Input
             value={formData.address.province}
             onChange={(value) => handleAddressChange("province", value)}
-            placeholder=""
+            placeholder="Ejemplo: Lima metropolitana"
           />
         </FormField>
+
+        <FormField label="Distrito">
+          <Input
+            value={formData.address.district}
+            onChange={(value) => handleAddressChange("district", value)}
+            placeholder="Ejemplo: Miraflores"
+          />
+        </FormField>
+
+        
 
         <FormField label="Código postal">
           <Input
             value={formData.address.postalCode}
-            onChange={(value) => handleAddressChange("postalCode", value)}
-            placeholder=""
+            onChange={(value) => 
+              // Asegurarse de que solo se ingresen números
+              value === "" || /^\d+$/.test(value)
+                ? handleAddressChange("postalCode", value)
+                : null
+            }
+            placeholder="Ejemplo: 15074"
+            minLength={5}
+            maxLength={5}
           />
         </FormField>
       </div>

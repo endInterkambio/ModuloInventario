@@ -28,7 +28,10 @@ export default function GeneralInfoSection({
   return (
     <>
       {/* Customer type */}
-      <FormField label="Tipo de cliente" tooltip="Seleccione el tipo de cliente">
+      <FormField
+        label="Tipo de cliente"
+        tooltip="Seleccione el tipo de cliente"
+      >
         <div className="flex space-x-6">
           <RadioButton
             id="person"
@@ -81,16 +84,25 @@ export default function GeneralInfoSection({
           {/* Document number */}
           <FormField label={docType} tooltip={`Ingresa ${docType}`}>
             <Input
+              type="text" // Cambiar a text
               value={formData.documentNumber}
               maxLength={docType === "DNI" ? 8 : 9}
-              onChange={(value) => updateFormData("documentNumber", value)}
+              onChange={(value) => {
+                // Solo permitir números
+                if (/^\d*$/.test(value)) {
+                  updateFormData("documentNumber", value);
+                }
+              }}
               placeholder={`Número de ${docType}`}
               error={!formData.documentNumber ? "Campo requerido" : ""}
             />
           </FormField>
 
           {/* Full name */}
-          <FormField label="Nombre completo" tooltip="Ingrese el nombre y apellido del cliente">
+          <FormField
+            label="Nombre completo"
+            tooltip="Ingrese el nombre y apellido del cliente"
+          >
             <Input
               value={formData.name || ""}
               onChange={(value) => updateFormData("name", value)}
@@ -114,7 +126,13 @@ export default function GeneralInfoSection({
           <FormField label="Teléfono">
             <Input
               value={formData.phoneNumber}
-              onChange={(value) => updateFormData("phoneNumber", value)}
+              maxLength={12}
+              onChange={(value) => {
+                // Solo permitir números y signos +, -, y espacios
+                if (/^[\d+\-\s]*$/.test(value)) {
+                  updateFormData("phoneNumber", value);
+                }
+              }}
               placeholder="Ingresa el número de teléfono"
               error={!formData.phoneNumber ? "Campo requerido" : ""}
             />
@@ -129,10 +147,14 @@ export default function GeneralInfoSection({
           <FormField label="RUC" tooltip="Debe contener 11 dígitos">
             <Input
               value={formData.documentNumber}
+              minLength={11}
               maxLength={11}
               onChange={(value) => {
-                updateFormData("documentType", "RUC");
-                updateFormData("documentNumber", value);
+                // Solo permitir números
+                if (/^\d*$/.test(value)) {
+                  updateFormData("documentNumber", value);
+                  updateFormData("documentType", "RUC");
+                }
               }}
               placeholder="RUC"
               error={!formData.documentNumber ? "Campo requerido" : ""}
@@ -174,4 +196,3 @@ export default function GeneralInfoSection({
     </>
   );
 }
-
