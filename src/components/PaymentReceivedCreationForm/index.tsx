@@ -3,10 +3,12 @@ import { usePaymentForm } from "./hooks/usePaymentForm";
 import { PaymentFormActions } from "./sections/PaymentFormActions";
 import { PaymentFormFields } from "./sections/PaymentFormFields";
 import { useCreatePaymentReceived } from "@/hooks/usePaymentReceived";
+import { useUploadPaymentProof } from "@/components/PaymentReceivedCreationForm/hooks/useUploadPaymentProof";
 import toast from "react-hot-toast";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 import BackButton from "@components/shared/BackButton";
 import { useSaleOrder } from "@/hooks/useSaleOrders";
+import { useState } from "react";
 
 export const PaymentReceivedCreationForm = () => {
   const [searchParams] = useSearchParams();
@@ -17,32 +19,39 @@ export const PaymentReceivedCreationForm = () => {
     orderId ? Number(orderId) : undefined
   );
 
-  const { form, updateField, getPayloadForBackend, resetForm } = usePaymentForm(
-    {
-      saleOrderId: orderId ? Number(orderId) : undefined,
-      saleOrderNumber: saleOrderNumber ?? "",
-    }
-  );
-
-  // Hook mutation
-  const createPayment = useCreatePaymentReceived({
-    onSuccess: (data) => {
-      toast.success(`Pago creado correctamente: ${data.referenceNumber}`);
-      resetForm();
-    },
-    onError: (error) => {
-      toast.error(getErrorMessage(error));
-    },
+  const { form, updateField, getPayloadForBackend, resetForm } = usePaymentForm({
+    saleOrderId: orderId ? Number(orderId) : undefined,
+    saleOrderNumber: saleOrderNumber ?? "",
   });
 
-  const handleSubmit = (e?: React.FormEvent) => {
-    e?.preventDefault();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+  const createPayment = useCreatePaymentReceived();
+  const { mutateAsync: uploadProof } = useUploadPaymentProof();
+
+  const handleSubmit = async (e?: React.FormEvent) => {
+  e?.preventDefault();
+  try {
+    // 1️⃣ Crear el pago parcial
     const payload = getPayloadForBackend();
-    console.log("Payload enviado al backend:", payload);
+    const payment = await createPayment.mutateAsync(payload);
 
-    createPayment.mutate(payload);
-  };
+    // 2️⃣ Subir comprobante si hay archivo
+    if (selectedFile) {
+      await uploadProof({ file: selectedFile, paymentId: payment.id, orderId: form.saleOrderId });
+    }
+
+    toast.success(`Pago creado correctamente: ${payment.referenceNumber}`);
+
+    // 3️⃣ Limpiar el formulario y archivo temporal
+    resetForm();
+    setSelectedFile(null);
+
+  } catch (err) {
+    toast.error(getErrorMessage(err));
+  }
+};
+
 
   const handleCancel = () => {
     toast.remove("Cancelado");
@@ -57,14 +66,13 @@ export const PaymentReceivedCreationForm = () => {
       >
         <h1 className="text-xl font-semibold mb-6">Registrar Pago</h1>
 
-        {/* Campos del formulario */}
         <PaymentFormFields
           form={form}
           updateField={updateField}
           saleOrder={saleOrder}
+          onFileSelected={setSelectedFile}
         />
 
-        {/* Acciones */}
         <PaymentFormActions onCancel={handleCancel} resetForm={resetForm} />
       </form>
     </>

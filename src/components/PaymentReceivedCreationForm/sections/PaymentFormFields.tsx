@@ -2,6 +2,7 @@ import { SaleOrderDTO } from "@/types/SaleOrderDTO";
 import { PAYMENT_METHODS, PaymentMethod } from "../constants/paymentMethods";
 import { PaymentFormState } from "../hooks/usePaymentForm";
 import { InfoTooltip } from "@components/CustomerForm/ui/InfoToolTip";
+import { FileInput } from "@components/shared/FileInput";
 
 interface PaymentFormFieldsProps {
   form: PaymentFormState;
@@ -10,12 +11,14 @@ interface PaymentFormFieldsProps {
     value: PaymentFormState[K]
   ) => void;
   saleOrder?: SaleOrderDTO;
+  onFileSelected: (file: File | null) => void;
 }
 
 export function PaymentFormFields({
   form,
   saleOrder,
   updateField,
+  onFileSelected,
 }: PaymentFormFieldsProps) {
   const handlePaymentMethodChange = (
     e: React.ChangeEvent<HTMLSelectElement>
@@ -28,7 +31,7 @@ export function PaymentFormFields({
 
   return (
     <div className="grid gap-4">
-      {/* Sale order number (solo referencia) */}
+      {/* Número de orden */}
       <div>
         <label className="block text-sm font-medium mb-1">N° de Orden</label>
         <input
@@ -86,9 +89,7 @@ export function PaymentFormFields({
 
       {/* Número de referencia */}
       <div>
-        <label className="block text-sm font-medium mb-1">
-          Número de referencia
-        </label>
+        <label className="block text-sm font-medium mb-1">Número de referencia</label>
         <input
           type="text"
           value={form.referenceNumber}
@@ -96,6 +97,9 @@ export function PaymentFormFields({
           className="w-full rounded-lg border border-gray-300 p-2"
         />
       </div>
+
+      {/* File input */}
+      <FileInput onFileSelected={onFileSelected} />
     </div>
   );
 }
