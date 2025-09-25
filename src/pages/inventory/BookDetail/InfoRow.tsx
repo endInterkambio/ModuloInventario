@@ -44,7 +44,7 @@ export const InfoRow = ({
         {label}
       </div>
 
-      <div className="flex items-center gap-2 max-w-xs text-right text-sm text-gray-800">
+      <div className="flex items-center gap-2 max-w-xs text-left text-sm text-gray-800">
         {isEditing ? (
           <>
             <input

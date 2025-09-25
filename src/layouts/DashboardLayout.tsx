@@ -14,13 +14,12 @@ export const DashboardLayout = () => {
 
     const isPrevInventory =
       prevPath === "/dashboard/inventory" ||
-      /^\/dashboard\/inventory\/.+$/.test(prevPath); // lista o detalle
+      /^\/dashboard\/inventory\/.+$/.test(prevPath);
 
     const isCurrentInventory =
       currentPath === "/dashboard/inventory" ||
       /^\/dashboard\/inventory\/.+$/.test(currentPath);
 
-    // Si antes estábamos en inventory y ahora salimos completamente, limpiamos filtros
     if (isPrevInventory && !isCurrentInventory) {
       clearFilters();
     }
@@ -29,14 +28,15 @@ export const DashboardLayout = () => {
   }, [location.pathname, clearFilters]);
 
   return (
-    <div className="bg-slate-200 overflow-y-scroll w-screen h-screen antialiased text-slate-900 selection:bg-blue-900 selection:text-white">
-      <div className="flex flex-row relative w-screen">
-        <SideMenu />
+    <div className="flex h-screen w-screen bg-slate-200 antialiased text-slate-900 selection:bg-blue-900 selection:text-white">
+      {/* Sidebar fijo */}
+      <SideMenu />
 
-        <div className="w-full p-4">
-          <Outlet />
-        </div>
+      {/* Contenido con scroll */}
+      <div className="flex-1 overflow-y-auto p-4">
+        <Outlet />
       </div>
     </div>
   );
 };
+

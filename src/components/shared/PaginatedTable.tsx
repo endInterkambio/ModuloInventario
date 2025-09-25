@@ -59,7 +59,7 @@ export function PaginatedTable<T>({
   onItemsPerPageChange,
 }: PaginatedTableProps<T>) {
   return (
-    <div className="bg-white border rounded-lg shadow-sm p-4">
+    <div className="bg-white border rounded-lg shadow-sm px-4 pt-10 pb-4">
       {(title ||
         dropdownOptions ||
         showSearch ||

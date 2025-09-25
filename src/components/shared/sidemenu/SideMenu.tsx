@@ -1,13 +1,13 @@
-import type { IconType } from "react-icons";
-import { IoSpeedometerOutline, IoPawOutline } from "react-icons/io5";
-import { MdOutlineInventory, MdPointOfSale } from "react-icons/md";
-import { BiPurchaseTag } from "react-icons/bi";
-import { CiUser } from "react-icons/ci";
-import "./SideMenu.css";
+import { useState } from "react";
 import { SideMenuItem } from "./SideMenuItem";
 import { LogoutButton } from "@components/LogoutButton";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useIsAdmin } from "@/hooks/useAuthRole";
+import { IoSpeedometerOutline, IoPawOutline } from "react-icons/io5";
+import { MdOutlineInventory, MdPointOfSale } from "react-icons/md";
+import { BiPurchaseTag } from "react-icons/bi";
+import { CiUser } from "react-icons/ci";
+import { IconType } from "react-icons";
 
 interface MenuItem {
   title: string;
@@ -86,53 +86,80 @@ export const SideMenu = () => {
   const loginUser = useAuthStore((state) => state.user?.username);
   const isAdmin = useIsAdmin();
 
-  return (
-    <div
-      id="menu"
-      className="bg-gray-900 min-h-screen z-10 text-slate-300 w-80 left-0 overflow-y-scroll"
-    >
-      <div id="logo" className="my-4 px-6">
-        {/* Title */}
-        <h1 className="text-lg md:text-2xl font-bold text-white">
-          GusanitoLector
-          <span className="text-blue-500 text-xs"> Sistema de inventario</span>.
-        </h1>
-        <p className="text-slate-500 text-sm">
-          Gestión de inventario, compra y venta
-        </p>
-      </div>
+  const [open, setOpen] = useState(false);
 
-      {/*  Profile */}
-      <div id="profile" className="px-6 py-10">
-        <p className="text-slate-500">Bienvenido,</p>
-        <a href="#" className="inline-flex space-x-2 items-center">
-          <span>
+  return (
+    <>
+      {/* Botón para móvil/tablet */}
+      {!open && (
+        <button
+          className="md:hidden fixed top-5 right-5 z-50 inline-flex items-center p-2 text-gray-500 rounded-lg hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-gray-200 bg-secondary"
+          onClick={() => setOpen(true)}
+        >
+          <span className="sr-only">Abrir menú</span>
+          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              clipRule="evenodd"
+              fillRule="evenodd"
+              d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
+            />
+          </svg>
+        </button>
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed top-0 left-0 z-40 w-64 h-screen bg-gray-900 text-slate-300 overflow-y-auto transform transition-transform duration-300
+          ${open ? "translate-x-0" : "-translate-x-full"} 
+          md:translate-x-0 md:relative md:block`}
+      >
+        <div className="my-4 px-6">
+          <h1 className="text-lg md:text-2xl font-bold text-white">
+            GusanitoLector
+            <span className="text-blue-500 text-xs">
+              {" "}
+              Sistema de inventario
+            </span>
+            .
+          </h1>
+          <p className="text-slate-500 text-sm">
+            Gestión de inventario, compra y venta
+          </p>
+        </div>
+
+        <div className="px-6 py-10">
+          <p className="text-slate-500">Bienvenido,</p>
+          <div className="inline-flex space-x-2 items-center">
             <img
               className="rounded-full w-8 h-8"
-              src={`${
+              src={
                 isAdmin
                   ? "https://avatar.iran.liara.run/public/4"
                   : "https://avatar.iran.liara.run/public/100"
-              }`}
-              alt=""
+              }
             />
-          </span>
-          <span className="text-sm md:text-base font-bold">{loginUser}</span>
-        </a>
-      </div>
+            <span className="text-sm md:text-base font-bold">{loginUser}</span>
+          </div>
+        </div>
 
-      {/* Menu Items */}
-      <nav id="nav" className="w-full px-6">
-        {menuItems.map((item, index) => (
-          <SideMenuItem
-            key={`${item.href ?? item.title}-${index}`} // key única
-            {...item}
-          />
-        ))}
+        <nav className="w-full px-6">
+          {menuItems.map((item, index) => (
+            <SideMenuItem
+              key={`${item.href ?? item.title}-${index}`}
+              {...item}
+            />
+          ))}
+          <LogoutButton />
+        </nav>
+      </aside>
 
-        {/* Logout */}
-        <LogoutButton />
-      </nav>
-    </div>
+      {/* Overlay para cerrar menú en móvil */}
+      {open && (
+        <div
+          className="fixed inset-0 bg-black opacity-30 lg:hidden"
+          onClick={() => setOpen(false)}
+        ></div>
+      )}
+    </>
   );
 };
