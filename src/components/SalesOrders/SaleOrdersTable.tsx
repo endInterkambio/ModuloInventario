@@ -7,7 +7,7 @@ import {
 } from "@components/SalesOrderForm/constants/orderStatusConfig";
 import { SaleOrderDTO } from "@/types/SaleOrderDTO";
 import { downloadSaleOrder } from "@/utils/pdf/downloadSaleOrder";
-import { downloadPDF } from "@/utils/downloadPDFDeprecated";
+import { downloadWayBill } from "@/utils/downloadWayBill";
 import NavButton from "@components/NewButton";
 import { useEffect, useRef, useState } from "react";
 
@@ -130,7 +130,7 @@ export function SaleOrdersTable({ saleOrders }: Props) {
                       <li>
                         <button
                           onClick={() => {
-                            downloadPDF(order);
+                            downloadWayBill(order);
                             setOpenMenuId(null);
                           }}
                           className="w-full text-left px-4 py-2 hover:bg-primary hover:text-white"

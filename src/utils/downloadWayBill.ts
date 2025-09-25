@@ -5,7 +5,7 @@ import logo from "@assets/LOGO-GUSANITO-LECTOR.png";
 import { loadImageAsBase64 } from "./loadImageAsBase64";
 import { format } from "date-fns";
 
-export async function downloadPDF(order: SaleOrderDTO) {
+export async function downloadWayBill(order: SaleOrderDTO) {
   const doc = new jsPDF();
 
   // Cargar logo con dimensiones reales
@@ -136,5 +136,5 @@ export async function downloadPDF(order: SaleOrderDTO) {
     ],
   });
   // Guardar PDF
-  doc.save(`Guia-${order.id}.pdf`);
+  doc.save(`Guia_${String(order.orderNumber.replace(/^SO-/, "WB-") ?? "")}.pdf`);
 }

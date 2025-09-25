@@ -172,5 +172,5 @@ itemsBody.push([
   });
 
   // --- GUARDAR PDF ---
-  doc.save(`Guia-${order.id}.pdf`);
+  doc.save(`Orden_${order.orderNumber}.pdf`);
 }
