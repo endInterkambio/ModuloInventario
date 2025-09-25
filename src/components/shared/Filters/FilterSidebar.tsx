@@ -14,7 +14,7 @@ const FilterSidebar = () => {
     filters.maxPrice !== undefined;
 
   return (
-    <div className="w-80 bg-white border-r border-gray-200 h-full p-6 overflow-y-auto">
+    <div className="w-80 border-r border-gray-200 h-full p-6 overflow-y-auto">
       <div className="space-y-6">
         <ClearFilters
           hasActiveFilters={hasActiveFilters}
