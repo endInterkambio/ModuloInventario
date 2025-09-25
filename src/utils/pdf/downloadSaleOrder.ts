@@ -99,117 +99,78 @@ export async function downloadSaleOrder(order: SaleOrderDTO) {
     }
   }
 
-  // Llamada a autoTable
   autoTable(doc, {
     startY: infoStartY + 5,
     theme: "plain",
     styles: { fontSize: 10, cellPadding: 1, valign: "top" },
-    columnStyles: {
-      0: { cellWidth: 60 },
-      1: { cellWidth: 100 },
-    },
+    columnStyles: { 0: { cellWidth: 60 }, 1: { cellWidth: 100 } },
     body: infoBody,
   });
 
+  // --- ITEMS Y TOTAL ---
+  const totalQuantity = order.items.reduce((sum, item) => sum + (item.quantity ?? 0), 0);
+  const totalDiscount = order.items.reduce((sum, item) => sum + (item.discount ?? 0), 0);
+  const totalSubtotal = order.items.reduce(
+    (sum, item) => sum + ((item.customPrice ?? 0) * (item.quantity ?? 0) - (item.discount ?? 0)),
+    0
+  );
+
+  const itemsBody: CellInput[][] = [
+    ...order.items.map((item, i) => [
+      String(i + 1),
+      `${item.bookTitle ?? ""} - ${item.bookStockLocation?.bookSku ?? ""}${
+        item.bookStockLocation?.bookSku?.match(/[ABCDXU]$/) ? "" : item.bookStockLocation?.bookCondition ?? ""
+      }`,
+      { content: String(item.quantity ?? 0), styles: { halign: "left" as const } },
+      { content: item.customPrice ? `S/.${item.customPrice.toFixed(2)}` : "S/.0.00", styles: { halign: "left" as const } },
+      { content: item.discount ? `(-S/.${item.discount.toFixed(2)})` : "-", styles: { halign: "left" as const } },
+      { content: item.customPrice && item.quantity ? `S/.${((item.customPrice * item.quantity) - (item.discount ?? 0)).toFixed(2)}` : "S/.0.00", styles: { halign: "left" as const } },
+    ]),
+  ];
+
+  // --- FILA ENVÍO ---
+if (order.amountShipment && order.amountShipment > 0) {
+  itemsBody.push([
+    { content: "Envío", colSpan: 5, styles: { halign: "left", fontStyle: "bold" } },
+    { content: `S/.${order.amountShipment.toFixed(2)}`, styles: { halign: "left", fontStyle: "bold" } },
+  ]);
+}
+
+// --- FILA CARGO ADICIONAL / DESCUENTO ADICIONAL ---
+if (order.additionalFee && order.additionalFee !== 0) {
+  const isDiscount = order.additionalFee < 0;
+  itemsBody.push([
+    {
+      content: isDiscount ? "Descuento adicional" : "Cargo adicional",
+      colSpan: 5,
+      styles: { halign: "left", fontStyle: "bold", textColor: isDiscount ? "#ff0000" : 0 },
+    },
+    {
+      content: `S/.${Math.abs(order.additionalFee).toFixed(2)}`,
+      styles: { halign: "left", fontStyle: "bold", textColor: isDiscount ? "#ff0000" : 0 },
+    },
+  ]);
+}
+
+// --- FILA TOTAL ---
+const grandTotal = totalSubtotal + (order.amountShipment ?? 0) + (order.additionalFee ?? 0);
+
+itemsBody.push([
+  { content: "TOTAL", colSpan: 2, styles: { halign: "left", fontStyle: "bold" } },
+  { content: String(totalQuantity), styles: { halign: "left", fontStyle: "bold" } },
+  { content: "", styles: { lineWidth: 0 } },
+  { content: `-S/.${totalDiscount.toFixed(2)}`, styles: { halign: "left", fontStyle: "bold", textColor: "#ff0000" } },
+  { content: `S/.${grandTotal.toFixed(2)}`, styles: { halign: "left", fontStyle: "bold" } },
+]);
+
+
   autoTable(doc, {
     startY: 95,
-    headStyles: {
-      fillColor: "#00ab55",
-      textColor: 255,
-      fontStyle: "bold",
-    },
-    head: [
-      [
-        "#",
-        "Artículo & Descripción",
-        "Cant.",
-        "Precio",
-        "Descuento",
-        "Subtotal",
-      ],
-    ],
-    body: [
-      ...order.items.map((item, i) => [
-        String(i + 1), // número
-        `${item.bookTitle ?? ""} - ${item.bookStockLocation?.bookSku ?? ""}${
-          item.bookStockLocation?.bookSku?.match(/[ABCDXU]$/)
-            ? ""
-            : item.bookStockLocation?.bookCondition ?? ""
-        }`, // descripción
-        {
-          content: String(item.quantity ?? 0),
-          styles: { halign: "left" as const },
-        }, // cantidad
-        {
-          content: item.customPrice
-            ? `S/.${item.customPrice.toFixed(2)}`
-            : "S/.0.00",
-          styles: { halign: "left" as const },
-        }, // precio
-        {
-          content: item.discount ? `(-S/.${item.discount.toFixed(2)})` : "-",
-          styles: { halign: "left" as const },
-        }, // descuento
-        {
-          // Subtotal = (customPrice * quantity) - discount
-          content:
-            item.customPrice && item.quantity
-              ? `S/.${(
-                  item.customPrice * item.quantity -
-                  (item.discount ?? 0)
-                ).toFixed(2)}`
-              : "S/.0.00",
-          styles: { halign: "left" as const },
-        }, // subtotal
-      ]),
-      // Fila de TOTAL
-      [
-        {
-          content: "TOTAL",
-          colSpan: 2, // abarca # y Artículo
-          styles: {
-            halign: "left" as const,
-            fontStyle: "bold",
-            lineWidth: 0,
-            fillColor: undefined,
-            textColor: 0,
-          },
-        },
-        {
-          content: String(
-            order.items.reduce((sum, item) => sum + (item.quantity ?? 0), 0)
-          ),
-          styles: { halign: "left" as const, fontStyle: "bold" },
-        }, // total cantidad
-        { content: "", styles: { lineWidth: 0 } }, // precio unitario total no se muestra
-        {
-          // Total descuento
-          content: `-S/.${order.items
-            .reduce((sum, item) => sum + (item.discount ?? 0), 0)
-            .toFixed(2)}`,
-          styles: {
-            halign: "left" as const,
-            fontStyle: "bold",
-            textColor: "#ff0000",
-          },
-        }, // total descuento
-        {
-          // Total subtotal = suma de (customPrice * quantity - discount)
-          content: `S/.${order.items
-            .reduce(
-              (sum, item) =>
-                sum +
-                ((item.customPrice ?? 0) * (item.quantity ?? 0) -
-                  (item.discount ?? 0)),
-              0
-            )
-            .toFixed(2)}`,
-          styles: { halign: "left" as const, fontStyle: "bold" },
-        }, // total subtotal
-      ],
-    ],
+    headStyles: { fillColor: "#00ab55", textColor: 255, fontStyle: "bold" },
+    head: [["#", "Artículo & Descripción", "Cant.", "Precio", "Descuento", "Subtotal"]],
+    body: itemsBody,
   });
 
-  // Guardar PDF
+  // --- GUARDAR PDF ---
   doc.save(`Guia-${order.id}.pdf`);
 }
