@@ -87,6 +87,20 @@ export async function downloadWayBill(order: SaleOrderDTO) {
     85
   );
 
+  // Dirección de envío (si existe)
+  if (order.shipment?.address) {
+    const parts = order.shipment.address.split(",").map((p) => p.trim());
+    let addressY = 95;
+    doc.text("Enviar a:", 15, addressY);
+    addressY += 4;
+
+    // Mostrar cada parte en una línea
+    parts.forEach((part) => {
+      doc.text(part, 15, addressY);
+      addressY += 4;
+    });
+  }
+
   // Calcular el total de cantidades
   const totalQuantity = order.items.reduce(
     (sum, item) => sum + (item.quantity ?? 0),
@@ -95,7 +109,7 @@ export async function downloadWayBill(order: SaleOrderDTO) {
 
   // Tabla de items
   autoTable(doc, {
-    startY: 95,
+    startY: 120,
     headStyles: {
       fillColor: "#00ab55", //
       textColor: 255, // texto blanco
@@ -136,5 +150,7 @@ export async function downloadWayBill(order: SaleOrderDTO) {
     ],
   });
   // Guardar PDF
-  doc.save(`Guia_${String(order.orderNumber.replace(/^SO-/, "WB-") ?? "")}.pdf`);
+  doc.save(
+    `Guia_${String(order.orderNumber.replace(/^SO-/, "WB-") ?? "")}.pdf`
+  );
 }

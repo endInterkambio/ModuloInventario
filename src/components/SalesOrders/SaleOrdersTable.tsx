@@ -126,7 +126,9 @@ export function SaleOrdersTable({ saleOrders }: Props) {
                   className="absolute z-50 bg-white border rounded shadow-lg mt-2 left-0 min-w-[120px]"
                 >
                   <ul className="flex flex-col">
-                    {order.shipment != null && (
+                    {Boolean(
+                      order.amountShipment && order.amountShipment > 0
+                    ) && (
                       <li>
                         <button
                           onClick={() => {
