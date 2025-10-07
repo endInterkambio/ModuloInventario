@@ -23,11 +23,11 @@ export function useApiMutation<TData = unknown, TVariables = void>({
       });
       return data;
     },
-    onSuccess: (data, vars, ctx) => {
+    onSuccess: (data, vars, ctx, mutation) => {
       if (queryKeyToInvalidate) {
         queryClient.invalidateQueries({ queryKey: queryKeyToInvalidate });
       }
-      options?.onSuccess?.(data, vars, ctx);
+      options?.onSuccess?.(data, vars, ctx, mutation );
     },
     ...options,
   });
