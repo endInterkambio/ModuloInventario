@@ -9,7 +9,7 @@ import { useAuthStore } from "@/stores/useAuthStore";
 
 // Crear instancia
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: "https://el.gusanitolector.pe/api/",
+  baseURL: "http://localhost:8080/api",
 });
 
 // ---- Interceptor de request: Adjuntar accessToken ----
