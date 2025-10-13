@@ -77,9 +77,7 @@ export function CustomerPage() {
         {
           key: "documentType",
           header: "Tipo de documento",
-          render: (c) => (
-            <InfoRow label="" value={c.documentType || "-"} editable={true} />
-          ),
+          render: (c) => <InfoRow label="" value={c.documentType || "-"} />,
         },
         {
           key: "documentNumber",
@@ -100,9 +98,23 @@ export function CustomerPage() {
           header: "Nombre / Razón Social",
           render: (c) =>
             c.customerType === "PERSON" ? (
-              <InfoRow label="" value={c.name || "-"} />
+              <InfoRow
+                label=""
+                value={c.name || "-"}
+                editable={true}
+                onSave={(newValue) =>
+                  updateCustomer({ id: c.id, data: { name: newValue } })
+                }
+              />
             ) : (
-              <InfoRow label="" value={c.companyName || "-"} />
+              <InfoRow
+                label=""
+                value={c.companyName || "-"}
+                editable={true}
+                onSave={(newValue) =>
+                  updateCustomer({ id: c.id, data: { companyName: newValue } })
+                }
+              />
             ),
         },
         {
@@ -118,17 +130,44 @@ export function CustomerPage() {
         {
           key: "email",
           header: "Correo",
-          render: (c) => <InfoRow label="" value={c.email || "-"} />,
+          render: (c) => (
+            <InfoRow
+              label=""
+              value={c.email || "-"}
+              editable={true}
+              onSave={(newValue) =>
+                updateCustomer({ id: c.id, data: { email: newValue } })
+              }
+            />
+          ),
         },
         {
           key: "phone",
           header: "Teléfono",
-          render: (c) => <InfoRow label="" value={c.phoneNumber || "-"} />,
+          render: (c) => (
+            <InfoRow
+              label=""
+              value={c.phoneNumber || "-"}
+              editable={true}
+              onSave={(newValue) =>
+                updateCustomer({ id: c.id, data: { phoneNumber: newValue } })
+              }
+            />
+          ),
         },
         {
           key: "address",
           header: "Dirección",
-          render: (c) => <InfoRow label="" value={c.address || "-"} />,
+          render: (c) => (
+            <InfoRow
+              label=""
+              value={c.address || "-"}
+              editable={true}
+              onSave={(newValue) =>
+                updateCustomer({ id: c.id, data: { address: newValue } })
+              }
+            />
+          ),
         },
       ]}
       items={saleOrders}
