@@ -70,6 +70,16 @@ export function CustomerPage() {
       newButtonClassName="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2"
       columns={[
         {
+          key: "documentType",
+          header: "Tipo de documento",
+          render: (c) => <InfoRow label="" value={c.documentType || "-"} />,
+        },
+        {
+          key: "documentNumber",
+          header: "N° de documento",
+          render: (c) => <InfoRow label="" value={c.documentNumber || "-"} />,
+        },
+        {
           key: "name",
           header: "Nombre / Razón Social",
           render: (c) =>
@@ -98,6 +108,11 @@ export function CustomerPage() {
           key: "phone",
           header: "Teléfono",
           render: (c) => <InfoRow label="" value={c.phoneNumber || "-"} />,
+        },
+        {
+          key: "address",
+          header: "Dirección",
+          render: (c) => <InfoRow label="" value={c.address || "-"} />,
         },
       ]}
       items={saleOrders}
