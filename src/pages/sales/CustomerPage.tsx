@@ -1,4 +1,5 @@
 import { useLocation } from "react-router-dom";
+import { CUSTOMER_TYPES } from "@/pages/sales/constants/customerTypes";
 import CustomerCreationForm from "@components/CustomerForm/CustomerCreationForm";
 import { PaginatedTable } from "@components/shared/PaginatedTable";
 import { InfoRow } from "../inventory/BookDetail/InfoRow";
@@ -30,12 +31,21 @@ export function CustomerPage() {
   }, [debouncedSearchTerm]);
 
   // Opciones de estado (puedes adaptar según tu backend)
-  const dropdownOptions = ["Todos", "Activos", "Inactivos"];
+  // const dropdownOptions = ["Todos", "PERSON", "COMPANY"];
+
+  const dropdownOptions = ["Todos", ...CUSTOMER_TYPES.map((c) => c.label)];
   const dropdownLabel = "Todos los clientes";
-  //const dropdownValue = filters.status || dropdownLabel;
+  const dropdownValue =
+    CUSTOMER_TYPES.find((c) => c.value === filters.customerType)?.label ||
+    dropdownLabel;
 
   const handleDropdownSelect = (label: string) => {
-    setFilter("status", label === "Todos" ? "" : label);
+    if (label === "Todos") {
+      setFilter("customerType", "");
+      return;
+    }
+    const customerType = CUSTOMER_TYPES.find((c) => c.label === label)?.value;
+    setFilter("customerType", customerType || "");
   };
 
   const { data: saleOrdersPage, isLoading, isError } = useCustomersWithStore();
@@ -50,7 +60,7 @@ export function CustomerPage() {
       title="Clientes"
       dropdownOptions={dropdownOptions}
       dropdownLabel={dropdownLabel}
-      dropdownValue={filters.status || dropdownLabel}
+      dropdownValue={dropdownValue}
       onDropdownSelect={handleDropdownSelect}
       searchPlaceholder="Buscar clientes"
       searchTerm={searchTerm}
