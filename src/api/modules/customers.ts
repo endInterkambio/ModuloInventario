@@ -10,14 +10,17 @@ export const getCustomers = async (
   sortDirection: "asc" | "desc" = "asc",
   filters?: Record<string, string>
 ): Promise<Page<CustomerDTO>> => {
-  const response = await axiosInstance.get<Page<CustomerDTO>>(endpoints.customers, {
-    params: {
-      page,
-      size,
-      sort: `${sortBy},${sortDirection}`,
-      ...filters,
-    },
-  });
+  const response = await axiosInstance.get<Page<CustomerDTO>>(
+    endpoints.customers,
+    {
+      params: {
+        page,
+        size,
+        sort: `${sortBy},${sortDirection}`,
+        ...filters,
+      },
+    }
+  );
   return response.data;
 };
 
@@ -28,6 +31,18 @@ export const createCustomer = async (
   const response = await axiosInstance.post<CustomerDTO>(
     endpoints.customers,
     customer
+  );
+  return response.data;
+};
+
+// Update customer by ID (partially update)
+export const updateCustomer = async (
+  id: number,
+  data: Partial<CustomerDTO>
+): Promise<CustomerDTO> => {
+  const response = await axiosInstance.patch(
+    `${endpoints.customers}/${id}`,
+    data
   );
   return response.data;
 };

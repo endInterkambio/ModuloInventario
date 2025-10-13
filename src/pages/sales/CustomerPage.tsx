@@ -3,10 +3,11 @@ import { CUSTOMER_TYPES } from "@/pages/sales/constants/customerTypes";
 import CustomerCreationForm from "@components/CustomerForm/CustomerCreationForm";
 import { PaginatedTable } from "@components/shared/PaginatedTable";
 import { InfoRow } from "../inventory/BookDetail/InfoRow";
-import { useCustomersWithStore } from "@/hooks/useCustomers";
+import { useCustomersWithStore, useUpdateCustomer } from "@/hooks/useCustomers";
 import { useCustomerStore } from "@/stores/useCustomerStore";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
+import toast from "react-hot-toast";
 
 export function CustomerPage() {
   const location = useLocation();
@@ -20,6 +21,10 @@ export function CustomerPage() {
     setItemsPerPage,
     setFilter,
   } = useCustomerStore();
+
+  const { mutate: updateCustomer } = useUpdateCustomer({
+    onSuccess: () => toast.success("Cliente actualizado correctamente"),
+  });
 
   // --- Estado local para la búsqueda global ---
   const [searchTerm, setSearchTerm] = useState(filters.search || "");
@@ -72,12 +77,23 @@ export function CustomerPage() {
         {
           key: "documentType",
           header: "Tipo de documento",
-          render: (c) => <InfoRow label="" value={c.documentType || "-"} />,
+          render: (c) => (
+            <InfoRow label="" value={c.documentType || "-"} editable={true} />
+          ),
         },
         {
           key: "documentNumber",
           header: "N° de documento",
-          render: (c) => <InfoRow label="" value={c.documentNumber || "-"} />,
+          render: (c) => (
+            <InfoRow
+              label=""
+              value={c.documentNumber || "-"}
+              editable={true}
+              onSave={(newValue) =>
+                updateCustomer({ id: c.id, data: { documentNumber: newValue } })
+              }
+            />
+          ),
         },
         {
           key: "name",
