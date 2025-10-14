@@ -232,7 +232,7 @@ const BookQuickActions = () => {
               <div className="relative">
                 <input
                   type="number"
-                  className="border border-gray-300 rounded-md px-2 py-1 text-sm w-full ps-7"
+                  className="border border-gray-300 rounded-md px-2 py-1 text-sm w-full ps-7 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   placeholder={
                     discountType === "%"
                       ? "Porcentaje de descuento"
