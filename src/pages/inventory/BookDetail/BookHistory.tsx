@@ -43,7 +43,6 @@ const BookHistory = ({ book }: Props) => {
         value={
           book.updatedAt
             ? new Date(book.updatedAt).toLocaleString("es-PE", {
-                timeZone: "UTC",
                 year: "numeric",
                 month: "2-digit",
                 day: "2-digit",

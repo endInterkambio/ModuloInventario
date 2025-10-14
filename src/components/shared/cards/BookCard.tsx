@@ -33,7 +33,23 @@ const BookCard = ({ book }: BookCardProps) => {
       </p>
       <p className="text-sm mt-2">
         <span className="text-gray-500">Precio de venta:</span>{" "}
-        <span className="font-medium">S/. {book.sellingPrice.toFixed(2)}</span>
+        {book.isOfferActive ? (
+          <span className="font-medium inline-flex items-center space-x-2">
+            <span className="text-gray-400 line-through">
+              S/. {book.sellingPrice.toFixed(2)}
+            </span>
+            <span className="text-green-600 font-semibold">
+              S/. {book.offerPrice.toFixed(2)}
+            </span>
+            <span className="text-xs text-red-500 bg-red-100 px-2 py-0.5 rounded-full ml-1">
+              Oferta
+            </span>
+          </span>
+        ) : (
+          <span className="font-medium text-gray-900">
+            S/. {book.sellingPrice.toFixed(2)}
+          </span>
+        )}
       </p>
       <p className="text-sm">
         <span className="text-gray-500">Autor:</span>{" "}
