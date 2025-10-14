@@ -20,6 +20,9 @@ export interface BookDTO {
   sellingPrice: number;
   fairPrice: number;
   offerPrice: number;
+  // isOfferActive: boolean;
+  // offerStartDate: string | null;
+  // offerEndDate: string | null;
   tag: string;
   filter: string;
   productSaleType: string;
