@@ -31,7 +31,7 @@ export const BasicInfoSection = ({ formData, onFieldChange }: Props) => (
     </div>
     <FormTextarea
       label="Descripción"
-      value={formData.description}
+      value={formData.description ?? ""}
       onChange={(value) => onFieldChange('description', value)}
     />
   </div>

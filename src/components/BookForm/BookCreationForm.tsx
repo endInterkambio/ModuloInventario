@@ -33,6 +33,10 @@ export const BookCreationForm = () => {
     productSaleType: "",
     totalStock: 0, // calculado en backend (no se envía)
     locations: [], // se crean aparte (no se envía aquí)
+    offerPrice: 0,
+    offerStartDate: null,
+    offerEndDate: null,
+    isOfferActive: false,
   });
 
   const { createBook, isCreatingBook } = useCreateBook();
@@ -86,6 +90,10 @@ export const BookCreationForm = () => {
       productSaleType: "",
       totalStock: 0,
       locations: [],
+      offerPrice: 0,
+      offerStartDate: null,
+      offerEndDate: null,
+      isOfferActive: false,
     });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

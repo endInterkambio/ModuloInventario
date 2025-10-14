@@ -58,4 +58,5 @@ export const PRICING_FIELDS: ReadonlyArray<FormField> = [
   { name: 'purchasePrice', label: 'Precio de Compra', type: 'number', step: '0.01', min: '0' },
   { name: 'sellingPrice', label: 'Precio de Venta', type: 'number', step: '0.01', min: '0' },
   { name: 'fairPrice', label: 'Precio de Feria', type: 'number', step: '0.01', min: '0' },
+  { name: 'offerPrice', label: 'Precio de Oferta', type: 'number', step: '0.01', min: '0' },
 ] as const;
