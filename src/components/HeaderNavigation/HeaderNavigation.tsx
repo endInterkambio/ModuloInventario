@@ -4,8 +4,8 @@ import {
   MoreHorizontal,
   RotateCcw,
   ArrowUpDown,
-  Download,
   Upload,
+  DownloadIcon,
   FilterIcon,
 } from "lucide-react";
 
@@ -110,7 +110,7 @@ const HeaderNavigation = () => {
                 {isAdmin && (
                   <div className="relative">
                     <SubmenuItem
-                      icon={<Download className="w-4 h-4 text-blue-500" />}
+                      icon={<Upload className="w-4 h-4 text-blue-500" />}
                       label="Importar"
                       isActive={activeSubmenu === "importar"}
                       onHover={() => setActiveSubmenu("importar")}
@@ -124,7 +124,7 @@ const HeaderNavigation = () => {
                 {isAdmin && (
                   <div className="relative">
                     <SubmenuItem
-                      icon={<Upload className="w-4 h-4 text-blue-500" />}
+                      icon={<DownloadIcon className="w-4 h-4 text-blue-500" />}
                       label="Exportar"
                       isActive={activeSubmenu === "exportar"}
                       onHover={() => setActiveSubmenu("exportar")}
