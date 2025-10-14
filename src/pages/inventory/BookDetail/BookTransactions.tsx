@@ -85,6 +85,14 @@ const BookTransactions = ({ book }: Props) => {
         editable={isAdmin}
         onSave={(val) => handleFieldUpdate("coverPrice", val)}
       />
+      <InfoRow
+        className={className}
+        label="Precio de oferta"
+        value={`${editedBook.offerPrice?.toFixed(2) ?? 0.0}`}
+        icon={<span className="text-sm font-medium text-gray-500">S/.</span>}
+        editable={isAdmin}
+        onSave={(val) => handleFieldUpdate("offerPrice", val)}
+      />
     </div>
   );
 };

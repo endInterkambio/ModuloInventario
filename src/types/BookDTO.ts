@@ -19,6 +19,7 @@ export interface BookDTO {
   purchasePrice: number;
   sellingPrice: number;
   fairPrice: number;
+  offerPrice: number;
   tag: string;
   filter: string;
   productSaleType: string;
