@@ -8,33 +8,33 @@ import {
 import { SimpleIdNameDTO } from "@/types/SimpleIdNameDTO";
 import { SaleOrderItemDTO } from "@/types/SaleOrderItemDTO";
 
-export const useSalesOrderForm = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const [salesOrder, setSalesOrder] = useState<SaleOrderDTO>({
+const initialSaleOrder: SaleOrderDTO = {
+  id: 0,
+  orderNumber: "",
+  orderDate: new Date().toISOString().split("T")[0],
+  createdAt: new Date().toISOString(),
+  createdBy: { id: 1, name: "Admin" } as SimpleIdNameDTO,
+  saleChannel: undefined, // empieza vacío
+  amount: 0,
+  totalAmount: 0,
+  status: "PENDING" as OrderStatus,
+  paymentStatus: "UNPAID" as OrderPaymentStatus,
+  customer: {
     id: 0,
-    orderNumber: "",
-    orderDate: new Date().toISOString().split("T")[0],
-    createdAt: new Date().toISOString(),
-    createdBy: { id: 1, name: "Admin" } as SimpleIdNameDTO,
-    saleChannel: undefined, // empieza vacío
-    amount: 0,
-    totalAmount: 0,
-    status: "PENDING" as OrderStatus,
-    paymentStatus: "UNPAID" as OrderPaymentStatus,
-    customer: {
-      id: 0,
-      name: "",
-      customerType: "PERSON",
-      companyName: "",
-    },
-    items: [],
-    amountShipment: 0,
-    additionalFee: 0,
-    totalPaid: 0,
-    customerNotes: "",
-  });
+    name: "",
+    customerType: "PERSON",
+    companyName: "",
+  },
+  items: [],
+  amountShipment: 0,
+  additionalFee: 0,
+  totalPaid: 0,
+  customerNotes: "",
+};
 
+export const useSalesOrderForm = () => {
+  const [salesOrder, setSalesOrder] = useState<SaleOrderDTO>(initialSaleOrder);
+  const [searchTerm, setSearchTerm] = useState("");
   const [shippingCost, setShippingCost] = useState<number | "">("");
   const [chargeDiscountCost, setChargeDiscountCost] = useState<number | "">("");
 
@@ -51,6 +51,11 @@ export const useSalesOrderForm = () => {
       }
       return updated;
     });
+  };
+
+  const resetSalesOrder = () => {
+    setSalesOrder(initialSaleOrder);
+    setSearchTerm("");
   };
 
   const calculateArticleAmount = (item: SaleOrderItemDTO) => {
@@ -193,6 +198,7 @@ export const useSalesOrderForm = () => {
     searchTerm,
     setSearchTerm,
     updateSalesOrder,
+    resetSalesOrder,
     updateArticle,
     addArticle,
     removeArticle,
@@ -203,6 +209,6 @@ export const useSalesOrderForm = () => {
     subtotal,
     total,
     toNum,
-    validateSalesOrder, // ✅ expuesto para usar antes de enviar
+    validateSalesOrder,
   };
 };

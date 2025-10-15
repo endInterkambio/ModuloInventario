@@ -17,7 +17,7 @@ export interface SaleOrderDTO {
   orderDate: string;
   createdAt: string;
   createdBy: SimpleIdNameDTO;
-  saleChannel: string;
+  saleChannel?: string;
   amount: number;
   amountShipment?: number;
   additionalFee?: number;

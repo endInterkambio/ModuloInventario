@@ -23,6 +23,7 @@ export const SalesOrderForm = () => {
     searchTerm,
     setSearchTerm,
     updateSalesOrder,
+    resetSalesOrder,
     updateArticle,
     addArticle,
     removeArticle,
@@ -122,7 +123,7 @@ export const SalesOrderForm = () => {
             value={salesOrder.orderDate}
             onChange={(e) => {
               const newDate = e.target.value;
-              console.log("Fecha", newDate)
+              console.log("Fecha", newDate);
 
               // Actualiza el estado global del pedido
               updateSalesOrder("orderDate", newDate);
@@ -224,12 +225,15 @@ export const SalesOrderForm = () => {
         <button
           type="button"
           onClick={() => handleSubmit(true)}
-          className="px-6 py-2 bg-primary text-white rounded hover:bg-green-700"
+          className="flex items-center gap-2 bg-primary hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition-colors"
         >
           Guardar y enviar
         </button>
-        <button className="px-6 py-2 text-gray-600 hover:text-gray-800">
-          Cancelar
+        <button
+          className="flex items-center gap-2 bg-secondary hover:bg-yellow-500 text-black px-4 py-2 rounded-md font-medium transition-colors"
+          onClick={resetSalesOrder}
+        >
+          Limpiar campos
         </button>
       </div>
     </div>

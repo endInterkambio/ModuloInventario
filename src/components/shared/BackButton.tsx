@@ -15,7 +15,7 @@ const BackButton = ({
       <button
         type="button"
         onClick={() => navigate(-1)}
-        className={`items-center px-4 py-2 bg-blue-700  hover:bg-blue-600 rounded transition-all text-white ${className}`}
+        className={`items-center px-4 py-2 bg-primary  hover:bg-green-700 rounded transition-all text-white ${className}`}
       >
         ← {label}
       </button>
