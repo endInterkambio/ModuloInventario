@@ -146,6 +146,8 @@ function ItemRow({
         bookcaseFloor: location.bookcaseFloor,
       },
       customPrice: book.sellingPrice ?? 0,
+      offerPrice: book.offerPrice ?? null,
+      isOfferActive: book.isOfferActive ?? false,
     });
 
     setSearchTerm("");
@@ -165,6 +167,62 @@ function ItemRow({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  /**
+   * Calcula el descuento válido para un artículo.
+   * Considera:
+   *  - Descuento manual (input o article.discount)
+   *  - Descuento automático por oferta (isOfferActive && offerPrice < customPrice)
+   *  - El precio base (customPrice) nunca cambia automáticamente
+   */
+  const calculateValidDiscount = (
+    article: SaleOrderItemDTO,
+    inputDiscount?: number
+  ) => {
+    const quantity = article.quantity ?? 0;
+    const customPrice = article.customPrice ?? 0;
+    const subtotal = quantity * customPrice;
+
+    const isOfferActive = article.isOfferActive ?? false;
+    const offerPrice = article.offerPrice ?? customPrice;
+
+    // Descuento automático basado en la oferta (solo si está activa)
+    const discountFromOffer =
+      isOfferActive && offerPrice < customPrice ? (customPrice - offerPrice).toFixed(2) : 0;
+
+    // Determinar el descuento final mostrado
+    //  Si el usuario está escribiendo → usar ese
+    //  Si no hay input pero ya había descuento manual → mantenerlo
+    //  Si no hay ninguno → usar el de oferta (si aplica)
+    let discount =
+      inputDiscount != null
+        ? inputDiscount
+        : article.discount != null && article.discount > 0
+        ? article.discount
+        : discountFromOffer;
+
+    // Validaciones: evitar números negativos o mayores al subtotal
+    discount = Math.max(0, Math.min(discount as number, subtotal));
+
+    return discount;
+  };
+
+  useEffect(() => {
+    if (article.isOfferActive) {
+      const discount = calculateValidDiscount(article);
+
+      // Solo actualiza si el valor cambió realmente
+      if (discount !== (article.discount ?? 0)) {
+        onItemUpdate(index, { discount });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    article.isOfferActive,
+    article.offerPrice,
+    article.customPrice,
+    article.quantity,
+  ]);
 
   return (
     <div
@@ -297,18 +355,16 @@ function ItemRow({
       <div className="col-span-1">
         <input
           type="number"
-          value={article.discount ?? 0}
+          value={calculateValidDiscount(article)}
           onChange={(e) => {
             const rawValue = parseFloat(e.target.value) || 0;
-            const subtotal =
-              (article.quantity ?? 0) * (article.customPrice ?? 0);
+            const validatedDiscount = calculateValidDiscount(article, rawValue);
 
-            if (rawValue > subtotal) {
+            if (rawValue !== validatedDiscount) {
               toast.error("⚠️ El descuento no puede ser mayor que el subtotal");
-              onItemUpdate(index, { discount: subtotal });
-            } else {
-              onItemUpdate(index, { discount: rawValue });
             }
+
+            onItemUpdate(index, { discount: validatedDiscount });
           }}
           className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
           min="0"

@@ -29,7 +29,7 @@ export function ClientSearchSection({
   }, [searchTerm]);
 
   // Hook para obtener clientes filtrados desde backend
-  const { data: customersPage } = useCustomers(0, 10, debouncedTerm);
+  const { data: customersPage } = useCustomers(0, 10, "name", "asc", { search: debouncedTerm });
   const customers = customersPage?.content || [];
 
   const handleSelect = (customer: CustomerDTO) => {

@@ -5,6 +5,8 @@ export interface SaleOrderItemDTO {
   bookTitle: string;
   quantity?: number;
   customPrice?: number;
+  offerPrice?: number;
+  isOfferActive?: boolean;
   discount?: number;
   bookStockLocation?: {
     id: number;
