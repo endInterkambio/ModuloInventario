@@ -26,6 +26,7 @@ export const SalesOrderForm = () => {
     updateArticle,
     addArticle,
     removeArticle,
+    validateSalesOrder,
     shippingCost,
     chargeDiscountCost,
     handleShippingCostChange,
@@ -55,10 +56,11 @@ export const SalesOrderForm = () => {
   });
 
   const handleSubmit = (sendNow: boolean) => {
-    const now = new Date();
+    if (!validateSalesOrder()) return; // si hay errores, no continúa
 
+    const now = new Date();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { id, ...orderWithoutId } = salesOrder; //
+    const { id, ...orderWithoutId } = salesOrder;
 
     createSaleOrder.mutate({
       ...orderWithoutId,
@@ -114,23 +116,55 @@ export const SalesOrderForm = () => {
           />
         </FormField>
         <FormField label="Fecha de orden de venta">
-          <Input
+          <input
+            type="date"
+            className="border border-gray-300 rounded-md px-2 py-1 text-sm w-full"
             value={salesOrder.orderDate}
-            onChange={(v) => updateSalesOrder("orderDate", v)}
+            onChange={(e) => {
+              const newDate = e.target.value;
+              console.log("Fecha", newDate)
+
+              // Actualiza el estado global del pedido
+              updateSalesOrder("orderDate", newDate);
+            }}
           />
         </FormField>
+
+        <FormField label="Canal de Venta (+)">
+          <Select
+            value={salesOrder.saleChannel ?? ""}
+            onChange={(v) => {
+              if (!v) {
+                // Si el usuario limpia o selecciona vacío, eliminamos el canal
+                updateSalesOrder("saleChannel", undefined);
+                return;
+              }
+
+              // Si selecciona un canal válido
+              updateSalesOrder("saleChannel", v);
+            }}
+            options={[
+              { label: "Seleccionar canal", value: "" }, // opción vacía al inicio
+              ...SALES_CHANNELS.map((channel) => ({
+                label: channel,
+                value: channel,
+              })),
+            ]}
+          />
+        </FormField>
+
         {/* Shipment Method */}
-        <FormField label="Método de envío">
+        <FormField label="Método de envío (opcional)">
           <Select
             value={salesOrder.shipment?.shipmentMethod?.id?.toString() ?? ""}
             onChange={(v) => {
               if (!v) {
-                // ❌ Si el usuario limpia selección, eliminamos shipment
+                // Si el usuario limpia selección, eliminamos shipment
                 updateSalesOrder("shipment", undefined);
                 return;
               }
 
-              // ✅ Solo si selecciona algo, armamos el objeto
+              // Solo si selecciona algo, armamos el objeto
               const selected = shipmentMethodOptions.find((o) => o.value === v);
 
               updateSalesOrder("shipment", {
@@ -149,17 +183,6 @@ export const SalesOrderForm = () => {
               { label: "Seleccionar método", value: "" }, // opción vacía
               ...shipmentMethodOptions,
             ]}
-          />
-        </FormField>
-
-        <FormField label="Canal de Venta (+)">
-          <Select
-            value={salesOrder.saleChannel ?? ""}
-            onChange={(v) => updateSalesOrder("saleChannel", v)}
-            options={SALES_CHANNELS.map((channel) => ({
-              label: channel,
-              value: channel,
-            }))}
           />
         </FormField>
       </div>
@@ -183,11 +206,12 @@ export const SalesOrderForm = () => {
       />
 
       {/* Client Notes */}
-      <FormField label="Notas del cliente">
+      <FormField label="Notas del cliente (opcional)">
         <textarea
           value={salesOrder.customerNotes}
           onChange={(e) => updateSalesOrder("customerNotes", e.target.value)}
           rows={3}
+          placeholder="Colocar detalles adicionales para la orden de venta u observaciones del cliente"
           className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
         />
       </FormField>

@@ -44,7 +44,8 @@ export function SaleOrdersTable({ saleOrders }: Props) {
     <table className="hidden lg:table min-w-full text-sm">
       <thead>
         <tr className="text-left text-gray-700">
-          <th className="py-2 px-4">Fecha</th>
+          <th className="py-2 px-4">F. Creación</th>
+          <th className="py-2 px-4">F. Venta</th>
           <th className="py-2 px-4">Orden N°</th>
           <th className="py-2 px-4">Cliente</th>
           <th className="py-2 px-4">Tipo</th>
@@ -62,6 +63,11 @@ export function SaleOrdersTable({ saleOrders }: Props) {
             <td className="py-2 px-4">
               {order.createdAt
                 ? format(new Date(order.createdAt), "dd/MM/yyyy")
+                : "-"}
+            </td>
+            <td className="py-2 px-4">
+              {order.orderDate
+                ? format(new Date(order.orderDate), "dd/MM/yyyy")
                 : "-"}
             </td>
             <td className="py-2 px-4">{order.orderNumber}</td>
