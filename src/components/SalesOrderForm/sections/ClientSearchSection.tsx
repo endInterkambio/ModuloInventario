@@ -77,6 +77,7 @@ export function ClientSearchSection({
           value={inputValue}
           onChange={(e) => {
             onSearchChange(e.target.value);
+            onCustomerSelect(null); // deseleccionar si el usuario escribe
             setShowDropdown(true);
           }}
           onFocus={() => setShowDropdown(true)}
