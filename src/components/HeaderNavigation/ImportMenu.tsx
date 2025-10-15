@@ -9,7 +9,7 @@ const ImportMenu: React.FC<ImportMenuProps> = ({ handleImport }) => (
         htmlFor="import-file"
         className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer"
       >
-        <span>Importar archivo</span>
+        <span>Importar libros</span>
         <input
           type="file"
           id="import-file"

@@ -37,15 +37,7 @@ const BookDetailPage = () => {
   const statsData = {
     physicalExistences: {
       total: book.totalStock ?? 0,
-      available: book.totalStock ?? 0,
-      reserved: 0,
-      loaned: 0,
-    },
-    digitalExistences: {
-      total: 0,
-      available: 0,
-      reserved: 0,
-      downloads: 0,
+      // available: book.totalStock ?? 0,
     },
   };
 

@@ -173,7 +173,7 @@ export function LocationManagementTab({ searchTerm }: Props) {
                         </td>
                         <td className="flex items-center justify-center h-20">
                           <button
-                            className="px-4 py-1 bg-blue-500 text-white rounded text-sm"
+                            className="px-4 py-2 rounded-md font-medium transition-colors bg-primary text-white hover:bg-green-700"
                             onClick={() => openTransferModal(book, loc.id)}
                           >
                             Transferir

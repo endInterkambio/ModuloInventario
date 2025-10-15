@@ -6,9 +6,6 @@ const StatCard = ({ title, stats, type }: StatCardProps) => {
     const labels: Record<string, string> = {
       total: "Total",
       available: "Disponible",
-      reserved: "Reservado",
-      loaned: "Prestado",
-      downloads: "Descargas",
     };
     return labels[key] || key;
   };

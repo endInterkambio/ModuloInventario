@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Trash2, Settings, Plus } from "lucide-react";
+import { Trash2, Plus } from "lucide-react";
 import { SaleOrderItemDTO } from "@/types/SaleOrderItemDTO";
 import { useBooks } from "@/hooks/useBooks";
 import { BookDTO } from "@/types/BookDTO";
@@ -34,10 +34,6 @@ export default function ItemTable({
         <h3 className="text-sm font-medium text-gray-700">
           Tabla de artículos
         </h3>
-        <button className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1">
-          <Settings className="h-4 w-4" />
-          Acciones en bloque
-        </button>
       </div>
 
       <div className="border border-gray-300 rounded">
@@ -76,7 +72,7 @@ export default function ItemTable({
       <div className="flex gap-2 mt-3">
         <button
           onClick={onAddArticle}
-          className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
+          className="flex items-center gap-1 text-sm font-medium text-primary hover:text-green-700"
         >
           <Plus className="h-4 w-4" />
           Añadir nueva fila

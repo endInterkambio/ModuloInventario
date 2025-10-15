@@ -94,14 +94,14 @@ export function TransferModal({
             <div className="flex justify-end gap-2">
               <button
                 onClick={onClose}
-                className="px-3 py-1 rounded bg-gray-300"
+                className="px-4 py-2 rounded-md font-medium transition-colors border bg-secondary hover:bg-yellow-500"
               >
                 Cancelar
               </button>
               <button
                 onClick={() => handleTransfer(onClose)}
                 disabled={isMutating}
-                className="px-3 py-1 rounded bg-blue-600 text-white"
+                className="px-4 py-2 rounded-md font-medium transition-colors bg-primary text-white hover:bg-green-700"
               >
                 {isMutating ? "Procesando..." : "Confirmar"}
               </button>
@@ -112,7 +112,7 @@ export function TransferModal({
         {/* Botón para alternar entre creación y selección de ubicación */}
         <button
           type="button"
-          className="text-blue-600 text-sm mt-2"
+          className="text-primary font-medium text-sm mt-2 hover:text-green-700"
           onClick={() => {
             if (book.locations.length === 0) {
               // Si no hay ubicaciones y estamos en modo creación, cerrar el modal

@@ -12,13 +12,13 @@ export function PaymentFormActions({ onCancel, resetForm }: PaymentFormActionsPr
           resetForm();
           onCancel();
         }}
-        className="px-4 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50"
+        className="px-4 py-2 rounded-md font-medium transition-colors border bg-secondary hover:bg-yellow-500"
       >
-        Cancelar
+        Limpiar campos
       </button>
       <button
         type="submit"
-        className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+        className="px-4 py-2 rounded-md font-medium transition-colors bg-primary text-white hover:bg-green-700"
       >
         Guardar
       </button>

@@ -2,14 +2,12 @@ import { BookDTO } from "@/types/BookDTO";
 import StatCard from "./StatCard";
 import placeholder from "@assets/no-image.jpg";
 import BookQuickActions from "./BookQuickActions";
-import BookSummary from "./BookSummary";
 import { UploadButton } from "@components/shared/UploadButton";
 
 type Props = {
   book: BookDTO;
   statsData: {
     physicalExistences: Record<string, number>;
-    digitalExistences: Record<string, number>;
   };
 };
 
@@ -32,7 +30,8 @@ const BookSidebar = ({ book, statsData }: Props) => (
     <StatCard title="Existencias físicas" stats={statsData.physicalExistences} type="physical" />
 
     <BookQuickActions />
-    <BookSummary />
+    {/*TODO: Resumen de operaciones */}
+    {/* <BookSummary /> */}
   </div>
 );
 

@@ -116,14 +116,14 @@ export default function CustomerCreationForm() {
             onClick={() => {
               resetForm();
             }}
-            className="px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+            className="px-4 py-2 rounded-md font-medium transition-colors border bg-secondary hover:bg-yellow-500"
           >
-            Cancelar
+            Limpiar campos
           </button>
           <button
             type="submit"
             disabled={createCustomer.isPending}
-            className="px-6 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-green-700 disabled:opacity-50"
+            className="px-4 py-2 rounded-md font-medium transition-colors bg-primary text-white hover:bg-green-700"
           >
             {createCustomer.isPending ? "Guardando..." : "Guardar"}
           </button>

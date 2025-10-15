@@ -6,6 +6,7 @@ import {
   OrderPaymentStatus,
 } from "@components/SalesOrderForm/constants/orderStatusConfig";
 import { SaleOrderDTO } from "@/types/SaleOrderDTO";
+import { downloadSaleOrder } from "@/utils/pdf/downloadSaleOrder";
 
 interface Props {
   saleOrders: SaleOrderDTO[];
@@ -75,8 +76,8 @@ export function SaleOrdersCards({ saleOrders }: Props) {
           </div>
           <div className="flex justify-between text-xs text-gray-500">
             <span>Canal: {order.saleChannel ?? "-"}</span>
-            <button className="px-3 py-1 bg-blue-500 text-white rounded text-xs">
-              PDF
+            <button className="px-3 py-1 bg-secondary text-black font-medium rounded text-xs" onClick={() => downloadSaleOrder(order)}>
+              Descargar orden
             </button>
           </div>
         </div>

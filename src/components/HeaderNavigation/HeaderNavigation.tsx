@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import {
   MoreHorizontal,
-  RotateCcw,
   ArrowUpDown,
   Upload,
   DownloadIcon,
@@ -14,7 +13,6 @@ import ImportMenu from "./ImportMenu";
 import SortMenu from "./SortMenu";
 import ExportMenu from "./ExportMenu";
 import SubmenuItem from "./SubmenuItem";
-import ViewToggle from "./ViewToggle";
 import { SearchBar } from "@components/SearchBar/SearchBar";
 import FilterMenu from "./FilterMenu";
 import { useBookStore } from "@/stores/useBookStore";
@@ -62,9 +60,6 @@ const HeaderNavigation = () => {
         options={[
           "Artículos con existencias",
           "Todos los artículos",
-          "Artículos recientes",
-          "Mis artículos",
-          "Borradores",
         ]}
         onSelect={handleStockFilter}
       />
@@ -72,7 +67,8 @@ const HeaderNavigation = () => {
       <SearchBar />
 
       <div className="flex items-center gap-3">
-        <ViewToggle />
+        {/*TODO: Switch de cambio de diseño de cards en vista de libros*/ }
+        {/* <ViewToggle /> */}
         {isAdmin && (
           <NewButton to={"/dashboard/inventory/newBook"} label={"Nuevo"} className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2"/>
         )}
@@ -135,13 +131,14 @@ const HeaderNavigation = () => {
 
                 <div className="border-t border-gray-100 my-1"></div>
 
-                <button
+                {/*TODO: Botón de actualización de lista de libros */}
+                {/* <button
                   className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                   onMouseEnter={() => setActiveSubmenu(null)}
                 >
                   <RotateCcw className="w-4 h-4 text-blue-500" />
                   <span>Actualizar la lista</span>
-                </button>
+                </button> */}
               </div>
             </div>
           )}
