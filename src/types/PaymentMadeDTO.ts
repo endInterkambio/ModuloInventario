@@ -1,4 +1,4 @@
-export interface PaymentReceivedDTO {
+export interface PaymentMadeDTO {
   id: number;
   purchaseOrderId: number;
   purchaseOrderNumber?: string;

@@ -21,6 +21,7 @@ import { PurchaseOrderForm } from "@components/PurchaseOrderForm";
 import { PaymentMadePage } from "@/pages/purchases/PaymentMadePage";
 import { SuppliersPage } from "@/pages/purchases/SuppliersPage";
 import { PaymentMadeForm } from "@components/PaymentMadeForm";
+import { SupplierForm } from "@components/SupplierForm";
 
 export const router = createBrowserRouter(
   [
@@ -72,6 +73,12 @@ export const router = createBrowserRouter(
                 {
                   path: "suppliers",
                   element: <SuppliersPage />,
+                  children: [
+                    {
+                      path: "newSupplier",
+                      element: <SupplierForm />,
+                    },
+                  ],
                 },
                 {
                   path: "selling",
