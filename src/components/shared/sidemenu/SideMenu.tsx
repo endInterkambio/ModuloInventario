@@ -48,6 +48,26 @@ const menuItems: MenuItem[] = [
     subTitle: "Módulo de compras",
     href: "/dashboard/purchase",
     Icon: BiPurchaseTag,
+    children: [
+      {
+        title: "Ordenes de compra",
+        subTitle: "Detalles y estado",
+        href: "/dashboard/purchase",
+        Icon: IoPawOutline,
+      },
+      {
+        title: "Pagos realizados",
+        subTitle: "Detalles",
+        href: "/dashboard/paymentMade",
+        Icon: IoPawOutline,
+      },
+      {
+        title: "Proveedores",
+        subTitle: "Consultar y crear nuevos",
+        href: "/dashboard/suppliers",
+        Icon: IoPawOutline,
+      },
+    ],
   },
   {
     title: "Ventas",

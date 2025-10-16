@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 
 import { Root } from "../Root";
 import { AuthLayout, DashboardLayout } from "../layouts";
-import { Dashboard, LoginPage, PurchasePage } from "../pages";
+import { Dashboard, LoginPage } from "../pages";
 import BookDetailPage from "@/pages/inventory/BookDetail/BookDetailPage";
 import InventoryManagementPage from "@/pages/inventory/InventoryAdjustment/InventoryManagementPage";
 import BooksPage from "@/pages/inventory/BooksPage";
@@ -16,6 +16,10 @@ import { SalesOrderForm } from "@components/SalesOrderForm";
 import { PaymentReceivedCreationForm } from "@components/PaymentReceivedCreationForm";
 import { ShipmentPage } from "@/pages/sales/Shipments";
 import { ShipmentCreationForm } from "@components/ShipmentForm";
+import { PurchaseOrdersPage } from "@/pages/purchases/PurchaseOrdersPage";
+import { PurchaseOrderForm } from "@components/PurchaseOrderForm";
+import { PaymentMadePage } from "@/pages/purchases/PaymentMadePage";
+import { SuppliersPage } from "@/pages/purchases/SuppliersPage";
 
 export const router = createBrowserRouter(
   [
@@ -44,7 +48,30 @@ export const router = createBrowserRouter(
                   path: "inventoryAdjust",
                   element: <InventoryManagementPage />,
                 },
-                { path: "purchase", element: <PurchasePage /> },
+                {
+                  path: "purchase",
+                  element: <PurchaseOrdersPage />,
+                  children: [
+                    {
+                      path: "newPurchaseOrder",
+                      element: <PurchaseOrderForm />,
+                    },
+                  ],
+                },
+                {
+                  path: "paymentMade",
+                  element: <PaymentMadePage/>,
+                  children: [
+                    {
+                      path: "newPaymentMade",
+                      element: <PaymentMadePage/>
+                    }
+                  ]
+                },
+                {
+                  path: "suppliers",
+                  element: <SuppliersPage/>,
+                },
                 {
                   path: "selling",
                   element: <SaleOrdersPage />,
