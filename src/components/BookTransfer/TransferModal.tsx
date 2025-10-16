@@ -101,7 +101,7 @@ export function TransferModal({
               <button
                 onClick={() => handleTransfer(onClose)}
                 disabled={isMutating}
-                className="px-4 py-2 rounded-md font-medium transition-colors bg-primary text-white hover:bg-green-700"
+                className="px-4 py-2 rounded-md font-medium transition-colors bg-button text-white hover:bg-green-700"
               >
                 {isMutating ? "Procesando..." : "Confirmar"}
               </button>

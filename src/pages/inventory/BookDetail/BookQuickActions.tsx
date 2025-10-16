@@ -287,7 +287,7 @@ const BookQuickActions = () => {
 
                 <button
                   onClick={handleApplyOfferPrice}
-                  className="w-36 bg-primary text-white text-medium py-1 rounded-md hover:bg-green-700 transition"
+                  className="w-36 bg-[--color-button] text-white text-medium py-1 rounded-md hover:bg-primary transition"
                 >
                   Aplicar precio de oferta
                 </button>

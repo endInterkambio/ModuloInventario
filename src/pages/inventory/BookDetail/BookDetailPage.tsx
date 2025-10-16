@@ -59,7 +59,7 @@ const BookDetailPage = () => {
       <div className="flex justify-between items-start px-4 pt-4">
         <BackButton />
         {isAdmin && (
-          <NewButton to={"/dashboard/inventory/newBook"} label={"Nuevo"} className="flex items-center gap-2 bg-primary hover:bg-green-700 text-white px-4 py-2" />
+          <NewButton to={"/dashboard/inventory/newBook"} label={"Nuevo"} className="flex items-center gap-2 bg-[--color-button] hover:bg-primary text-white px-4 py-2" />
         )}
       </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">

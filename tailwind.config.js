@@ -10,8 +10,9 @@ export default {
       colors: {
         primary: "var(--color-primary)",
         secondary: "var(--color-secondary)",
-        bg: "var(--color-bg)",
+        surface: "var(--color-bg)",
         text: "var(--color-text)",
+        button: "var(--color-button)",
       }
     },
   },

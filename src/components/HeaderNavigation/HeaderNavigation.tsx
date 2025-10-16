@@ -70,7 +70,7 @@ const HeaderNavigation = () => {
         {/*TODO: Switch de cambio de diseño de cards en vista de libros*/ }
         {/* <ViewToggle /> */}
         {isAdmin && (
-          <NewButton to={"/dashboard/inventory/newBook"} label={"Nuevo"} className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2"/>
+          <NewButton to={"/dashboard/inventory/newBook"} label={"Nuevo"} className="flex items-center gap-2 bg-[--color-button] hover:bg-primary text-white px-4 py-2"/>
         )}
 
         <div className="relative">

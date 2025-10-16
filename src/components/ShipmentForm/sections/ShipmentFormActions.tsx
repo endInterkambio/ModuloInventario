@@ -20,7 +20,7 @@ export function ShipmentFormActions({ onCancel, resetForm }: Props) {
       {/* Este dispara el submit del formulario */}
       <button
         type="submit"
-        className="px-4 py-2 rounded-md font-medium transition-colors bg-primary text-white hover:bg-green-700"
+        className="px-4 py-2 rounded-md font-medium transition-colors bg-[--color-button] text-white hover:bg-green-700"
       >
         Guardar
       </button>

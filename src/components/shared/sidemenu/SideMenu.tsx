@@ -109,26 +109,26 @@ export const SideMenu = () => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-40 w-64 h-screen bg-gray-900 text-slate-300 overflow-y-auto transform transition-transform duration-300
+        className={`fixed top-0 left-0 z-40 w-64 h-screen bg-primary text-white overflow-y-auto transform transition-transform duration-300
           ${open ? "translate-x-0" : "-translate-x-full"} 
           md:translate-x-0 md:relative md:block`}
       >
         <div className="my-4 px-6">
           <h1 className="text-lg md:text-2xl font-bold text-white">
             GusanitoLector
-            <span className="text-blue-500 text-xs">
+            <span className="text-secondary text-xs">
               {" "}
               Sistema de inventario
             </span>
             .
           </h1>
-          <p className="text-slate-500 text-sm">
+          <p className="text-white/90 text-sm">
             Gestión de inventario, compra y venta
           </p>
         </div>
 
         <div className="px-6 py-10">
-          <p className="text-slate-500">Bienvenido,</p>
+          <p className="text-secondary">Bienvenido,</p>
           <div className="inline-flex space-x-2 items-center">
             <img
               className="rounded-full w-8 h-8"

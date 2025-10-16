@@ -74,7 +74,7 @@ export const UploadButton = () => {
         ${
           isPending
             ? "bg-gray-400 cursor-not-allowed"
-            : "bg-primary hover:bg-green-700 text-white"
+            : "bg-[--color-button] hover:bg-green-700 text-white"
         }`}
       >
         <Upload className="w-4 h-4" />

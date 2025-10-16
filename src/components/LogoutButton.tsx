@@ -10,5 +10,5 @@ export const LogoutButton = () => {
     navigate("/auth/login");
   };
 
-  return <button onClick={handleLogout}>Cerrar sesión</button>;
+  return <button onClick={handleLogout} className="text-secondary font-medium">Cerrar sesión</button>;
 };

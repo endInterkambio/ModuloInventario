@@ -123,7 +123,7 @@ export default function CustomerCreationForm() {
           <button
             type="submit"
             disabled={createCustomer.isPending}
-            className="px-4 py-2 rounded-md font-medium transition-colors bg-primary text-white hover:bg-green-700"
+            className="px-4 py-2 rounded-md font-medium transition-colors bg-[--color-button] text-white hover:bg-green-700"
           >
             {createCustomer.isPending ? "Guardando..." : "Guardar"}
           </button>

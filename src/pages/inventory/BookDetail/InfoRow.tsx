@@ -132,7 +132,7 @@ export const InfoRow = ({
                 disabled={!hasChanged}
                 className={`px-3 py-1 text-sm rounded-md text-white ${
                   hasChanged
-                    ? "bg-primary hover:bg-green-700"
+                    ? "bg-[--color-button] hover:bg-primary"
                     : "bg-gray-400 cursor-not-allowed"
                 }`}
               >
