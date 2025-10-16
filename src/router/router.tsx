@@ -20,6 +20,7 @@ import { PurchaseOrdersPage } from "@/pages/purchases/PurchaseOrdersPage";
 import { PurchaseOrderForm } from "@components/PurchaseOrderForm";
 import { PaymentMadePage } from "@/pages/purchases/PaymentMadePage";
 import { SuppliersPage } from "@/pages/purchases/SuppliersPage";
+import { PaymentMadeForm } from "@components/PaymentMadeForm";
 
 export const router = createBrowserRouter(
   [
@@ -60,17 +61,17 @@ export const router = createBrowserRouter(
                 },
                 {
                   path: "paymentMade",
-                  element: <PaymentMadePage/>,
+                  element: <PaymentMadePage />,
                   children: [
                     {
                       path: "newPaymentMade",
-                      element: <PaymentMadePage/>
-                    }
-                  ]
+                      element: <PaymentMadeForm />,
+                    },
+                  ],
                 },
                 {
                   path: "suppliers",
-                  element: <SuppliersPage/>,
+                  element: <SuppliersPage />,
                 },
                 {
                   path: "selling",
