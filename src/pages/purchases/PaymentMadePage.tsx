@@ -30,11 +30,7 @@ export function PaymentMadePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearchTerm]);
 
-  const {
-    data: paymentsPage,
-    isLoading,
-    isError,
-  } = usePaymentMadeWithStore();
+  const { data: paymentsPage, isLoading, isError } = usePaymentMadeWithStore();
 
   const payments = paymentsPage?.content ?? [];
 
@@ -56,7 +52,9 @@ export function PaymentMadePage() {
             <InfoRow
               label=""
               value={
-                p.paymentDate ? format(new Date(p.paymentDate), "dd/MM/yyyy") : "-"
+                p.paymentDate
+                  ? format(new Date(p.paymentDate), "dd/MM/yyyy")
+                  : "-"
               }
             />
           ),
@@ -87,6 +85,11 @@ export function PaymentMadePage() {
               value={p.amount ? `S/. ${p.amount.toFixed(2)}` : "-"}
             />
           ),
+        },
+        {
+          key: "paymentMethod",
+          header: "Método de pago",
+          render: (p) => <InfoRow label="" value={p.paymentMethod || "-"} />,
         },
       ]}
       items={payments}

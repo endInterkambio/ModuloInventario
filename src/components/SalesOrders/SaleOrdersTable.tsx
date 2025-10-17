@@ -4,7 +4,7 @@ import {
   OrderStatus,
   orderPaymentStatusConfig,
   OrderPaymentStatus,
-} from "@components/SalesOrderForm/constants/orderStatusConfig";
+} from "@/types/orderStatusConfig";
 import { SaleOrderDTO } from "@/types/SaleOrderDTO";
 import { downloadSaleOrder } from "@/utils/pdf/downloadSaleOrder";
 import { downloadWayBill } from "@/utils/pdf/downloadWayBill";

@@ -8,6 +8,12 @@ import { usePurchaseOrdersWithStore } from "@/hooks/usePurchaseOrders";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { downloadPurchaseOrder } from "@/utils/pdf/downloadPurchaseOrder";
+import {
+  OrderPaymentStatus,
+  orderPaymentStatusConfig,
+  OrderStatus,
+  orderStatusConfig,
+} from "@/types/orderStatusConfig";
 
 // Opciones de estado de orden (puedes sincronizar con el backend)
 const ORDER_STATUS_OPTIONS = [
@@ -111,44 +117,44 @@ export const PurchaseOrdersPage = () => {
         {
           key: "status",
           header: "Estado de orden",
-          render: (p) => (
-            <InfoRow
-              label=""
-              value={
-                p.status === "PENDING"
-                  ? "Pendiente"
-                  : p.status === "IN_PROGRESS"
-                  ? "En progreso"
-                  : p.status === "SHIPPED"
-                  ? "Enviado"
-                  : p.status === "COMPLETED"
-                  ? "Completado"
-                  : p.status === "CANCELLED"
-                  ? "Cancelado"
-                  : "-"
-              }
-            />
-          ),
+          render: (p) => {
+            // Tipamos el estado
+            const status = p.status as OrderStatus;
+
+            // Obtenemos la configuración correspondiente
+            const config = orderStatusConfig[status];
+
+            // Si no existe, mostramos valor por defecto
+            if (!config) return <InfoRow label="" value="-" />;
+
+            return (
+              <div className="flex items-center space-x-2">
+                {/* círculo de color */}
+                <span
+                  className={`w-3 h-3 rounded-full ${config.color}`}
+                  title={config.label}
+                />
+                {/* texto con color */}
+                <InfoRow label="" value={config.label} />
+              </div>
+            );
+          },
         },
         {
           key: "paymentStatus",
           header: "Estado de pago",
-          render: (p) => (
-            <InfoRow
-              label=""
-              value={
-                p.paymentStatus === "UNPAID"
-                  ? "No pagado"
-                  : p.paymentStatus === "PARTIALLY_PAID"
-                  ? "Parcialmente pagado"
-                  : p.paymentStatus === "PAID"
-                  ? "Pagado"
-                  : p.paymentStatus === "INVOICED"
-                  ? "Facturado"
-                  : "-"
-              }
-            />
-          ),
+          render: (p) => {
+            const paymentStatus = p.paymentStatus as OrderPaymentStatus;
+            const config = orderPaymentStatusConfig[paymentStatus];
+            if (!config) return <InfoRow label="" value="-" />;
+
+            return (
+              <div className="flex items-center space-x-2">
+                <span className={`w-3 h-3 rounded-full ${config.color}`} />
+                <InfoRow label="" value={config.label} />
+              </div>
+            );
+          },
         },
         {
           key: "amount",
@@ -179,7 +185,9 @@ export const PurchaseOrdersPage = () => {
                 title="Descargar"
                 onClick={() => downloadPurchaseOrder(p)}
                 className="items-center px-4 py-2 bg-[--color-button] hover:bg-primary rounded transition-all text-white"
-              >Descargar</button>
+              >
+                Descargar
+              </button>
             </div>
           ),
         },

@@ -5,4 +5,5 @@ export interface PaymentMadeDTO {
   paymentDate: string;
   amount: number;
   referenceNumber: string;
+  paymentMethod: string;
 }
