@@ -7,7 +7,7 @@ import {
 } from "@components/SalesOrderForm/constants/orderStatusConfig";
 import { SaleOrderDTO } from "@/types/SaleOrderDTO";
 import { downloadSaleOrder } from "@/utils/pdf/downloadSaleOrder";
-import { downloadWayBill } from "@/utils/downloadWayBill";
+import { downloadWayBill } from "@/utils/pdf/downloadWayBill";
 import NavButton from "@components/NewButton";
 import { useEffect, useRef, useState } from "react";
 
@@ -122,7 +122,7 @@ export function SaleOrdersTable({ saleOrders }: Props) {
             <td className="py-2 px-4 relative">
               <button
                 onClick={() => handleMenuToggle(order.id)}
-                className="px-4 py-1 bg-secondary font-medium rounded-md text-sm w-20"
+                className="items-center px-4 py-2 bg-[--color-button]  hover:bg-primary rounded transition-all text-white"
               >
                 Acciones
               </button>

@@ -2,7 +2,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { SaleOrderDTO } from "@/types/SaleOrderDTO";
 import logo from "@assets/LOGO-GUSANITO-LECTOR.png";
-import { loadImageAsBase64 } from "./loadImageAsBase64";
+import { loadImageAsBase64 } from "../loadImageAsBase64";
 import { format } from "date-fns";
 
 export async function downloadWayBill(order: SaleOrderDTO) {

@@ -9,10 +9,10 @@ import toast from "react-hot-toast";
 import { SupplierForm } from "@components/SupplierForm";
 
 // Puedes adaptar estos tipos según tu backend
-const SUPPLIER_TYPES = [
-  { label: "Nacional", value: "NATIONAL" },
-  { label: "Internacional", value: "INTERNATIONAL" },
-];
+// const SUPPLIER_TYPES = [
+//   { label: "Nacional", value: "NATIONAL" },
+//   { label: "Internacional", value: "INTERNATIONAL" },
+// ];
 
 export function SuppliersPage() {
   const location = useLocation();
@@ -40,24 +40,26 @@ export function SuppliersPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearchTerm]);
 
-  // --- Opciones de dropdown (ejemplo: tipo de proveedor) ---
-  const dropdownOptions = ["Todos", ...SUPPLIER_TYPES.map((t) => t.label)];
-  const dropdownLabel = "Todos los proveedores";
-  const dropdownValue =
-    SUPPLIER_TYPES.find((t) => t.value === filters.supplierType)?.label ||
-    dropdownLabel;
+  // // --- Opciones de dropdown (ejemplo: tipo de proveedor) ---
+  // const dropdownOptions = ["Todos", ...SUPPLIER_TYPES.map((t) => t.label)];
+  // const dropdownLabel = "Todos los proveedores";
+  // const dropdownValue =
+  //   SUPPLIER_TYPES.find((t) => t.value === filters.supplierType)?.label ||
+  //   dropdownLabel;
 
-  const handleDropdownSelect = (label: string) => {
-    if (label === "Todos") {
-      setFilter("supplierType", "");
-      return;
-    }
-    const supplierType = SUPPLIER_TYPES.find((t) => t.label === label)?.value;
-    setFilter("supplierType", supplierType || "");
-  };
+  // const handleDropdownSelect = (label: string) => {
+  //   if (label === "Todos") {
+  //     setFilter("supplierType", "");
+  //     return;
+  //   }
+  //   const supplierType = SUPPLIER_TYPES.find((t) => t.label === label)?.value;
+  //   setFilter("supplierType", supplierType || "");
+  // };
 
   const { data: suppliersPage, isLoading, isError } = useSuppliersWithStore();
   const suppliers = suppliersPage?.content ?? [];
+
+  console.log(suppliers)
 
   if (isNewSupplier) {
     return <SupplierForm />;
@@ -66,10 +68,10 @@ export function SuppliersPage() {
   return (
     <PaginatedTable
       title="Proveedores"
-      dropdownOptions={dropdownOptions}
-      dropdownLabel={dropdownLabel}
-      dropdownValue={dropdownValue}
-      onDropdownSelect={handleDropdownSelect}
+      // dropdownOptions={dropdownOptions}
+      // dropdownLabel={dropdownLabel}
+      // dropdownValue={dropdownValue}
+      // onDropdownSelect={handleDropdownSelect}
       searchPlaceholder="Buscar proveedores"
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}

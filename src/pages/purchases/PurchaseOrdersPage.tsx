@@ -7,6 +7,7 @@ import { usePurchaseOrderStore } from "@/stores/usePurchaseOrder";
 import { usePurchaseOrdersWithStore } from "@/hooks/usePurchaseOrders";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
+import { downloadPurchaseOrder } from "@/utils/pdf/downloadPurchaseOrder";
 
 // Opciones de estado de orden (puedes sincronizar con el backend)
 const ORDER_STATUS_OPTIONS = [
@@ -97,20 +98,35 @@ export const PurchaseOrdersPage = () => {
             <InfoRow label="" value={p.purchaseOrderNumber || "-"} />
           ),
         },
-        // {
-        //   key: "supplier",
-        //   header: "Proveedor",
-        //   render: (p) => (
-        //     <InfoRow label="" value={p.supplier?.name || "-"} />
-        //   ),
-        // },
         {
-          key: "amount",
-          header: "Monto total",
+          key: "supplier",
+          header: "Proveedor",
+          render: (p) => <InfoRow label="" value={p.supplier?.name || "-"} />,
+        },
+        {
+          key: "purchaseChannel",
+          header: "Canal de compra",
+          render: (p) => <InfoRow label="" value={p.purchaseChannel || "-"} />,
+        },
+        {
+          key: "status",
+          header: "Estado de orden",
           render: (p) => (
             <InfoRow
               label=""
-              value={p.totalAmount ? `S/. ${p.totalAmount.toFixed(2)}` : "-"}
+              value={
+                p.status === "PENDING"
+                  ? "Pendiente"
+                  : p.status === "IN_PROGRESS"
+                  ? "En progreso"
+                  : p.status === "SHIPPED"
+                  ? "Enviado"
+                  : p.status === "COMPLETED"
+                  ? "Completado"
+                  : p.status === "CANCELLED"
+                  ? "Cancelado"
+                  : "-"
+              }
             />
           ),
         },
@@ -135,25 +151,36 @@ export const PurchaseOrdersPage = () => {
           ),
         },
         {
-          key: "status",
-          header: "Estado de orden",
+          key: "amount",
+          header: "Total",
           render: (p) => (
             <InfoRow
               label=""
-              value={
-                p.status === "PENDING"
-                  ? "Pendiente"
-                  : p.status === "IN_PROGRESS"
-                  ? "En progreso"
-                  : p.status === "SHIPPED"
-                  ? "Enviado"
-                  : p.status === "COMPLETED"
-                  ? "Completado"
-                  : p.status === "CANCELLED"
-                  ? "Cancelado"
-                  : "-"
-              }
+              value={p.totalAmount ? `S/. ${p.totalAmount.toFixed(2)}` : "-"}
             />
+          ),
+        },
+        {
+          key: "paid",
+          header: "Pagado",
+          render: (p) => (
+            <InfoRow
+              label=""
+              value={p.totalPaid ? `S/. ${p.totalPaid.toFixed(2)}` : "-"}
+            />
+          ),
+        },
+        {
+          key: "button",
+          header: "Acciones",
+          render: (p) => (
+            <div className="flex gap-2">
+              <button
+                title="Descargar"
+                onClick={() => downloadPurchaseOrder(p)}
+                className="items-center px-4 py-2 bg-[--color-button] hover:bg-primary rounded transition-all text-white"
+              >Descargar</button>
+            </div>
           ),
         },
       ]}

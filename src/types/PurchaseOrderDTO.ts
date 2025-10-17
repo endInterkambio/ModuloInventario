@@ -17,6 +17,7 @@ export interface PurchaseOrderDTO {
   id: number;
   purchaseOrderNumber: string;
   purchaseDate: string;
+  supplier: SimpleIdNameDTO;
   createdAt: string;
   createdBy: SimpleIdNameDTO;
   purchaseChannel?: string;
@@ -28,6 +29,6 @@ export interface PurchaseOrderDTO {
   status: OrderStatus;
   paymentStatus: OrderPaymentStatus;
   items: PurchaseOrderItemDTO[];
-  delivertDate: string;
+  deliveryDate: string;
   supplierNotes: string;
 }
