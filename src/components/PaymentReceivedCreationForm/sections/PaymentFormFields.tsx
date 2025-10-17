@@ -1,5 +1,5 @@
 import { SaleOrderDTO } from "@/types/SaleOrderDTO";
-import { PAYMENT_METHODS, PaymentMethod } from "../constants/paymentMethods";
+import { PAYMENT_METHODS, PaymentMethod } from "../../../types/paymentMethods";
 import { PaymentFormState } from "../hooks/usePaymentForm";
 import { InfoTooltip } from "@components/CustomerForm/ui/InfoToolTip";
 import { FileInput } from "@components/shared/FileInput";

@@ -7,6 +7,7 @@ import { usePaymentMadeStore } from "@/stores/usePaymentMadeStore";
 import { usePaymentMadeWithStore } from "@/hooks/usePaymentMade";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
+import { PAYMENT_METHODS } from "@/types/paymentMethods";
 
 export function PaymentMadePage() {
   const location = useLocation();
@@ -24,11 +25,33 @@ export function PaymentMadePage() {
   const [searchTerm, setSearchTerm] = useState(filters.search || "");
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
 
+  // 🔹 Mapear labels a values para búsqueda global
+  const labelToValueMap = Object.fromEntries(
+    PAYMENT_METHODS.map((m) => [m.label.toLowerCase(), m.value])
+  );
+
   // 🔹 Actualiza el filtro de búsqueda general
   useEffect(() => {
-    setFilter("search", debouncedSearchTerm);
+    const mappedSearch =
+      labelToValueMap[debouncedSearchTerm.toLowerCase()] || debouncedSearchTerm;
+    setFilter("search", mappedSearch);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearchTerm]);
+
+  const dropdownOptions = ["Todos", ...PAYMENT_METHODS.map((m) => m.label)];
+  const dropdownLabel = "Filtrar por método";
+  const dropdownValue =
+    PAYMENT_METHODS.find((m) => m.value === filters.paymentMethod)?.label ||
+    dropdownLabel;
+
+  const handleDropdownSelect = (label: string) => {
+    if (label === "Todos") {
+      setFilter("paymentMethod", "");
+      return;
+    }
+    const method = PAYMENT_METHODS.find((m) => m.label === label)?.value;
+    setFilter("paymentMethod", method || "");
+  };
 
   const { data: paymentsPage, isLoading, isError } = usePaymentMadeWithStore();
 
@@ -74,12 +97,7 @@ export function PaymentMadePage() {
         {
           key: "supplier",
           header: "Proveedor",
-          render: (p) => (
-            <InfoRow
-            label=""
-            value={p.supplier.name || "-"}
-            />
-          )
+          render: (p) => <InfoRow label="" value={p.supplier.name || "-"} />,
         },
         {
           key: "referenceNumber",
@@ -97,11 +115,21 @@ export function PaymentMadePage() {
           ),
         },
         {
-          key: "paymentMethod",
+          key: "method",
           header: "Método de pago",
-          render: (p) => <InfoRow label="" value={p.paymentMethod || "-"} />,
+          render: (p) => {
+            const methodLabel =
+              PAYMENT_METHODS.find((m) => m.value === p.paymentMethod)?.label ||
+              p.paymentMethod ||
+              "-";
+            return <InfoRow label="" value={methodLabel} />;
+          },
         },
       ]}
+      dropdownOptions={dropdownOptions}
+      dropdownLabel={dropdownLabel}
+      dropdownValue={dropdownValue}
+      onDropdownSelect={handleDropdownSelect}
       items={payments}
       isLoading={isLoading}
       isError={isError}

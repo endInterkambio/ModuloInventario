@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { PaymentMethod } from "../constants/paymentMethods";
+import type { PaymentMethod } from "../../../types/paymentMethods";
 
 export interface PaymentFormState {
   saleOrderId: number;

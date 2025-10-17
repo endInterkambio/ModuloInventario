@@ -7,7 +7,7 @@ import { usePaymentReceivedStore } from "@/stores/usePaymentReceivedStore";
 import { usePaymentReceivedWithStore } from "@/hooks/usePaymentReceived";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
-import { PAYMENT_METHODS } from "@components/PaymentReceivedCreationForm/constants/paymentMethods";
+import { PAYMENT_METHODS } from "@/types/paymentMethods";
 
 export function PaymentReceivedPage() {
   const location = useLocation();

@@ -1,4 +1,4 @@
-import { PaymentMethod } from "../constants/paymentMethods";
+import { PaymentMethod } from "../../../types/paymentMethods";
 
 export type PaymentReceivedCreationPayload = {
   saleOrderId: number;
