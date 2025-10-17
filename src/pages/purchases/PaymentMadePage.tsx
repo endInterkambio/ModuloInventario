@@ -59,17 +59,27 @@ export function PaymentMadePage() {
             />
           ),
         },
-        {
-          key: "id",
-          header: "N° de pago",
-          render: (p) => <InfoRow label="" value={p.id || "-"} />,
-        },
+        // {
+        //   key: "id",
+        //   header: "N° de pago",
+        //   render: (p) => <InfoRow label="" value={p.id || "-"} />,
+        // },
         {
           key: "purchaseOrderNumber",
           header: "N° de orden de compra",
           render: (p) => (
             <InfoRow label="" value={p.purchaseOrderNumber || "-"} />
           ),
+        },
+        {
+          key: "supplier",
+          header: "Proveedor",
+          render: (p) => (
+            <InfoRow
+            label=""
+            value={p.supplier.name || "-"}
+            />
+          )
         },
         {
           key: "referenceNumber",
